@@ -8,6 +8,8 @@ import org.junit.Before
 import org.junit.Test
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import java.net.URI
 import java.util.*
 import javax.ws.rs.client.Entity
 import javax.ws.rs.core.GenericType
@@ -29,36 +31,32 @@ class NodesResourceTest {
         server!!.shutdown()
     }
 
-    @Test fun testGetNodes() {
-        val node = target!!.path("nodes").request().get(object : GenericType<List<Node>>() {
+    @Test fun testNodeResources() {
 
-        })[0]
-        println(node)
-        //assertEquals("a6d5a059-5e03-4b87-bb48-9a28a5f5d7d0", node.id)
-    }
+        assertEquals(0, target!!.path("nodes").request().get(object : GenericType<List<Node>>() {
+        }).size)
 
-    @Test fun testGetNode() {
-        val node = target!!.path("nodes/a6d5a059-5e03-4b87-bb48-9a28a5f5d7d0").request().get(object : GenericType<Node>() {
-
-        })
-        println(node)
-        //assertEquals(2, node.id.toLong())
-    }
-
-    @Test fun testCreateNode() {
         val response: Response = target!!.path("nodes").request().post(Entity.entity(Node(), MediaType.APPLICATION_JSON))
-        assertEquals(201, response.status)
-       // assertEquals(server!!.url + "nodes/a6d5a059-5e03-4b87-bb48-9a28a5f5d7d0", response.location.toString())
+        assertEquals(response.status, Response.Status.CREATED.statusCode)
+        val nodeUri: URI = response.location
+        val nodeId: UUID = response.readEntity(UUID::class.java)
+        assertNotNull(nodeUri)
 
-    }
+        val node = target!!.path("nodes/$nodeId").request().get(object : GenericType<Node>() {
+        })
 
-    @Test fun testUpdateNode() {
-        target!!.path("nodes/a6d5a059-5e03-4b87-bb48-9a28a5f5d7d0").request().put(Entity.entity(Node(UUID.fromString(
-                "a6d5a059-5e03-4b87-bb48-9a28a5f5d7d0")), MediaType.APPLICATION_JSON))
-    }
+        assertNotNull(node)
 
-    @Test fun testDeleteNode() {
-        target!!.path("nodes/a6d5a059-5e03-4b87-bb48-9a28a5f5d7d0").request().delete()
+        assertEquals(1, target!!.path("nodes").request().get(object : GenericType<List<Node>>() {
+        }).size)
+
+        target!!.path("nodes/$nodeId").request().put(Entity.entity(node, MediaType.APPLICATION_JSON))
+
+        target!!.path("nodes/$nodeId").request().delete()
+
+        assertEquals(0, target!!.path("nodes").request().get(object : GenericType<List<Node>>() {
+        }).size)
+
     }
 
 }

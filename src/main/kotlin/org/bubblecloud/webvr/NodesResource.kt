@@ -1,5 +1,7 @@
 package org.bubblecloud.webvr
 
+import logger
+import java.net.URI
 import java.util.*
 import javax.ws.rs.*
 import javax.ws.rs.core.Context
@@ -11,34 +13,58 @@ import javax.ws.rs.core.UriInfo
 @Consumes(MediaType.APPLICATION_JSON)
 @Path("nodes")
 class NodesResource {
+    val log = logger()
 
-    @POST fun createNode(node: Node, @Context uriInfo: UriInfo): Response {
+    @POST fun addNode(node: Node, @Context uriInfo: UriInfo): Response {
         val nodeId = UUID.randomUUID()
         val builder = uriInfo.absolutePathBuilder
         builder.path(nodeId.toString())
         node.id = nodeId
-        println("Created $node.")
-        return Response.created(builder.build()).build()
+        node.uri = URI.create("${uriInfo.baseUri}nodes/$nodeId")
+
+        CELL.addNode(node)
+
+        log.debug("Created $nodeId.")
+        return Response.created(builder.build()).entity(nodeId).build()
     }
 
     @Path("{nodeId}")
-    @PUT fun updateNode(@PathParam("nodeId") nodeId: UUID, node: Node): Response {
-        println("Updated $nodeId : $node.")
-        return Response.ok().build()
+    @PUT fun updateNode(@PathParam("nodeId") nodeId: UUID, node: Node, @Context uriInfo: UriInfo): Response {
+        node.id = nodeId
+        node.uri = URI.create("${uriInfo.baseUri}nodes/$nodeId")
+
+        if (CELL.updateNode(node)) {
+            log.debug("Updated $nodeId.")
+            return Response.ok().build()
+        } else {
+            log.debug("Node to update not found: $nodeId.")
+            return Response.status(Response.Status.NOT_FOUND).build()
+        }
     }
 
     @Path("{nodeId}")
-    @DELETE fun deleteNode(@PathParam("nodeId") nodeId: UUID): Response {
-        println("Deleted $nodeId.")
-        return Response.ok().build()
+    @DELETE fun deleteNode(@PathParam("nodeId") nodeId: UUID, @Context uriInfo: UriInfo): Response {
+        val nodeUri : URI = URI.create("${uriInfo.baseUri}nodes/$nodeId")
+        if (CELL.removeNode(nodeUri)) {
+            log.debug("Deleted $nodeId.")
+            return Response.ok().build()
+        } else {
+            log.debug("Node to delete not found: $nodeId.")
+            return Response.status(Response.Status.NOT_FOUND).build()
+        }
     }
 
     @Path("{nodeId}")
-    @GET fun getNode(@PathParam("nodeId") nodeId: UUID): Node {
-        return Node(nodeId)
+    @GET fun getNode(@PathParam("nodeId") nodeId: UUID, @Context uriInfo: UriInfo): Node? {
+        val nodeUri : URI = URI.create("${uriInfo.baseUri}nodes/$nodeId")
+        if (CELL.hasNode(nodeUri)) {
+            return Node(nodeId)
+        } else {
+            return null
+        }
     }
 
     @GET fun getNodes(): List<Node> {
-        return Collections.singletonList(Node(UUID.randomUUID()))
+        return CELL.getNodes()
     }
 }

@@ -22,5 +22,7 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile 'org.glassfish.jersey.containers:jersey-container-grizzly2-http:2.23.1'
     compile 'org.glassfish.jersey.media:jersey-media-json-jackson:2.23.1'
+    compile 'org.slf4j:slf4j-api:1.7.21'
+    compile 'org.slf4j:slf4j-simple:1.7.21'
     testCompile 'junit:junit:4.12'
 }
