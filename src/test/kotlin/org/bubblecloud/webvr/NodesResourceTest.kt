@@ -9,8 +9,10 @@ import org.junit.Test
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
+import java.io.FileInputStream
 import java.net.URI
 import java.util.*
+import java.util.logging.LogManager
 import javax.ws.rs.client.Entity
 import javax.ws.rs.core.GenericType
 import javax.ws.rs.core.MediaType
@@ -22,6 +24,8 @@ class NodesResourceTest {
     private var target: WebTarget? = null
 
     @Before fun setUp() {
+        LogManager.getLogManager().readConfiguration(this.javaClass.getResourceAsStream("/logging.properties"))
+
         server = RestServer()
         val c = ClientBuilder.newClient()
         target = c.target(server!!.url)
