@@ -13,31 +13,32 @@ import javax.ws.rs.core.UriInfo
 class NodesResource {
 
     @POST fun createNode(node: Node, @Context uriInfo: UriInfo): Response {
-        val nodeId = 3
+        val nodeId = UUID.randomUUID()
         val builder = uriInfo.absolutePathBuilder
         builder.path(nodeId.toString())
+        node.id = nodeId
         println("Created $node.")
         return Response.created(builder.build()).build()
     }
 
     @Path("{nodeId}")
-    @PUT fun updateNode(@PathParam("nodeId") nodeId: Int, node: Node): Response {
-        println("Updated $node.")
+    @PUT fun updateNode(@PathParam("nodeId") nodeId: UUID, node: Node): Response {
+        println("Updated $nodeId : $node.")
         return Response.ok().build()
     }
 
     @Path("{nodeId}")
-    @DELETE fun deleteNode(@PathParam("nodeId") nodeId: Int): Response {
+    @DELETE fun deleteNode(@PathParam("nodeId") nodeId: UUID): Response {
         println("Deleted $nodeId.")
         return Response.ok().build()
     }
 
     @Path("{nodeId}")
-    @GET fun getNode(@PathParam("nodeId") nodeId: Int): Node {
+    @GET fun getNode(@PathParam("nodeId") nodeId: UUID): Node {
         return Node(nodeId)
     }
 
     @GET fun getNodes(): List<Node> {
-        return Collections.singletonList(Node(1))
+        return Collections.singletonList(Node(UUID.randomUUID()))
     }
 }

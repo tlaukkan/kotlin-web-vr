@@ -1,5 +1,7 @@
 package org.bubblecloud.webvr
 
-data class Node(var id: Int = 0) {
+import java.util.*
+
+data class Node(var id: UUID = UUID.fromString("00000000-0000-0000-0000-000000000000")) {
 
 }
