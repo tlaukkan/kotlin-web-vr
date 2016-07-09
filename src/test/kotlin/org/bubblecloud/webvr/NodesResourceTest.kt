@@ -8,6 +8,10 @@ import org.junit.Before
 import org.junit.Test
 
 import org.junit.Assert.assertEquals
+import javax.ws.rs.client.Entity
+import javax.ws.rs.core.GenericEntity
+import javax.ws.rs.core.GenericType
+import javax.ws.rs.core.MediaType
 
 class NodesResourceTest {
 
@@ -25,9 +29,15 @@ class NodesResourceTest {
     }
 
     @Test fun testGetNodes() {
-        val node = target!!.path("nodes").request().get(NodeList::class.java)[0]
+        val node = target!!.path("nodes").request().get(object : GenericType<List<Node>>() {
+
+        })[0]
         println(node)
         assertEquals(1, node.id.toLong())
+    }
+
+    @Test fun testPostNodes() {
+        target!!.path("nodes").request().post(Entity.entity(listOf(Node(1)), MediaType.APPLICATION_JSON))
     }
 
 }
