@@ -1,5 +1,6 @@
 package org.bubblecloud.webvr
 
+import java.util.*
 import javax.ws.rs.GET
 import javax.ws.rs.Path
 import javax.ws.rs.Produces
@@ -16,8 +17,8 @@ class NodesResource {
      * Gets nodes.
      * @return the nodes
      */
-    @GET fun doGet(): Node {
-        return Node(1)
+    @GET fun doGet(): NodeList {
+        return NodeList(Collections.singletonList(Node(1)))
     }
 
 }

@@ -25,14 +25,9 @@ class NodesResourceTest {
     }
 
     @Test fun testGetNodes() {
-        val node = target!!.path("nodes").request().get(Node::class.java)
+        val node = target!!.path("nodes").request().get(NodeList::class.java)[0]
         println(node)
         assertEquals(1, node.id.toLong())
     }
 
-    @Test fun testGetNodes2() {
-        val node = target!!.path("nodes").request().get(Node::class.java)
-        println(node)
-        assertEquals(1, node.id.toLong())
-    }
 }
