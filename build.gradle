@@ -1,0 +1,26 @@
+group 'org.bubblcloud'
+version '1.0.0-SNAPSHOT'
+
+buildscript {
+    ext.kotlin_version = '1.0.3'
+
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+apply plugin: 'kotlin'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    compile 'org.glassfish.jersey.containers:jersey-container-grizzly2-http:2.23.1'
+    compile 'org.glassfish.jersey.media:jersey-media-json-jackson:2.23.1'
+    testCompile 'junit:junit:4.12'
+}
