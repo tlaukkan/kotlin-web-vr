@@ -58,7 +58,7 @@ class NodesResource {
     @GET fun getNode(@PathParam("nodeId") nodeId: UUID, @Context uriInfo: UriInfo): Node? {
         val nodeUri : URI = URI.create("${uriInfo.baseUri}nodes/$nodeId")
         if (CELL.hasNode(nodeUri)) {
-            return Node(nodeId)
+            return CELL.getNode(nodeUri)
         } else {
             return null
         }
