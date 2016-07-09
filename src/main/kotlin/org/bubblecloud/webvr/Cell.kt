@@ -9,7 +9,7 @@ val CELL = Cell()
  * Created by tlaukkan on 7/9/2016.
  */
 class Cell {
-    private val nodes: MutableMap<URI, Node> = HashMap<URI, Node>()
+    private val nodes: MutableMap<URI, Node> = HashMap()
 
     @Synchronized fun addNode(node: Node) : Boolean {
         if (nodes.containsKey(node.uri)) {
