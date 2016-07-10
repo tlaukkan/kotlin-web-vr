@@ -1,7 +1,8 @@
 {
   "files": [
     "src/main/resources/webapp/greet.ts",
-    "src/main/resources/webapp/main.ts"
+    "src/main/resources/webapp/main.ts",
+    "src/main/resources/webapp/WebVR.ts"
   ],
   "compilerOptions": {
     "noImplicitAny": true,

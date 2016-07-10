@@ -2089,7 +2089,7 @@ declare namespace THREE {
         corssOrigin: string;
         path: string;
 
-        load(urls: Array<string>, onLoad?: (texture: CubeTexture) => void, onProgress?: (event: any) => void, onError?: (event: any) => void): void;
+        load(urls: Array<string>, onLoad?: (texture: CubeTexture) => void, onProgress?: (event: any) => void, onError?: (event: any) => void): CubeTexture;
         setCrossOrigin(crossOrigin: string): void;
         setPath(path: string): void;
     }
@@ -2530,6 +2530,7 @@ declare namespace THREE {
         displacementScale: number;
         displacementBias: number;
         roughnessMap: Texture;
+        metalnessMap: Texture;
         metalMap: Texture;
         alphaMap: Texture;
         envMap: Texture;
