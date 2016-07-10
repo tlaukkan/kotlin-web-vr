@@ -3,8 +3,6 @@ package org.bubblecloud.webvr
 import java.net.URI
 import java.util.*
 
-val CELL = Cell()
-
 /**
  * Created by tlaukkan on 7/9/2016.
  */

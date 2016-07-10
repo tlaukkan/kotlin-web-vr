@@ -1,0 +1,10 @@
+{
+  "files": [
+    "src/main/resources/webapp/greet.ts",
+    "src/main/resources/webapp/main.ts"
+  ],
+  "compilerOptions": {
+    "noImplicitAny": true,
+    "target": "es5"
+  }
+}

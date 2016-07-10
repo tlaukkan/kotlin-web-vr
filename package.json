@@ -1,0 +1,28 @@
+{
+  "name": "kotlin-web-vr",
+  "version": "1.0.0",
+  "description": "Kotlin Web VR experiment.",
+  "main": "build/resources/main/webapp/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tlaukkan/kotlin-web-vr.git"
+  },
+  "author": "Tommi S.E. Laukkanen",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/tlaukkan/kotlin-web-vr/issues"
+  },
+  "homepage": "https://github.com/tlaukkan/kotlin-web-vr#readme",
+  "devDependencies": {
+    "browserify": "^13.0.1",
+    "gulp": "^3.9.1",
+    "gulp-typescript": "^2.13.6",
+    "gulp-util": "^3.0.7",
+    "tsify": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0",
+    "watchify": "^3.7.0"
+  }
+}
