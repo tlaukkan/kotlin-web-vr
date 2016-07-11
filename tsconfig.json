@@ -1,11 +1,7 @@
 {
-  "files": [
-    "src/main/resources/webapp/main.ts",
-    "src/main/resources/webapp/OBJLoader.ts",
-    "src/main/resources/webapp/ViveController.ts",
-    "src/main/resources/webapp/VRControls.ts",
-    "src/main/resources/webapp/VREffect.ts",
-    "src/main/resources/webapp/WebVR.ts"
+  "exclude": [
+    "node_modules",
+    "typings"
   ],
   "compilerOptions": {
     "noImplicitAny": false,

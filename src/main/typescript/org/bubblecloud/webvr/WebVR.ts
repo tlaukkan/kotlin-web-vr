@@ -1,11 +1,12 @@
-/// <reference path="../../../../typings/globals/webvr-api/index.d.ts" />
-/// <reference path="../../../../typings/globals/three/index.d.ts" />
+/// <reference path="../../../../../../typings/globals/webvr-api/index.d.ts" />
+/// <reference path="../../../../../../typings/globals/three/index.d.ts" />
 
 declare var navigator: Navigator;
 
 export class WebVR {
+
 	constructor() {
-		
+
 	}
 
 	isLatestAvailable = () => {
@@ -24,15 +25,15 @@ export class WebVR {
 
 		var message;
 
-		if ( navigator.getVRDisplays ) {
+		if (navigator.getVRDisplays) {
 
-			navigator.getVRDisplays().then( function ( displays ) {
+			navigator.getVRDisplays().then(function (displays) {
 
-				if ( displays.length === 0 ) message = 'WebVR supported, but no VRDisplays found.';
+				if (displays.length === 0) message = 'WebVR supported, but no VRDisplays found.';
 
-			} );
+			});
 
-		} else if ( navigator.getVRDevices ) {
+		} else if (navigator.getVRDevices) {
 
 			message = 'Your browser supports WebVR but not the latest version. See <a href="http://webvr.info">webvr.info</a> for more info.';
 
@@ -42,9 +43,9 @@ export class WebVR {
 
 		}
 
-		if ( message !== undefined ) {
+		if (message !== undefined) {
 
-			var container = document.createElement( 'div' );
+			var container = document.createElement('div');
 			container.style.position = 'absolute';
 			container.style.left = '0';
 			container.style.top = '0';
@@ -52,7 +53,7 @@ export class WebVR {
 			container.style.zIndex = '999';
 			container.align = 'center';
 
-			var error = document.createElement( 'div' );
+			var error = document.createElement('div');
 			error.style.fontFamily = 'sans-serif';
 			error.style.fontSize = '16px';
 			error.style.fontStyle = 'normal';
@@ -63,7 +64,7 @@ export class WebVR {
 			error.style.margin = '50px';
 			error.style.display = 'inline-block';
 			error.innerHTML = message;
-			container.appendChild( error );
+			container.appendChild(error);
 
 			return container;
 
@@ -71,9 +72,9 @@ export class WebVR {
 
 	}
 
-	getButton = ( effect ) => {
+	getButton = (effect) => {
 
-		var button = document.createElement( 'button' );
+		var button = document.createElement('button');
 		button.style.position = 'absolute';
 		button.style.left = 'calc(50% - 50px)';
 		button.style.bottom = '20px';
@@ -89,17 +90,17 @@ export class WebVR {
 		button.style.textAlign = 'center';
 		button.style.zIndex = '999';
 		button.textContent = 'ENTER VR';
-		button.onclick = function() {
+		button.onclick = function () {
 
 			effect.isPresenting ? effect.exitPresent() : effect.requestPresent();
 
 		};
 
-		window.addEventListener( 'vrdisplaypresentchange', function ( event ) {
+		window.addEventListener('vrdisplaypresentchange', function (event) {
 
 			button.textContent = effect.isPresenting ? 'EXIT VR' : 'ENTER VR';
 
-		}, false );
+		}, false);
 
 		return button;
 

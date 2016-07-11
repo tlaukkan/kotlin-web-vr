@@ -12,7 +12,7 @@ var paths = {
 var watchedBrowserify = watchify(browserify({
     basedir: '.',
     debug: true,
-    entries: ['src/main/resources/webapp/main.ts'],
+    entries: ['src/main/typescript/org/bubblecloud/webvr/main.ts'],
     cache: {},
     packageCache: {}
 }).plugin(tsify));
