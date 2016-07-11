@@ -32,10 +32,33 @@ var room;
 init();
 animate();
 
+declare var canvasLoader: any;
+
 function init() {
 
     var applicationContext: ApplicationContext = new ApplicationContext();
-    
+
+    canvasLoader.show();
+    var canvasLoaderHidden = false;
+
+    //initialize the manager to handle all loaded events (currently just works for OBJ and image files)
+    var manager = new THREE.LoadingManager();
+    manager.onProgress = function (item, loaded, total) {
+        console.log(item, loaded, total);
+        if (canvasLoaderHidden) {
+            canvasLoaderHidden = false
+            canvasLoader.show();
+        }
+    };
+    manager.onLoad = function () {
+        console.log('all items loaded');
+        canvasLoader.hide();
+        canvasLoaderHidden = true
+    };
+    manager.onError = function () {
+        console.log('there has been an error');
+    };
+
     container = document.createElement('div');
     document.body.appendChild(container);
 
@@ -96,7 +119,7 @@ function init() {
     var material = new THREE.MeshStandardMaterial();
 
     var path = 'models/obj/cerberus/';
-    var loader = new OBJLoader();
+    var loader = new OBJLoader(manager);
     loader.load(path + 'Cerberus.obj', function (group) {
 
         // var material = new THREE.MeshBasicMaterial( { wireframe: true } );
@@ -132,7 +155,7 @@ function init() {
 
     });
 
-    var cubeTextureLoader = new THREE.CubeTextureLoader();
+    var cubeTextureLoader = new THREE.CubeTextureLoader(manager);
     cubeTextureLoader.setPath('textures/cube/pisa/');
     material.envMap = cubeTextureLoader.load([
         "px.png", "nx.png",
@@ -154,7 +177,7 @@ function init() {
     applicationContext.cameraManager = cameraManager;
 
     cameraManager.standing = true;
-    
+
     // controllers
 
     var controllerManager: ControllerManager = new ControllerManager(applicationContext);
@@ -190,7 +213,7 @@ function init() {
     var loader = new OBJLoader();
     loader.load(vivePath + 'vr_controller_vive_1_5.obj', function (object:THREE.Object3D) {
 
-        var loader = new THREE.TextureLoader();
+        var loader = new THREE.TextureLoader(manager);
 
         var controller:Object3D = object.children[0];
         (<MeshBasicMaterial>controller.material).map = loader.load(vivePath + 'onepointfive_texture.png');
