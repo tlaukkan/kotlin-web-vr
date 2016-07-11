@@ -12,20 +12,23 @@ import {ControllerManager} from "./vr/ControllerManager";
 import {ApplicationContext} from "./vr/ApplicationContext";
 import {MediaManager} from "./vr/MediaManager";
 
-var webVR = new WebVR();
-
-if (webVR.isAvailable() == false) {
-    document.body.appendChild(webVR.getMessage());
-}
+var room;
 
 var context: ApplicationContext = new ApplicationContext();
-var room;
 
 init();
 load();
+
+window.addEventListener('resize', onResize, false);
+
 animateLoop();
 
 function init() {
+    var webVR = new WebVR();
+
+    if (!webVR.isAvailable()) {
+        document.body.appendChild(webVR.getMessage());
+    }
 
     var container = document.createElement('div');
     document.body.appendChild(container);
@@ -40,20 +43,16 @@ function init() {
     context.renderer.setSize(window.innerWidth, window.innerHeight);
     context.renderer.sortObjects = false;
     context.renderer = context.renderer;
-    
     context.cameraManager = new CameraManager(context.camera);
     context.controllerManager = new ControllerManager(context);
     context.controllerManager.controllerHandlers["OpenVR Gamepad"] = handleViewController;
     context.displayManager = new DisplayManager(context.renderer);
 
-
     container.appendChild(context.renderer.domElement);
 
-    if (webVR.isAvailable() === true) {
+    if (webVR.isAvailable()) {
         document.body.appendChild(webVR.getButton(context.displayManager));
     }
-
-    window.addEventListener('resize', onResize, false);
 }
 
 function load() {
