@@ -5,6 +5,9 @@ import Object3D = THREE.Object3D;
 
 declare var navigator:Navigator;
 
+/**
+ * @author mrdoob / http://mrdoob.com/
+ */
 export class ViveController extends Object3D {
 
     controllerId:number;

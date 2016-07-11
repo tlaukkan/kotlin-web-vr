@@ -2,7 +2,7 @@
 /// <reference path="../../../../../../typings/globals/three/index.d.ts" />
 
 declare var navigator:Navigator;
- 
+
 /**
  * @author dmarcos / https://github.com/dmarcos
  * @author mrdoob / http://mrdoob.com

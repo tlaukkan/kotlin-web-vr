@@ -3,6 +3,9 @@
 
 declare var navigator: Navigator;
 
+/**
+ * @author mrdoob / http://mrdoob.com/
+ */
 export class WebVR {
 
 	constructor() {

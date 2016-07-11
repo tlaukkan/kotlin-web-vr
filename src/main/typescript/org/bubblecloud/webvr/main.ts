@@ -2,6 +2,7 @@
 
 import Group = THREE.Group;
 import MeshBasicMaterial = THREE.MeshBasicMaterial;
+import Object3D = THREE.Object3D;
 
 import {OBJLoader} from "./OBJLoader";
 import {WebVR} from "./WebVR";
