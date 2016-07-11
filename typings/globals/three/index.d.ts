@@ -1475,6 +1475,8 @@ declare namespace THREE {
          */
         userData: any;
 
+        material: Material;
+
         /**
          *
          */
@@ -2019,7 +2021,7 @@ declare namespace THREE {
         itemError(url: string): void;
     }
 
-    export const DefaultLoadingManager: LoadingManager;
+    export var DefaultLoadingManager: LoadingManager;
 
     export class BufferGeometryLoader {
         constructor(manager?: LoadingManager);
@@ -2267,6 +2269,8 @@ declare namespace THREE {
          * This property is automatically set to true when instancing a new material.
          */
         needsUpdate: boolean;
+
+        shading: Shading;
 
         warpRGB: Color; // deprecated, returns a new Color intance
 
@@ -4521,6 +4525,8 @@ declare namespace THREE {
 
     export class Group extends Object3D {
         constructor();
+
+        materialLibraries: any;
     }
 
     export class LOD extends Object3D {
@@ -4570,7 +4576,7 @@ declare namespace THREE {
     export class Line extends Object3D {
         constructor(
             geometry?: Geometry | BufferGeometry,
-            material?: LineDashedMaterial | LineBasicMaterial | ShaderMaterial,
+            material?: LineDashedMaterial | LineBasicMaterial | ShaderMaterial | MultiMaterial,
             mode?: number
         );
 

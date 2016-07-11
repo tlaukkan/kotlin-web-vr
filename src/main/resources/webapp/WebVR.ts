@@ -1,13 +1,8 @@
 /// <reference path="../../../../typings/globals/webvr-api/index.d.ts" />
 
-/**
- * @author mrdoob / http://mrdoob.com
- * Based on @tojiro's vr-samples-utils.js
- */
+declare var navigator: Navigator;
 
-declare var navigator: WebVRApi.Navigator;
-
-var WEBVR = {
+export var WEBVR = {
 
 	isLatestAvailable: function () {
 

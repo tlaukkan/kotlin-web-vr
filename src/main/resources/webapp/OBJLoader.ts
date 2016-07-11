@@ -1,8 +1,9 @@
+import Material = THREE.Material;
+
 /**
  * @author mrdoob / http://mrdoob.com/
  */
-
-var OBJLoader = function ( manager? ) {
+export var OBJLoader = function ( manager? ) {
 
 	this.manager = ( manager !== undefined ) ? manager : THREE.DefaultLoadingManager;
 
@@ -675,7 +676,7 @@ OBJLoader.prototype = {
 
 				}
 
-				material.shading = sourceMaterial.smooth ? THREE.SmoothShading : THREE.FlatShading;
+				(<Material> material).shading = sourceMaterial.smooth ? THREE.SmoothShading : THREE.FlatShading;
 
 				createdMaterials.push(material);
 

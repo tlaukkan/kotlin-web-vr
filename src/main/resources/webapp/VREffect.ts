@@ -1,5 +1,6 @@
+/// <reference path="../../../../typings/globals/webvr-api/index.d.ts" />
 
-import VRDisplay = WebVRApi.VRDisplay;
+declare var navigator: Navigator;
 
 /**
  * @author dmarcos / https://github.com/dmarcos
@@ -11,7 +12,7 @@ import VRDisplay = WebVRApi.VRDisplay;
  * Chromium: https://drive.google.com/folderview?id=0BzudLt22BqGRbW9WTHMtOWMzNjQ&usp=sharing#list
  *
  */
-var VREffect = function ( renderer, onError? ) {
+export var VREffect = function ( renderer, onError? ) {
 
 	var vrHMD;
 	var isDeprecatedAPI = false;

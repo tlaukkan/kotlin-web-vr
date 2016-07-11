@@ -1,9 +1,14 @@
+/// <reference path="../../../../typings/globals/webvr-api/index.d.ts" />
+
+declare var navigator: Navigator;
+
+
 /**
  * @author dmarcos / https://github.com/dmarcos
  * @author mrdoob / http://mrdoob.com
  */
 
-var VRControls = function ( object, onError? ) {
+export var VRControls = function ( object, onError? ) {
 
 	var scope = this;
 

@@ -1,4 +1,8 @@
-var ViveController = function ( id ) {
+/// <reference path="../../../../typings/globals/webvr-api/index.d.ts" />
+
+declare var navigator: Navigator;
+
+export var ViveController = function ( id ) {
 
 	THREE.Object3D.call( this );
 
