@@ -39,8 +39,6 @@ export class MediaManager {
 
         this.objLoader = new OBJLoader(applicationContext.loadingManager);
         this.textureLoader = new THREE.TextureLoader(applicationContext.loadingManager);
-
-        canvasLoader.show();
     }
 
     loadModel(name: string, path: string, onLoad: (name: String, model:THREE.Object3D) => void) {
