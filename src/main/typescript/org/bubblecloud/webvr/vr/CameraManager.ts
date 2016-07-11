@@ -53,9 +53,9 @@ export class CameraManager {
      * @param onError the error callback
      */
 	constructor(camera: THREE.Camera, onError?: (message: string) => void) {
-		this.camera = camera
-		this.onError = onError
-
+		this.camera = camera;
+		this.onError = onError;
+        this.standing = true;
 		if (navigator.getVRDisplays) {
 
 			navigator.getVRDisplays().then(this.gotVRDevices);
