@@ -11,55 +11,26 @@ import {Controller} from "./vr/Controller";
 import {DisplayManager} from "./vr/DisplayManager";
 import {ControllerManager} from "./vr/ControllerManager";
 import {ApplicationContext} from "./vr/ApplicationContext";
+import {MediaManager} from "./vr/MediaManager";
 
 var webVR = new WebVR();
-
 if (webVR.isAvailable() == false) {
-
     document.body.appendChild(webVR.getMessage());
-
 }
 
-//
-
-var container;
 var camera, scene, renderer;
 var displayManager, cameraManager;
-var controller1, controller2;
-
 var room;
+
+var applicationContext: ApplicationContext = new ApplicationContext();
 
 init();
 animate();
 
-declare var canvasLoader: any;
 
 function init() {
 
-    var applicationContext: ApplicationContext = new ApplicationContext();
-
-    canvasLoader.show();
-    var canvasLoaderHidden = false;
-
-    //initialize the manager to handle all loaded events (currently just works for OBJ and image files)
-    var manager = new THREE.LoadingManager();
-    manager.onProgress = function (item, loaded, total) {
-        console.log(item, loaded, total);
-        if (canvasLoaderHidden) {
-            canvasLoaderHidden = false
-            canvasLoader.show();
-        }
-    };
-    manager.onLoad = function () {
-        console.log('all items loaded');
-        canvasLoader.hide();
-        canvasLoaderHidden = true
-    };
-    manager.onError = function () {
-        console.log('there has been an error');
-    };
-
-    container = document.createElement('div');
+    var container = document.createElement('div');
     document.body.appendChild(container);
 
     var info = document.createElement('div');
@@ -70,10 +41,14 @@ function init() {
     info.innerHTML = '<a href="http://threejs.org" target="_blank">three.js</a> webgl - htc vive';
     container.appendChild(info);
 
-    scene = new THREE.Scene();
-    applicationContext.scene = scene;
+    applicationContext.mediaManager = new MediaManager(applicationContext);
+    applicationContext.scene = new THREE.Scene();
+    applicationContext.camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 10);
 
-    camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 10);
+    scene = applicationContext.scene;
+    camera = applicationContext.camera;
+
+
     scene.add(camera);
 
     room = new THREE.Mesh(
@@ -116,73 +91,23 @@ function init() {
 
     }
 
-    var material = new THREE.MeshStandardMaterial();
 
-    var path = 'models/obj/cerberus/';
-    var loader = new OBJLoader(manager);
-    loader.load(path + 'Cerberus.obj', function (group) {
+    applicationContext.renderer = new THREE.WebGLRenderer({antialias: true});
+    applicationContext.renderer.setClearColor(0x101010);
+    applicationContext.renderer.setPixelRatio(window.devicePixelRatio);
+    applicationContext.renderer.setSize(window.innerWidth, window.innerHeight);
+    applicationContext.renderer.sortObjects = false;
+    container.appendChild(applicationContext.renderer.domElement);
+    renderer = applicationContext.renderer;
 
-        // var material = new THREE.MeshBasicMaterial( { wireframe: true } );
-
-        var loader = new THREE.TextureLoader();
-
-        material.roughness = 1;
-        material.metalness = 1;
-
-        material.map = loader.load(path + 'Cerberus_A.jpg');
-        material.roughnessMap = loader.load(path + 'Cerberus_R.jpg');
-        material.metalnessMap = loader.load(path + 'Cerberus_M.jpg');
-        material.normalMap = loader.load(path + 'Cerberus_N.jpg');
-
-        material.map.wrapS = THREE.RepeatWrapping;
-        material.roughnessMap.wrapS = THREE.RepeatWrapping;
-        material.metalnessMap.wrapS = THREE.RepeatWrapping;
-        material.normalMap.wrapS = THREE.RepeatWrapping;
-
-        group.traverse(function (child) {
-
-            if (child instanceof THREE.Mesh) {
-
-                child.material = material;
-
-            }
-
-        });
-
-        group.position.y = -2;
-        group.rotation.y = -Math.PI / 2;
-        room.add(group);
-
-    });
-
-    var cubeTextureLoader = new THREE.CubeTextureLoader(manager);
-    cubeTextureLoader.setPath('textures/cube/pisa/');
-    material.envMap = cubeTextureLoader.load([
-        "px.png", "nx.png",
-        "py.png", "ny.png",
-        "pz.png", "nz.png"
-    ]);
-
-    //
-
-    renderer = new THREE.WebGLRenderer({antialias: true});
-    applicationContext.renderer = renderer;
-    renderer.setClearColor(0x101010);
-    renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.sortObjects = false;
-    container.appendChild(renderer.domElement);
-
-    cameraManager = new CameraManager(camera);
-    applicationContext.cameraManager = cameraManager;
-
-    cameraManager.standing = true;
+    applicationContext.cameraManager = new CameraManager(camera);
+    applicationContext.cameraManager.standing = true;
+    cameraManager = applicationContext.cameraManager;
 
     // controllers
 
-    var controllerManager: ControllerManager = new ControllerManager(applicationContext);
-
-    controllerManager.controllerHandlers["OpenVR Gamepad"] = function (controller: Controller) {
+    applicationContext.controllerManager = new ControllerManager(applicationContext);
+    applicationContext.controllerManager.controllerHandlers["OpenVR Gamepad"] = function (controller: Controller) {
         var gamepad = controller.gamepad;
         var buttons = gamepad.buttons;
         var padTouched: boolean = false;
@@ -207,27 +132,26 @@ function init() {
             }
         }
     }
-    applicationContext.controllerManager = controllerManager;
 
     var vivePath = 'models/obj/vive-controller/';
     var loader = new OBJLoader();
     loader.load(vivePath + 'vr_controller_vive_1_5.obj', function (object:THREE.Object3D) {
 
-        var loader = new THREE.TextureLoader(manager);
+        var loader = new THREE.TextureLoader(applicationContext.loadingManager);
 
         var controller:Object3D = object.children[0];
         (<MeshBasicMaterial>controller.material).map = loader.load(vivePath + 'onepointfive_texture.png');
         (<MeshBasicMaterial>controller.material).specularMap = loader.load(vivePath + 'onepointfive_spec.png');
 
-        controllerManager.controllerModels["OpenVR Gamepad"] = object;
+        applicationContext.controllerManager.controllerModels["OpenVR Gamepad"] = object;
     });
 
-    displayManager = new DisplayManager(renderer);
-    applicationContext.displayManager = displayManager;
+    applicationContext.displayManager = new DisplayManager(renderer);
+    displayManager =  applicationContext.displayManager;
 
     if (webVR.isAvailable() === true) {
 
-        document.body.appendChild(webVR.getButton(displayManager));
+        document.body.appendChild(webVR.getButton(applicationContext.displayManager));
 
     }
 
