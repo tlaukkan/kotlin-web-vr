@@ -765,7 +765,7 @@ declare namespace THREE {
         copy(source: BufferGeometry): BufferGeometry;
 
         /**
-         * Disposes the object from memory.
+         * Disposes the camera from memory.
          * You need to call this when you want the bufferGeometry removed while the application is running.
          */
         dispose(): void;
@@ -912,7 +912,7 @@ declare namespace THREE {
      */
     export class EventDispatcher {
         /**
-         * Creates eventDispatcher object. It needs to be call with '.call' to add the functionality to an object.
+         * Creates eventDispatcher camera. It needs to be call with '.call' to add the functionality to an camera.
          */
         constructor();
 
@@ -1101,7 +1101,7 @@ declare namespace THREE {
         faceVertexUvs: Vector2[][][];
 
         /**
-         * Array of morph targets. Each morph target is a Javascript object:
+         * Array of morph targets. Each morph target is a Javascript camera:
          *
          *     { name: "targetName", vertices: [ new THREE.Vector3(), ... ] }
          *
@@ -1110,7 +1110,7 @@ declare namespace THREE {
         morphTargets: MorphTarget[];
 
         /**
-         * Array of morph normals. Morph normals have similar structure as morph targets, each normal set is a Javascript object:
+         * Array of morph normals. Morph normals have similar structure as morph targets, each normal set is a Javascript camera:
          *
          *     morphNormal = { name: "NormalName", normals: [ new THREE.Vector3(), ... ] }
          */
@@ -1246,7 +1246,7 @@ declare namespace THREE {
         copy(source: Geometry): Geometry;
 
         /**
-         * Removes The object from memory.
+         * Removes The camera from memory.
          * Don't forget to call this method when you remove an geometry because it can cuase meomory leaks.
          */
         dispose(): void;
@@ -1366,7 +1366,7 @@ declare namespace THREE {
         constructor();
 
         /**
-         * Unique number of this object instance.
+         * Unique number of this camera instance.
          */
         id: number;
 
@@ -1376,7 +1376,7 @@ declare namespace THREE {
         uuid: string;
 
         /**
-         * Optional name of the object (doesn't need to be unique).
+         * Optional name of the camera (doesn't need to be unique).
          */
         name: string;
 
@@ -1388,7 +1388,7 @@ declare namespace THREE {
         parent: Object3D;
 
         /**
-         * Array with object's children.
+         * Array with camera's children.
          */
         children: Object3D[];
 
@@ -1433,7 +1433,7 @@ declare namespace THREE {
         matrix: Matrix4;
 
         /**
-         * The global transform of the object. If the Object3d has no parent, then it's identical to the local transform.
+         * The global transform of the camera. If the Object3d has no parent, then it's identical to the local transform.
          */
         matrixWorld: Matrix4;
 
@@ -1464,14 +1464,14 @@ declare namespace THREE {
         receiveShadow: boolean;
 
         /**
-         * When this is set, it checks every frame if the object is in the frustum of the camera. Otherwise the object gets drawn every frame even if it isn't visible.
+         * When this is set, it checks every frame if the camera is in the frustum of the camera. Otherwise the camera gets drawn every frame even if it isn't visible.
          */
         frustumCulled: boolean;
 
         renderOrder: number;
 
         /**
-         * An object that can be used to store custom data about the Object3d. It should not hold references to functions as these will not be cloned.
+         * An camera that can be used to store custom data about the Object3d. It should not hold references to functions as these will not be cloned.
          */
         userData: any;
 
@@ -1509,8 +1509,8 @@ declare namespace THREE {
         setRotationFromQuaternion(q: Quaternion): void;
 
         /**
-         * Rotate an object along an axis in object space. The axis is assumed to be normalized.
-         * @param axis  A normalized vector in object space.
+         * Rotate an camera along an axis in camera space. The axis is assumed to be normalized.
+         * @param axis  A normalized vector in camera space.
          * @param angle  The angle in radians.
          */
         rotateOnAxis(axis: Vector3, angle: number): Object3D;
@@ -1534,26 +1534,26 @@ declare namespace THREE {
         rotateZ(angle: number): Object3D;
 
         /**
-         * @param axis  A normalized vector in object space.
+         * @param axis  A normalized vector in camera space.
          * @param distance  The distance to translate.
          */
         translateOnAxis(axis: Vector3, distance: number): Object3D;
         translate(distance: number, axis: Vector3): Object3D; // deprecated, use translateOnAxis(axis, distance)
 
         /**
-         * Translates object along x axis by distance.
+         * Translates camera along x axis by distance.
          * @param distance Distance.
          */
         translateX(distance: number): Object3D;
 
         /**
-         * Translates object along y axis by distance.
+         * Translates camera along y axis by distance.
          * @param distance Distance.
          */
         translateY(distance: number): Object3D;
 
         /**
-         * Translates object along z axis by distance.
+         * Translates camera along z axis by distance.
          * @param distance Distance.
          */
         translateZ(distance: number): Object3D;
@@ -1571,29 +1571,29 @@ declare namespace THREE {
         worldToLocal(vector: Vector3): Vector3;
 
         /**
-         * Rotates object to face point in space.
+         * Rotates camera to face point in space.
          * @param vector A world vector to look at.
          */
         lookAt(vector: Vector3): void;
 
         /**
-         * Adds object as child of this object.
+         * Adds camera as child of this camera.
          */
         add(object: Object3D): void;
 
         /**
-         * Removes object as child of this object.
+         * Removes camera as child of this camera.
          */
         remove(object: Object3D): void;
 
         /**
-         * Searches through the object's children and returns the first with a matching id, optionally recursive.
-         * @param id  Unique number of the object instance
+         * Searches through the camera's children and returns the first with a matching id, optionally recursive.
+         * @param id  Unique number of the camera instance
          */
         getObjectById(id: number): Object3D;
 
         /**
-         * Searches through the object's children and returns the first with a matching name, optionally recursive.
+         * Searches through the camera's children and returns the first with a matching name, optionally recursive.
          * @param name  String to match to the children's Object3d.name property.
          */
         getObjectByName(name: string): Object3D;
@@ -1620,7 +1620,7 @@ declare namespace THREE {
         updateMatrix(): void;
 
         /**
-         * Updates global transform of the object and its children.
+         * Updates global transform of the camera and its children.
          */
         updateMatrixWorld(force: boolean): void;
 
@@ -1957,7 +1957,7 @@ declare namespace THREE {
 
     /**
      * A loader for loading an image.
-     * Unlike other loaders, this one emits events instead of using predefined callbacks. So if you're interested in getting notified when things happen, you need to add listeners to the object.
+     * Unlike other loaders, this one emits events instead of using predefined callbacks. So if you're interested in getting notified when things happen, you need to add listeners to the camera.
      */
     export class ImageLoader {
         constructor(manager?: LoadingManager);
@@ -2065,7 +2065,7 @@ declare namespace THREE {
 
     /**
      * Class for loading a texture.
-     * Unlike other loaders, this one emits events instead of using predefined callbacks. So if you're interested in getting notified when things happen, you need to add listeners to the object.
+     * Unlike other loaders, this one emits events instead of using predefined callbacks. So if you're interested in getting notified when things happen, you need to add listeners to the camera.
      */
     export class TextureLoader {
         constructor(manager?: LoadingManager);
@@ -2343,7 +2343,7 @@ declare namespace THREE {
     }
 
     /**
-     * parameters is an object with one or more properties defining the material's appearance.
+     * parameters is an camera with one or more properties defining the material's appearance.
      */
     export interface MeshBasicMaterialParameters extends MaterialParameters {
         color?: number|string;
@@ -4641,7 +4641,7 @@ declare namespace THREE {
         geometry: Geometry | BufferGeometry;
 
         /**
-         * An instance of Material, defining the object's appearance. Default is a PointsMaterial with randomised colour.
+         * An instance of Material, defining the camera's appearance. Default is a PointsMaterial with randomised colour.
          */
         material: Material;
 
@@ -4778,7 +4778,7 @@ declare namespace THREE {
      */
     export class WebGLRenderer implements Renderer {
         /**
-         * parameters is an optional object with properties defining the renderer's behaviour. The constructor also accepts no parameters at all. In all cases, it will assume sane defaults when parameters are missing.
+         * parameters is an optional camera with properties defining the renderer's behaviour. The constructor also accepts no parameters at all. In all cases, it will assume sane defaults when parameters are missing.
          */
         constructor(parameters?: WebGLRendererParameters);
 
@@ -4858,7 +4858,7 @@ declare namespace THREE {
         autoScaleCubemaps: boolean;
 
         /**
-         * An object with a series of statistical information about the graphics board memory and the rendering process. Useful for debugging or just for the sake of curiosity. The object contains the following fields:
+         * An camera with a series of statistical information about the graphics board memory and the rendering process. Useful for debugging or just for the sake of curiosity. The camera contains the following fields:
          */
         info: {
             memory: {
@@ -5826,7 +5826,7 @@ declare namespace THREE {
     // Extras / Core /////////////////////////////////////////////////////////////////////
 
     /**
-     * An extensible curve object which contains methods for interpolation
+     * An extensible curve camera which contains methods for interpolation
      * class Curve&lt;T extends Vector&gt;
      */
     export class Curve<T extends Vector> {

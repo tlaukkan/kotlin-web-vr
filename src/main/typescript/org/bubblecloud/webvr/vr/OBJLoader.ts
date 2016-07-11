@@ -1,4 +1,4 @@
-/// <reference path="../../../../../../typings/globals/three/index.d.ts" />
+/// <reference path="../../../../../../../typings/globals/three/index.d.ts" />
 
 import Material = THREE.Material;
 import LoadingManager = THREE.LoadingManager;
@@ -17,7 +17,7 @@ export class OBJLoader {
     }
 
     materials = null
-
+ 
     regexp = {
         // v float float float
         vertex_pattern: /^v\s+([\d|\.|\+|\-|e|E]+)\s+([\d|\.|\+|\-|e|E]+)\s+([\d|\.|\+|\-|e|E]+)/,
@@ -79,7 +79,7 @@ export class OBJLoader {
 
             startObject: function (name, fromDeclaration?) {
 
-                // If the current object (initial from reset) is not from a g/o declaration in the parsed
+                // If the current camera (initial from reset) is not from a g/o declaration in the parsed
                 // file. We need to use it for the first parsed g/o to keep things in sync.
                 if (this.object && this.object.fromDeclaration === false) {
 
@@ -187,7 +187,7 @@ export class OBJLoader {
 
                 // Inherit previous objects material.
                 // Spec tells us that a declared material must be set to all objects until a new material is declared.
-                // If a usemtl declaration is encountered while this new object is being parsed, it will
+                // If a usemtl declaration is encountered while this new camera is being parsed, it will
                 // overwrite the inherited material. Exception being that there was already face declarations
                 // to the inherited material, then it will be preserved for proper MultiMaterial continuation.
 

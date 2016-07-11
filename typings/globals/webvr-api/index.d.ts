@@ -168,7 +168,6 @@
 
   interface Navigator {
     getVRDisplays():Promise<Array<VRDisplay>>;
-    getVRDevices():Promise<Array<any>>;
     getGamepads():Promise<Array<Gamepad>>;
     activeVRDisplays:Array<VRDisplay>;
   }

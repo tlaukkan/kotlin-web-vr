@@ -4,15 +4,15 @@ import Group = THREE.Group;
 import MeshBasicMaterial = THREE.MeshBasicMaterial;
 import Object3D = THREE.Object3D;
 
-import {OBJLoader} from "./OBJLoader";
-import {WebVR} from "./WebVR";
-import {VRControls} from "./VRControls";
-import {ViveController} from "./ViveController";
-import {VREffect} from "./VREffect";
+import {OBJLoader} from "./vr/OBJLoader";
+import {WebVR} from "./vr/WebVR";
+import {CameraController} from "./vr/CameraController";
+import {ViveController} from "./vr/ViveController";
+import {DisplayController} from "./vr/DisplayController";
 
 var webVR = new WebVR();
 
-if (webVR.isLatestAvailable() === false) {
+if (webVR.isAvailable() == false) {
 
     document.body.appendChild(webVR.getMessage());
 
@@ -144,7 +144,7 @@ function init() {
     renderer.sortObjects = false;
     container.appendChild(renderer.domElement);
 
-    controls = new VRControls(camera);
+    controls = new CameraController(camera);
     controls.standing = true;
 
     // controllers
@@ -172,7 +172,7 @@ function init() {
 
     });
 
-    effect = new VREffect(renderer);
+    effect = new DisplayController(renderer);
 
     if (webVR.isAvailable() === true) {
 

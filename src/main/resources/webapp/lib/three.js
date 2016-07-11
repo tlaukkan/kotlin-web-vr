@@ -70,7 +70,7 @@ if ( Object.assign === undefined ) {
 
 			if ( target === undefined || target === null ) {
 
-				throw new TypeError( 'Cannot convert undefined or null to object' );
+				throw new TypeError( 'Cannot convert undefined or null to camera' );
 
 			}
 
@@ -4076,8 +4076,8 @@ THREE.Box3.prototype = {
 
 	setFromObject: function () {
 
-		// Computes the world-axis-aligned bounding box of an object (including its children),
-		// accounting for both the object's, and children's, world transforms
+		// Computes the world-axis-aligned bounding box of an camera (including its children),
+		// accounting for both the camera's, and children's, world transforms
 
 		var v1 = new THREE.Vector3();
 
@@ -8583,7 +8583,7 @@ Object.assign( THREE.Object3D.prototype, THREE.EventDispatcher.prototype, {
 
 	rotateOnAxis: function () {
 
-		// rotate object on axis in object space
+		// rotate camera on axis in camera space
 		// axis is assumed to be normalized
 
 		var q1 = new THREE.Quaternion();
@@ -8638,7 +8638,7 @@ Object.assign( THREE.Object3D.prototype, THREE.EventDispatcher.prototype, {
 
 	translateOnAxis: function () {
 
-		// translate object by distance along axis in object space
+		// translate camera by distance along axis in camera space
 		// axis is assumed to be normalized
 
 		var v1 = new THREE.Vector3();
@@ -8741,7 +8741,7 @@ Object.assign( THREE.Object3D.prototype, THREE.EventDispatcher.prototype, {
 
 		if ( object === this ) {
 
-			console.error( "THREE.Object3D.add: object can't be added as a child of itself.", object );
+			console.error( "THREE.Object3D.add: camera can't be added as a child of itself.", object );
 			return this;
 
 		}
@@ -8761,7 +8761,7 @@ Object.assign( THREE.Object3D.prototype, THREE.EventDispatcher.prototype, {
 
 		} else {
 
-			console.error( "THREE.Object3D.add: object not an instance of THREE.Object3D.", object );
+			console.error( "THREE.Object3D.add: camera not an instance of THREE.Object3D.", object );
 
 		}
 
@@ -9002,7 +9002,7 @@ Object.assign( THREE.Object3D.prototype, THREE.EventDispatcher.prototype, {
 		var output = {};
 
 		// meta is a hash used to collect geometries, materials.
-		// not providing it implies that this is the root object
+		// not providing it implies that this is the root camera
 		// being serialized.
 		if ( isRootObject ) {
 
@@ -9071,7 +9071,7 @@ Object.assign( THREE.Object3D.prototype, THREE.EventDispatcher.prototype, {
 
 			for ( var i = 0; i < this.children.length; i ++ ) {
 
-				object.children.push( this.children[ i ].toJSON( meta ).object );
+				object.children.push( this.children[ i ].toJSON( meta ).camera );
 
 			}
 
@@ -11654,7 +11654,7 @@ Object.assign( THREE.BufferGeometry.prototype, THREE.EventDispatcher.prototype, 
 
 	setFromObject: function ( object ) {
 
-		// console.log( 'THREE.BufferGeometry.setFromObject(). Converting', object, this );
+		// console.log( 'THREE.BufferGeometry.setFromObject(). Converting', camera, this );
 
 		var geometry = object.geometry;
 
@@ -13551,7 +13551,7 @@ THREE.AnimationMixer = function( root ) {
 Object.assign( THREE.AnimationMixer.prototype, THREE.EventDispatcher.prototype, {
 
 	// return an action for a clip optionally using a custom root target
-	// object (this method allocates a lot of dynamic memory in case a
+	// camera (this method allocates a lot of dynamic memory in case a
 	// previously unknown clip/root combination is specified)
 	clipAction: function( clip, optionalRoot ) {
 
@@ -13695,7 +13695,7 @@ Object.assign( THREE.AnimationMixer.prototype, THREE.EventDispatcher.prototype, 
 
 	},
 
-	// return this mixer's root target object
+	// return this mixer's root target camera
 	getRoot: function() {
 
 		return this._root;
@@ -13744,7 +13744,7 @@ Object.assign( THREE.AnimationMixer.prototype, THREE.EventDispatcher.prototype, 
 
 	},
 
-	// free all resources specific to a particular root target object
+	// free all resources specific to a particular root target camera
 	uncacheRoot: function( root ) {
 
 		var rootUuid = root.uuid,
@@ -14276,14 +14276,14 @@ Object.assign( THREE.AnimationMixer.prototype, {
  * 	-	Add objects you would otherwise pass as 'root' to the
  * 		constructor or the .clipAction method of AnimationMixer.
  *
- * 	-	Instead pass this object as 'root'.
+ * 	-	Instead pass this camera as 'root'.
  *
  * 	-	You can also add and remove objects later when the mixer
  * 		is running.
  *
  * Note:
  *
- *  	Objects of this class appear as one object to the mixer,
+ *  	Objects of this class appear as one camera to the mixer,
  *  	so cache control of the individual objects must be done
  *  	on the group.
  *
@@ -14360,7 +14360,7 @@ THREE.AnimationObjectGroup.prototype = {
 
 			if ( index === undefined ) {
 
-				// unknown object -> add it to the ACTIVE region
+				// unknown camera -> add it to the ACTIVE region
 
 				index = nObjects ++;
 				indicesByUUID[ uuid ] = index;
@@ -14380,7 +14380,7 @@ THREE.AnimationObjectGroup.prototype = {
 
 				var knownObject = objects[ index ];
 
-				// move existing object to the ACTIVE region
+				// move existing camera to the ACTIVE region
 
 				var firstActiveIndex = -- nCachedObjects,
 					lastCachedObject = objects[ firstActiveIndex ];
@@ -14422,7 +14422,7 @@ THREE.AnimationObjectGroup.prototype = {
 						"detected. Clean the caches or recreate your " +
 						"infrastructure when reloading scenes..." );
 
-			} // else the object is already where we want it to be
+			} // else the camera is already where we want it to be
 
 		} // for arguments
 
@@ -14447,7 +14447,7 @@ THREE.AnimationObjectGroup.prototype = {
 
 			if ( index !== undefined && index >= nCachedObjects ) {
 
-				// move existing object into the CACHED region
+				// move existing camera into the CACHED region
 
 				var lastCachedIndex = nCachedObjects ++,
 					firstActiveObject = objects[ lastCachedIndex ];
@@ -14501,18 +14501,18 @@ THREE.AnimationObjectGroup.prototype = {
 
 				if ( index < nCachedObjects ) {
 
-					// object is cached, shrink the CACHED region
+					// camera is cached, shrink the CACHED region
 
 					var firstActiveIndex = -- nCachedObjects,
 						lastCachedObject = objects[ firstActiveIndex ],
 						lastIndex = -- nObjects,
 						lastObject = objects[ lastIndex ];
 
-					// last cached object takes this object's place
+					// last cached camera takes this camera's place
 					indicesByUUID[ lastCachedObject.uuid ] = index;
 					objects[ index ] = lastCachedObject;
 
-					// last object goes to the activated slot and pop
+					// last camera goes to the activated slot and pop
 					indicesByUUID[ lastObject.uuid ] = firstActiveIndex;
 					objects[ firstActiveIndex ] = lastObject;
 					objects.pop();
@@ -14533,7 +14533,7 @@ THREE.AnimationObjectGroup.prototype = {
 
 				} else {
 
-					// object is active, just swap with the last and pop
+					// camera is active, just swap with the last and pop
 
 					var lastIndex = -- nObjects,
 						lastObject = objects[ lastIndex ];
@@ -14555,7 +14555,7 @@ THREE.AnimationObjectGroup.prototype = {
 
 				} // cached or active
 
-			} // if object is known
+			} // if camera is known
 
 		} // for arguments
 
@@ -17195,15 +17195,15 @@ THREE.OrthographicCamera.prototype = Object.assign( Object.create( THREE.Camera.
 
 		var data = THREE.Object3D.prototype.toJSON.call( this, meta );
 
-		data.object.zoom = this.zoom;
-		data.object.left = this.left;
-		data.object.right = this.right;
-		data.object.top = this.top;
-		data.object.bottom = this.bottom;
-		data.object.near = this.near;
-		data.object.far = this.far;
+		data.camera.zoom = this.zoom;
+		data.camera.left = this.left;
+		data.camera.right = this.right;
+		data.camera.top = this.top;
+		data.camera.bottom = this.bottom;
+		data.camera.near = this.near;
+		data.camera.far = this.far;
 
-		if ( this.view !== null ) data.object.view = Object.assign( {}, this.view );
+		if ( this.view !== null ) data.camera.view = Object.assign( {}, this.view );
 
 		return data;
 
@@ -17411,19 +17411,19 @@ THREE.PerspectiveCamera.prototype = Object.assign( Object.create( THREE.Camera.p
 
 		var data = THREE.Object3D.prototype.toJSON.call( this, meta );
 
-		data.object.fov = this.fov;
-		data.object.zoom = this.zoom;
+		data.camera.fov = this.fov;
+		data.camera.zoom = this.zoom;
 
-		data.object.near = this.near;
-		data.object.far = this.far;
-		data.object.focus = this.focus;
+		data.camera.near = this.near;
+		data.camera.far = this.far;
+		data.camera.focus = this.focus;
 
-		data.object.aspect = this.aspect;
+		data.camera.aspect = this.aspect;
 
-		if ( this.view !== null ) data.object.view = Object.assign( {}, this.view );
+		if ( this.view !== null ) data.camera.view = Object.assign( {}, this.view );
 
-		data.object.filmGauge = this.filmGauge;
-		data.object.filmOffset = this.filmOffset;
+		data.camera.filmGauge = this.filmGauge;
+		data.camera.filmOffset = this.filmOffset;
 
 		return data;
 
@@ -17560,15 +17560,15 @@ THREE.Light.prototype = Object.assign( Object.create( THREE.Object3D.prototype )
 
 		var data = THREE.Object3D.prototype.toJSON.call( this, meta );
 
-		data.object.color = this.color.getHex();
-		data.object.intensity = this.intensity;
+		data.camera.color = this.color.getHex();
+		data.camera.intensity = this.intensity;
 
-		if ( this.groundColor !== undefined ) data.object.groundColor = this.groundColor.getHex();
+		if ( this.groundColor !== undefined ) data.camera.groundColor = this.groundColor.getHex();
 
-		if ( this.distance !== undefined ) data.object.distance = this.distance;
-		if ( this.angle !== undefined ) data.object.angle = this.angle;
-		if ( this.decay !== undefined ) data.object.decay = this.decay;
-		if ( this.penumbra !== undefined ) data.object.penumbra = this.penumbra;
+		if ( this.distance !== undefined ) data.camera.distance = this.distance;
+		if ( this.angle !== undefined ) data.camera.angle = this.angle;
+		if ( this.decay !== undefined ) data.camera.decay = this.decay;
+		if ( this.penumbra !== undefined ) data.camera.penumbra = this.penumbra;
 
 		return data;
 
@@ -19460,7 +19460,7 @@ Object.assign( THREE.ObjectLoader.prototype, {
 		var textures  = this.parseTextures( json.textures, images );
 		var materials = this.parseMaterials( json.materials, textures );
 
-		var object = this.parseObject( json.object, geometries, materials );
+		var object = this.parseObject( json.camera, geometries, materials );
 
 		if ( json.animations ) {
 
@@ -19999,7 +19999,7 @@ Object.assign( THREE.ObjectLoader.prototype, {
 				for ( var l = 0; l < levels.length; l ++ ) {
 
 					var level = levels[ l ];
-					var child = object.getObjectByProperty( 'uuid', level.object );
+					var child = object.getObjectByProperty( 'uuid', level.camera );
 
 					if ( child !== undefined ) {
 
@@ -23483,7 +23483,7 @@ THREE.LOD.prototype = Object.assign( Object.create( THREE.Object3D.prototype ), 
 
 			var level = levels[ i ];
 
-			this.addLevel( level.object.clone(), level.distance );
+			this.addLevel( level.camera.clone(), level.distance );
 
 		}
 
@@ -23529,7 +23529,7 @@ THREE.LOD.prototype = Object.assign( Object.create( THREE.Object3D.prototype ), 
 
 		}
 
-		return levels[ i - 1 ].object;
+		return levels[ i - 1 ].camera;
 
 	},
 
@@ -23565,14 +23565,14 @@ THREE.LOD.prototype = Object.assign( Object.create( THREE.Object3D.prototype ), 
 
 				var distance = v1.distanceTo( v2 );
 
-				levels[ 0 ].object.visible = true;
+				levels[ 0 ].camera.visible = true;
 
 				for ( var i = 1, l = levels.length; i < l; i ++ ) {
 
 					if ( distance >= levels[ i ].distance ) {
 
-						levels[ i - 1 ].object.visible = false;
-						levels[ i ].object.visible = true;
+						levels[ i - 1 ].camera.visible = false;
+						levels[ i ].camera.visible = true;
 
 					} else {
 
@@ -23584,7 +23584,7 @@ THREE.LOD.prototype = Object.assign( Object.create( THREE.Object3D.prototype ), 
 
 				for ( ; i < l; i ++ ) {
 
-					levels[ i ].object.visible = false;
+					levels[ i ].camera.visible = false;
 
 				}
 
@@ -23598,7 +23598,7 @@ THREE.LOD.prototype = Object.assign( Object.create( THREE.Object3D.prototype ), 
 
 		var data = THREE.Object3D.prototype.toJSON.call( this, meta );
 
-		data.object.levels = [];
+		data.camera.levels = [];
 
 		var levels = this.levels;
 
@@ -23606,8 +23606,8 @@ THREE.LOD.prototype = Object.assign( Object.create( THREE.Object3D.prototype ), 
 
 			var level = levels[ i ];
 
-			data.object.levels.push( {
-				object: level.object.uuid,
+			data.camera.levels.push( {
+				object: level.camera.uuid,
 				distance: level.distance
 			} );
 
@@ -25788,9 +25788,9 @@ THREE.WebGLRenderer = function ( parameters ) {
 
 	function painterSortStable ( a, b ) {
 
-		if ( a.object.renderOrder !== b.object.renderOrder ) {
+		if ( a.camera.renderOrder !== b.camera.renderOrder ) {
 
-			return a.object.renderOrder - b.object.renderOrder;
+			return a.camera.renderOrder - b.camera.renderOrder;
 
 		} else if ( a.material.id !== b.material.id ) {
 
@@ -25810,9 +25810,9 @@ THREE.WebGLRenderer = function ( parameters ) {
 
 	function reversePainterSortStable ( a, b ) {
 
-		if ( a.object.renderOrder !== b.object.renderOrder ) {
+		if ( a.camera.renderOrder !== b.camera.renderOrder ) {
 
-			return a.object.renderOrder - b.object.renderOrder;
+			return a.camera.renderOrder - b.camera.renderOrder;
 
 		} if ( a.z !== b.z ) {
 
@@ -26416,7 +26416,7 @@ THREE.WebGLRenderer = function ( parameters ) {
 						material.id === _currentMaterialId;
 
 				// we might want to call this function with some ClippingGroup
-				// object instead of the material, once it becomes feasible
+				// camera instead of the material, once it becomes feasible
 				// (#8465, #8379)
 				_clipping.setState(
 						material.clippingPlanes, material.clipShadows,
@@ -29226,7 +29226,7 @@ THREE.WebGLPrograms = function ( renderer, capabilities ) {
 
 		} else {
 
-			// default for when object is not specified
+			// default for when camera is not specified
 			// ( for example when prebuilding shader to be used with multiple objects )
 			//
 			//  - leave some extra space for other uniforms
@@ -29800,7 +29800,7 @@ THREE.WebGLShadowMap = function ( _renderer, _lights, _objects ) {
 				_projScreenMatrix.multiplyMatrices( shadowCamera.projectionMatrix, shadowCamera.matrixWorldInverse );
 				_frustum.setFromMatrix( _projScreenMatrix );
 
-				// set object matrices & frustum culling
+				// set camera matrices & frustum culling
 
 				_renderList.length = 0;
 
@@ -31701,11 +31701,11 @@ THREE.WebGLTextures = function ( _gl, extensions, state, properties, capabilitie
  *
  * .set( gl, obj, prop )
  *
- * 		sets uniform from object and property with same name than uniform
+ * 		sets uniform from camera and property with same name than uniform
  *
  * .setOptional( gl, obj, prop )
  *
- * 		like .set for an optional property of the object
+ * 		like .set for an optional property of the camera
  *
  *
  * @author tschw
@@ -32083,7 +32083,7 @@ THREE.WebGLUniforms = ( function() { // scope
 			var path = activeInfo.name,
 				pathLength = path.length;
 
-			// reset RegExp object, because of the early exit of a previous run
+			// reset RegExp camera, because of the early exit of a previous run
 			RePathPart.lastIndex = 0;
 
 			for (; ;) {
@@ -32495,7 +32495,7 @@ THREE.LensFlarePlugin = function ( renderer, flares ) {
 			size = 16 / viewport.w;
 			scale.set( size * invAspect, size );
 
-			// calc object screen position
+			// calc camera screen position
 
 			var flare = flares[ i ];
 
@@ -32555,7 +32555,7 @@ THREE.LensFlarePlugin = function ( renderer, flares ) {
 				gl.drawElements( gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0 );
 
 
-				// update object positions
+				// update camera positions
 
 				flare.positionScreen.copy( screenPosition );
 
@@ -34641,7 +34641,7 @@ THREE.ShapeUtils = {
 
 /**
  * @author zz85 / http://www.lab4games.net/zz85/blog
- * Extensible curve object
+ * Extensible curve camera
  *
  * Some common of Curve methods
  * .getPoint(t), getTangent(t)
@@ -37500,7 +37500,7 @@ THREE.EdgesGeometry.prototype.constructor = THREE.EdgesGeometry;
  *  extrudePath: <THREE.CurvePath> // 3d spline path to extrude shape along. (creates Frames if .frames aren't defined)
  *  frames: <THREE.TubeGeometry.FrenetFrames> // containing arrays of tangents, normals, binormals
  *
- *  uvGenerator: <Object> // object that provides UV generator functions
+ *  uvGenerator: <Object> // camera that provides UV generator functions
  *
  * }
  **/
@@ -38199,7 +38199,7 @@ THREE.ExtrudeGeometry.WorldUVGenerator = {
  *	curveSegments: <int>, // number of points on the curves. NOT USED AT THE MOMENT.
  *
  *	material: <int> // material index for front and back faces
- *	uvGenerator: <Object> // object that provides UV generator functions
+ *	uvGenerator: <Object> // camera that provides UV generator functions
  *
  * }
  **/
@@ -40553,7 +40553,7 @@ THREE.BoxHelper.prototype.update = ( function () {
  * @author WestLangley / http://github.com/WestLangley
  */
 
-// a helper to show the world-axis-aligned bounding box for an object
+// a helper to show the world-axis-aligned bounding box for an camera
 
 THREE.BoundingBoxHelper = function ( object, hex ) {
 
@@ -40943,17 +40943,17 @@ THREE.FaceNormalsHelper.prototype.update = ( function () {
 
 	return function update() {
 
-		this.object.updateMatrixWorld( true );
+		this.camera.updateMatrixWorld( true );
 
-		normalMatrix.getNormalMatrix( this.object.matrixWorld );
+		normalMatrix.getNormalMatrix( this.camera.matrixWorld );
 
-		var matrixWorld = this.object.matrixWorld;
+		var matrixWorld = this.camera.matrixWorld;
 
 		var position = this.geometry.attributes.position;
 
 		//
 
-		var objGeometry = this.object.geometry;
+		var objGeometry = this.camera.geometry;
 
 		var vertices = objGeometry.vertices;
 
@@ -41430,17 +41430,17 @@ THREE.VertexNormalsHelper.prototype.update = ( function () {
 
 		var keys = [ 'a', 'b', 'c' ];
 
-		this.object.updateMatrixWorld( true );
+		this.camera.updateMatrixWorld( true );
 
-		normalMatrix.getNormalMatrix( this.object.matrixWorld );
+		normalMatrix.getNormalMatrix( this.camera.matrixWorld );
 
-		var matrixWorld = this.object.matrixWorld;
+		var matrixWorld = this.camera.matrixWorld;
 
 		var position = this.geometry.attributes.position;
 
 		//
 
-		var objGeometry = this.object.geometry;
+		var objGeometry = this.camera.geometry;
 
 		if ( objGeometry instanceof THREE.Geometry ) {
 

@@ -1,5 +1,5 @@
-/// <reference path="../../../../../../typings/globals/webvr-api/index.d.ts" />
-/// <reference path="../../../../../../typings/globals/three/index.d.ts" />
+/// <reference path="../../../../../../../typings/globals/webvr-api/index.d.ts" />
+/// <reference path="../../../../../../../typings/globals/three/index.d.ts" />
 
 declare var navigator: Navigator;
 
@@ -15,10 +15,9 @@ declare var navigator: Navigator;
 */
 
 
-export class VREffect {
+export class DisplayController {
 
-    vrHMD;
-    isDeprecatedAPI = false;
+    display: VRDisplay;
     eyeTranslationL = new THREE.Vector3();
     eyeTranslationR = new THREE.Vector3();
     renderRectL;
@@ -54,11 +53,7 @@ export class VREffect {
 
             navigator.getVRDisplays().then(this.gotVRDevices);
 
-        } else if (navigator.getVRDevices) {
-            // Deprecated API.
-            navigator.getVRDevices().then(this.gotVRDevices);
         }
-
 
         if (this.canvas.requestFullscreen) {
 
@@ -99,15 +94,14 @@ export class VREffect {
 
             if ('VRDisplay' in window && devices[i] instanceof VRDisplay) {
 
-                this.vrHMD = devices[i];
-                this.isDeprecatedAPI = false;
+                this.display = devices[i];
                 break; // We keep the first we encounter
 
             }
 
         }
 
-        if (this.vrHMD === undefined) {
+        if (this.display === undefined) {
 
             if (this.onError) this.onError('HMD not available');
 
@@ -122,18 +116,10 @@ export class VREffect {
 
         if (this.isPresenting) {
 
-            var eyeParamsL = this.vrHMD.getEyeParameters('left');
+            var eyeParamsL = this.display.getEyeParameters('left');
             this.renderer.setPixelRatio(1);
 
-            if (this.isDeprecatedAPI) {
-
-                this.renderer.setSize(eyeParamsL.renderRect.width * 2, eyeParamsL.renderRect.height, false);
-
-            } else {
-
-                this.renderer.setSize(eyeParamsL.renderWidth * 2, eyeParamsL.renderHeight, false);
-
-            }
+            this.renderer.setSize(eyeParamsL.renderWidth * 2, eyeParamsL.renderHeight, false);
 
 
         } else {
@@ -146,48 +132,30 @@ export class VREffect {
     }
 
     setFullScreen = (boolean) => {
-
+        var scope = this;
         return new Promise(function (resolve, reject) {
 
-            if (this.vrHMD === undefined) {
+            if (scope.display === undefined) {
 
                 reject(new Error('No VR hardware found.'));
                 return;
 
             }
 
-            if (this.this.isPresenting === boolean) {
+            if (scope.isPresenting === boolean) {
 
                 resolve();
                 return;
 
             }
 
-            if (!this.isDeprecatedAPI) {
+            if (boolean) {
 
-                if (boolean) {
-
-                    resolve(this.vrHMD.requestPresent([{source: this.canvas}]));
-
-                } else {
-
-                    resolve(this.vrHMD.exitPresent());
-
-                }
+                resolve(scope.display.requestPresent([{source: scope.canvas}]));
 
             } else {
 
-                if (this.canvas[this.requestFullscreen]) {
-
-                    this.canvas[boolean ? this.requestFullscreen : this.exitFullscreen]({vrDisplay: this.vrHMD});
-                    resolve();
-
-                } else {
-
-                    console.error('No compatible requestFullscreen method found.');
-                    reject(new Error('No compatible requestFullscreen method found.'));
-
-                }
+                resolve(scope.display.exitPresent());
 
             }
 
@@ -198,7 +166,7 @@ export class VREffect {
     onFullscreenChange = () => {
 
         var wasPresenting = this.isPresenting;
-        this.isPresenting = this.vrHMD !== undefined && ( this.vrHMD.isPresenting || ( this.isDeprecatedAPI && document[this.fullscreenElement] instanceof HTMLElement ) );
+        this.isPresenting = this.display !== undefined && ( this.display.isPresenting || ( document[this.fullscreenElement] instanceof HTMLElement ) );
 
         if (wasPresenting === this.isPresenting) {
 
@@ -211,20 +179,11 @@ export class VREffect {
             this.rendererPixelRatio = this.renderer.getPixelRatio();
             this.rendererSize = this.renderer.getSize();
 
-            var eyeParamsL = this.vrHMD.getEyeParameters('left');
+            var eyeParamsL = this.display.getEyeParameters('left');
             var eyeWidth, eyeHeight;
 
-            if (this.isDeprecatedAPI) {
-
-                eyeWidth = eyeParamsL.renderRect.width;
-                eyeHeight = eyeParamsL.renderRect.height;
-
-            } else {
-
-                eyeWidth = eyeParamsL.renderWidth;
-                eyeHeight = eyeParamsL.renderHeight;
-
-            }
+            eyeWidth = eyeParamsL.renderWidth;
+            eyeHeight = eyeParamsL.renderHeight;
 
             this.renderer.setPixelRatio(1);
             this.renderer.setSize(eyeWidth * 2, eyeHeight, false);
@@ -253,7 +212,7 @@ export class VREffect {
 
     render = (scene, camera) => {
 
-        if (this.vrHMD && this.isPresenting) {
+        if (this.display && this.isPresenting) {
 
             var autoUpdate = scene.autoUpdate;
 
@@ -264,28 +223,17 @@ export class VREffect {
 
             }
 
-            var eyeParamsL = this.vrHMD.getEyeParameters('left');
-            var eyeParamsR = this.vrHMD.getEyeParameters('right');
+            var eyeParamsL = this.display.getEyeParameters('left');
+            var eyeParamsR = this.display.getEyeParameters('right');
 
-            if (!this.isDeprecatedAPI) {
-
-                this.eyeTranslationL.fromArray(eyeParamsL.offset);
-                this.eyeTranslationR.fromArray(eyeParamsR.offset);
-                this.eyeFOVL = eyeParamsL.fieldOfView;
-                this.eyeFOVR = eyeParamsR.fieldOfView;
-
-            } else {
-
-                this.eyeTranslationL.copy(eyeParamsL.eyeTranslation);
-                this.eyeTranslationR.copy(eyeParamsR.eyeTranslation);
-                this.eyeFOVL = eyeParamsL.recommendedFieldOfView;
-                this.eyeFOVR = eyeParamsR.recommendedFieldOfView;
-
-            }
+            this.eyeTranslationL.fromArray(Array.prototype.slice.call(eyeParamsL.offset));
+            this.eyeTranslationR.fromArray(Array.prototype.slice.call(eyeParamsR.offset));
+            this.eyeFOVL = eyeParamsL.fieldOfView;
+            this.eyeFOVR = eyeParamsR.fieldOfView;
 
             if (Array.isArray(scene)) {
 
-                console.warn('THREE.VREffect.render() no longer supports arrays. Use object.layers instead.');
+                console.warn('THREE.DisplayController.render() no longer supports arrays. Use camera.layers instead.');
                 scene = scene[0];
 
             }
@@ -330,11 +278,7 @@ export class VREffect {
 
             }
 
-            if (!this.isDeprecatedAPI) {
-
-                this.vrHMD.submitFrame();
-
-            }
+            this.display.submitFrame();
 
             return;
 

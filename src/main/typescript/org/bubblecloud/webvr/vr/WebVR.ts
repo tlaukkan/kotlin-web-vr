@@ -1,5 +1,5 @@
-/// <reference path="../../../../../../typings/globals/webvr-api/index.d.ts" />
-/// <reference path="../../../../../../typings/globals/three/index.d.ts" />
+/// <reference path="../../../../../../../typings/globals/webvr-api/index.d.ts" />
+/// <reference path="../../../../../../../typings/globals/three/index.d.ts" />
 
 declare var navigator: Navigator;
 
@@ -12,15 +12,9 @@ export class WebVR {
 
 	}
 
-	isLatestAvailable = () => {
-
-		return navigator.getVRDisplays !== undefined;
-
-	}
-
 	isAvailable = () => {
 
-		return navigator.getVRDisplays !== undefined || navigator.getVRDevices !== undefined;
+		return navigator.getVRDisplays !== undefined;
 
 	}
 
@@ -35,10 +29,6 @@ export class WebVR {
 				if (displays.length === 0) message = 'WebVR supported, but no VRDisplays found.';
 
 			});
-
-		} else if (navigator.getVRDevices) {
-
-			message = 'Your browser supports WebVR but not the latest version. See <a href="http://webvr.info">webvr.info</a> for more info.';
 
 		} else {
 
