@@ -11,7 +11,7 @@ declare var navigator:Navigator;
  * @author dmarcos / https://github.com/dmarcos
  * @author mrdoob / http://mrdoob.com
  */
-export class CameraController {
+export class CameraManager {
     /**
      * The VR display.
      */

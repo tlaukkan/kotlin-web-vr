@@ -2186,7 +2186,7 @@ declare namespace THREE {
         opacity: number;
 
         /**
-         * Defines whether this material is transparent. This has an effect on rendering, as transparent objects need an special treatment, and are rendered after the opaque (i.e. non transparent) objects. For a working example of this behaviour, check the {@link WebGLRenderer} code.
+         * Defines whether this material is transparent. This has an displayManager on rendering, as transparent objects need an special treatment, and are rendered after the opaque (i.e. non transparent) objects. For a working example of this behaviour, check the {@link WebGLRenderer} code.
          * Default is false.
          */
         transparent: boolean;
@@ -2223,7 +2223,7 @@ declare namespace THREE {
         depthTest: boolean;
 
         /**
-         * Whether rendering this material has any effect on the depth buffer. Default is true.
+         * Whether rendering this material has any displayManager on the depth buffer. Default is true.
          * When drawing 2D overlays it can be useful to disable the depth writing in order to layer several things together without creating z-index artifacts.
          */
         depthWrite: boolean;

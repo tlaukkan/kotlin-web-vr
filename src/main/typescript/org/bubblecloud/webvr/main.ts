@@ -6,9 +6,11 @@ import Object3D = THREE.Object3D;
 
 import {OBJLoader} from "./vr/OBJLoader";
 import {WebVR} from "./vr/WebVR";
-import {CameraController} from "./vr/CameraController";
-import {ViveController} from "./vr/ViveController";
-import {DisplayController} from "./vr/DisplayController";
+import {CameraManager} from "./vr/CameraManager";
+import {Controller} from "./vr/Controller";
+import {DisplayManager} from "./vr/DisplayManager";
+import {ControllerManager} from "./vr/ControllerManager";
+import {ApplicationContext} from "./vr/ApplicationContext";
 
 var webVR = new WebVR();
 
@@ -22,7 +24,7 @@ if (webVR.isAvailable() == false) {
 
 var container;
 var camera, scene, renderer;
-var effect, controls;
+var displayManager, cameraManager;
 var controller1, controller2;
 
 var room;
@@ -32,6 +34,8 @@ animate();
 
 function init() {
 
+    var applicationContext: ApplicationContext = new ApplicationContext();
+    
     container = document.createElement('div');
     document.body.appendChild(container);
 
@@ -44,6 +48,7 @@ function init() {
     container.appendChild(info);
 
     scene = new THREE.Scene();
+    applicationContext.scene = scene;
 
     camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 10);
     scene.add(camera);
@@ -138,28 +143,37 @@ function init() {
     //
 
     renderer = new THREE.WebGLRenderer({antialias: true});
+    applicationContext.renderer = renderer;
     renderer.setClearColor(0x101010);
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.sortObjects = false;
     container.appendChild(renderer.domElement);
 
-    controls = new CameraController(camera);
-    controls.standing = true;
+    cameraManager = new CameraManager(camera);
+    applicationContext.cameraManager = cameraManager;
+
+    cameraManager.standing = true;
+
 
     // controllers
 
-    controller1 = new ViveController(0);
-    controller1.standingMatrix = controls.getStandingMatrix();
+    var controllerManager: ControllerManager = new ControllerManager(applicationContext);
+    applicationContext.controllerManager = controllerManager;
+
+    /*
+    controller1 = new Controller(0);
+    controller1.standingMatrix = cameraManager.getStandingMatrix();
     scene.add(controller1);
 
-    controller2 = new ViveController(1);
-    controller2.standingMatrix = controls.getStandingMatrix();
+    controller2 = new Controller(1);
+    controller2.standingMatrix = cameraManager.getStandingMatrix();
     scene.add(controller2);
+    */
 
     var vivePath = 'models/obj/vive-controller/';
     var loader = new OBJLoader();
-    loader.load(vivePath + 'vr_controller_vive_1_5.obj', function (object:THREE.Group) {
+    loader.load(vivePath + 'vr_controller_vive_1_5.obj', function (object:THREE.Object3D) {
 
         var loader = new THREE.TextureLoader();
 
@@ -167,16 +181,19 @@ function init() {
         (<MeshBasicMaterial>controller.material).map = loader.load(vivePath + 'onepointfive_texture.png');
         (<MeshBasicMaterial>controller.material).specularMap = loader.load(vivePath + 'onepointfive_spec.png');
 
-        controller1.add(object.clone());
-        controller2.add(object.clone());
+        controllerManager.viveControllerModel = object;
+
+        //controller1.add(object.clone());
+        //controller2.add(object.clone());
 
     });
 
-    effect = new DisplayController(renderer);
+    displayManager = new DisplayManager(renderer);
+    applicationContext.displayManager = displayManager;
 
     if (webVR.isAvailable() === true) {
 
-        document.body.appendChild(webVR.getButton(effect));
+        document.body.appendChild(webVR.getButton(displayManager));
 
     }
 
@@ -191,7 +208,7 @@ function onWindowResize() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
 
-    effect.setSize(window.innerWidth, window.innerHeight);
+    displayManager.setSize(window.innerWidth, window.innerHeight);
 
 }
 
@@ -206,7 +223,7 @@ function animate() {
 
 function render() {
 
-    controls.update();
+    cameraManager.update();
 
     for (var i = 0; i < room.children.length; i++) {
 
@@ -241,6 +258,6 @@ function render() {
 
     }
 
-    effect.render(scene, camera);
+    displayManager.render(scene, camera);
 
 }

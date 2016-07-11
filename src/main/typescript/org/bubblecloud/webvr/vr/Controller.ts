@@ -11,11 +11,15 @@ declare var navigator:Navigator;
  * @author Tommi S.E. Laukkanen / https://github.com/tlaukkan
  * @author mrdoob / http://mrdoob.com/
  */
-export class ViveController extends Object3D {
+export class Controller extends Object3D {
     /**
      * The controller ID.
      */
-    controllerId:number;
+    index: number;
+    /**
+     * The controller type.
+     */
+    type: string;
     /**
      * The standaing matrix.
      * @type {THREE.Matrix4}
@@ -23,12 +27,13 @@ export class ViveController extends Object3D {
     standingMatrix = new THREE.Matrix4();
 
     /**
-     * Constructor which sets controller ID
-     * @param controllerId the controller ID
+     * Constructor which sets controller index
+     * @param index the controller index
      */
-    constructor(controllerId) {
+    constructor(index: number, type: string) {
         super();
-        this.controllerId = controllerId;
+        this.index = index;
+        this.type = type;
         this.matrixAutoUpdate = false;
         this.update();
     }
@@ -40,9 +45,9 @@ export class ViveController extends Object3D {
 
         requestAnimationFrame(this.update);
 
-        var gamepad = navigator.getGamepads()[this.controllerId];
+        var gamepad: Gamepad = navigator.getGamepads()[this.index];
 
-        if (gamepad !== undefined && gamepad.pose !== null) {
+        if (gamepad !== undefined && gamepad.id == "OpenVR Gamepad" && gamepad.pose !== null) {
 
             var pose = gamepad.pose;
 
@@ -63,3 +68,4 @@ export class ViveController extends Object3D {
     }
 
 }
+

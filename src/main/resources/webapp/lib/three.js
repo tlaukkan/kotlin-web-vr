@@ -17476,7 +17476,7 @@ Object.assign( THREE.StereoCamera.prototype, {
 				near = camera.near;
 				far = camera.far;
 
-				// Off-axis stereoscopic effect based on
+				// Off-axis stereoscopic displayManager based on
 				// http://paulbourke.net/stereographics/stereorender/
 
 				var projectionMatrix = camera.projectionMatrix.clone();

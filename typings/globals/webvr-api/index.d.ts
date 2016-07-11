@@ -21,7 +21,7 @@
 
     /**
      * An identifier for this distinct VRDisplay. Used as an
-     * association point in the Gamepad API.
+     * association point in the Controller API.
      */
     displayId:number;
 
@@ -104,7 +104,7 @@
 
     /**
      * The VRLayer provided to the VRDisplay will be captured and presented
-     * in the HMD. Calling this function has the same effect on the source
+     * in the HMD. Calling this function has the same displayManager on the source
      * canvas as any other operation that uses its source image, and canvases
      * created without preserveDrawingBuffer set to true will be cleared.
      */
@@ -168,7 +168,7 @@
 
   interface Navigator {
     getVRDisplays():Promise<Array<VRDisplay>>;
-    getGamepads():Promise<Array<Gamepad>>;
+    getGamepads(): Gamepad[];
     activeVRDisplays:Array<VRDisplay>;
   }
 

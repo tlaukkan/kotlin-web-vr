@@ -15,7 +15,7 @@ declare var navigator: Navigator;
 */
 
 
-export class DisplayController {
+export class DisplayManager {
 
     display: VRDisplay;
     eyeTranslationL = new THREE.Vector3();
@@ -131,7 +131,7 @@ export class DisplayController {
 
     }
 
-    setFullScreen = (boolean) => {
+    setPresent = (boolean) => {
         var scope = this;
         return new Promise(function (resolve, reject) {
 
@@ -200,13 +200,13 @@ export class DisplayController {
 
     requestPresent = () => {
 
-        return this.setFullScreen(true);
+        return this.setPresent(true);
 
     };
 
     exitPresent = () => {
 
-        return this.setFullScreen(false);
+        return this.setPresent(false);
 
     };
 
@@ -233,7 +233,7 @@ export class DisplayController {
 
             if (Array.isArray(scene)) {
 
-                console.warn('THREE.DisplayController.render() no longer supports arrays. Use camera.layers instead.');
+                console.warn('THREE.DisplayManager.render() no longer supports arrays. Use camera.layers instead.');
                 scene = scene[0];
 
             }
