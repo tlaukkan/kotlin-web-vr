@@ -1,4 +1,5 @@
 /// <reference path="../../../../typings/globals/webvr-api/index.d.ts" />
+/// <reference path="../../../../typings/globals/three/index.d.ts" />
 
 declare var navigator: Navigator;
 

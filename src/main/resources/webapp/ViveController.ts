@@ -1,45 +1,46 @@
 /// <reference path="../../../../typings/globals/webvr-api/index.d.ts" />
+/// <reference path="../../../../typings/globals/three/index.d.ts" />
 
+import Object3D = THREE.Object3D;
 declare var navigator: Navigator;
 
-export var ViveController = function ( id ) {
+export class ViveController extends Object3D {
 
-	THREE.Object3D.call( this );
+    controllerId: number;
+    standingMatrix = new THREE.Matrix4();
 
-	this.matrixAutoUpdate = false;
-	this.standingMatrix = new THREE.Matrix4();
+    constructor ( controllerId ) {
+        super();
+        this.controllerId = controllerId;
+        this.matrixAutoUpdate = false;
+        this.update();
+    }
 
-	var scope = this;
+    update = () =>  {
 
-	function update() {
+        requestAnimationFrame( this.update );
 
-		requestAnimationFrame( update );
+        var gamepad = navigator.getGamepads()[ this.controllerId ];
 
-		var gamepad = navigator.getGamepads()[ id ];
+        if ( gamepad !== undefined && gamepad.pose !== null ) {
 
-		if ( gamepad !== undefined && gamepad.pose !== null ) {
+            var pose = gamepad.pose;
 
-			var pose = gamepad.pose;
+            this.position.fromArray( pose.position );
+            this.quaternion.fromArray( pose.orientation );
+            this.matrix.compose( this.position, this.quaternion, this.scale );
+            this.matrix.multiplyMatrices( this.standingMatrix, this.matrix );
+            this.matrixWorldNeedsUpdate = true;
 
-			scope.position.fromArray( pose.position );
-			scope.quaternion.fromArray( pose.orientation );
-			scope.matrix.compose( scope.position, scope.quaternion, scope.scale );
-			scope.matrix.multiplyMatrices( scope.standingMatrix, scope.matrix );
-			scope.matrixWorldNeedsUpdate = true;
+            this.visible = true;
 
-			scope.visible = true;
+        } else {
 
-		} else {
+            this.visible = false;
 
-			scope.visible = false;
+        }
 
-		}
+    }
 
-	}
+}
 
-	update();
-
-};
-
-ViveController.prototype = Object.create( THREE.Object3D.prototype );
-ViveController.prototype.constructor = ViveController;

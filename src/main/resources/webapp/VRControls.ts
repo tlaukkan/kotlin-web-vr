@@ -1,4 +1,5 @@
 /// <reference path="../../../../typings/globals/webvr-api/index.d.ts" />
+/// <reference path="../../../../typings/globals/three/index.d.ts" />
 
 declare var navigator: Navigator;
 
@@ -8,151 +9,119 @@ declare var navigator: Navigator;
  * @author mrdoob / http://mrdoob.com
  */
 
-export var VRControls = function ( object, onError? ) {
+export class VRControls {
+ 
+	vrInput: VRDisplay;
+	object;
+	onError;
+	standingMatrix = new THREE.Matrix4();
+	// the Rift SDK returns the position in meters
+	// this scale factor allows the user to define how meters
+	// are converted to scene units.
 
-	var scope = this;
+	scale = 1;
 
-	var vrInput;
+	// If true will use "standing space" coordinate system where y=0 is the
+	// floor and x=0, z=0 is the center of the room.
+	standing = false;
 
-	var standingMatrix = new THREE.Matrix4();
+	// Distance from the users eyes to the floor in meters. Used when
+	// standing=true but the VRDisplay doesn't provide stageParameters.
+	userHeight = 1.6;
 
-	function gotVRDevices( devices ) {
+	constructor ( object, onError? ) {
+		this.object = object
+		this.onError = onError
+
+		if ( navigator.getVRDisplays ) {
+
+			navigator.getVRDisplays().then( this.gotVRDevices );
+
+		} else if ( navigator.getVRDevices ) {
+
+			// Deprecated API.
+			navigator.getVRDevices().then( this.gotVRDevices );
+
+		}
+
+	}
+
+	getStandingMatrix = () => {
+		return this.standingMatrix;
+	}
+
+	gotVRDevices = ( devices ) => {
 
 		for ( var i = 0; i < devices.length; i ++ ) {
 
 			if ( ( 'VRDisplay' in window && devices[ i ] instanceof VRDisplay ) ) {
-				vrInput = devices[ i ];
+				this.vrInput = devices[ i ];
 				break;  // We keep the first we encounter
 			}
 
 		}
 
-		if ( !vrInput ) {
+		if ( !this.vrInput ) {
 
-			if ( onError ) onError( 'VR input not available.' );
+			if ( this.onError ) this.onError( 'VR input not available.' );
 
 		}
 
 	}
 
-	if ( navigator.getVRDisplays ) {
+	update = () =>  {
 
-		navigator.getVRDisplays().then( gotVRDevices );
+		if ( this.vrInput ) {
 
-	} else if ( navigator.getVRDevices ) {
+			var pose = this.vrInput.getPose();
 
-		// Deprecated API.
-		navigator.getVRDevices().then( gotVRDevices );
+			if ( pose.orientation !== null ) {
 
-	}
+				this.object.quaternion.fromArray( pose.orientation );
 
-	// the Rift SDK returns the position in meters
-	// this scale factor allows the user to define how meters
-	// are converted to scene units.
+			}
 
-	this.scale = 1;
+			if ( pose.position !== null ) {
 
-	// If true will use "standing space" coordinate system where y=0 is the
-	// floor and x=0, z=0 is the center of the room.
-	this.standing = false;
-
-	// Distance from the users eyes to the floor in meters. Used when
-	// standing=true but the VRDisplay doesn't provide stageParameters.
-	this.userHeight = 1.6;
-
-	this.getStandingMatrix = function () {
-
-		return standingMatrix;
-
-	};
-
-	this.update = function () {
-
-		if ( vrInput ) {
-
-			if ( vrInput.getPose ) {
-
-				var pose = vrInput.getPose();
-
-				if ( pose.orientation !== null ) {
-
-					object.quaternion.fromArray( pose.orientation );
-
-				}
-
-				if ( pose.position !== null ) {
-
-					object.position.fromArray( pose.position );
-
-				} else {
-
-					object.position.set( 0, 0, 0 );
-
-				}
+				this.object.position.fromArray( pose.position );
 
 			} else {
 
-				// Deprecated API.
-				var state = vrInput.getState();
-
-				if ( state.orientation !== null ) {
-
-					object.quaternion.copy( state.orientation );
-
-				}
-
-				if ( state.position !== null ) {
-
-					object.position.copy( state.position );
-
-				} else {
-
-					object.position.set( 0, 0, 0 );
-
-				}
+				this.object.position.set( 0, 0, 0 );
 
 			}
 
 			if ( this.standing ) {
 
-				if ( vrInput.stageParameters ) {
+				if ( this.vrInput.stageParameters ) {
 
-					object.updateMatrix();
+					this.object.updateMatrix();
 
-					standingMatrix.fromArray(vrInput.stageParameters.sittingToStandingTransform);
-					object.applyMatrix( standingMatrix );
+					this.standingMatrix.fromArray(Array.prototype.slice.call(
+						this.vrInput.stageParameters.sittingToStandingTransform));
+					this.object.applyMatrix( this.standingMatrix );
 
 				} else {
 
-					object.position.setY( object.position.y + this.userHeight );
+					this.object.position.setY( this.object.position.y + this.userHeight );
 
 				}
 
 			}
 
-			object.position.multiplyScalar( scope.scale );
+			this.object.position.multiplyScalar( this.scale );
 
 		}
 
 	};
 
-	this.resetPose = function () {
+	resetPose = () => {
 
-		if ( vrInput ) {
+		if ( this.vrInput ) {
 
-			if ( vrInput.resetPose !== undefined ) {
+			if ( this.vrInput.resetPose !== undefined ) {
 
-				vrInput.resetPose();
-
-			} else if ( vrInput.resetSensor !== undefined ) {
-
-				// Deprecated API.
-				vrInput.resetSensor();
-
-			} else if ( vrInput.zeroSensor !== undefined ) {
-
-				// Really deprecated API.
-				vrInput.zeroSensor();
+				this.vrInput.resetPose();
 
 			}
 
@@ -160,24 +129,18 @@ export var VRControls = function ( object, onError? ) {
 
 	};
 
-	this.resetSensor = function () {
-
+	resetSensor = () => {
 		console.warn( 'THREE.VRControls: .resetSensor() is now .resetPose().' );
 		this.resetPose();
+	}
 
-	};
-
-	this.zeroSensor = function () {
-
+	zeroSensor = () =>  {
 		console.warn( 'THREE.VRControls: .zeroSensor() is now .resetPose().' );
 		this.resetPose();
+	}
 
-	};
-
-	this.dispose = function () {
-
-		vrInput = null;
-
-	};
+	dispose = () =>  {
+		this.vrInput = null;
+	}
 
 };

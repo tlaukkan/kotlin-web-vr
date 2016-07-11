@@ -124,9 +124,9 @@ function init() {
 
     } );
 
-    var loader = new THREE.CubeTextureLoader();
-    loader.setPath( 'textures/cube/pisa/' );
-    material.envMap = loader.load( [
+    var cubeTextureLoader = new THREE.CubeTextureLoader();
+    cubeTextureLoader.setPath( 'textures/cube/pisa/' );
+    material.envMap = cubeTextureLoader.load( [
         "px.png", "nx.png",
         "py.png", "ny.png",
         "pz.png", "nz.png"
