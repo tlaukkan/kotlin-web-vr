@@ -31,7 +31,7 @@ export class VREffect {
 
     // fullscreen
 
-    canvas = this.renderer.domElement;
+    canvas;
     requestFullscreen;
     exitFullscreen;
     fullscreenElement;
@@ -46,6 +46,8 @@ export class VREffect {
         this.onError = onError;
         this.rendererSize = this.renderer.getSize();
         this.rendererPixelRatio = this.renderer.getPixelRatio();
+        this.canvas = this.renderer.domElement;
+
         if ( navigator.getVRDisplays ) {
 
             navigator.getVRDisplays().then( this.gotVRDevices );

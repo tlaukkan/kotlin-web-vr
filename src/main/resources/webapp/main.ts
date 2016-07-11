@@ -1,7 +1,7 @@
 /// <reference path="../../../../typings/globals/three/index.d.ts" />
 
 import {OBJLoader} from "./OBJLoader";
-import {WEBVR} from "./WebVR";
+import {WebVR} from "./WebVR";
 import {ViveController} from "./ViveController";
 import {VREffect} from "./VREffect";
 import {VRControls} from "./VRControls";
@@ -9,9 +9,11 @@ import Group = THREE.Group;
 import Object3D = THREE.Object3D;
 import MeshBasicMaterial = THREE.MeshBasicMaterial;
 
-if ( WEBVR.isLatestAvailable() === false ) {
+var webVR = new WebVR();
 
-    document.body.appendChild( WEBVR.getMessage() );
+if ( webVR.isLatestAvailable() === false ) {
+
+    document.body.appendChild( webVR.getMessage() );
 
 }
 
@@ -171,9 +173,9 @@ function init() {
 
     effect = new VREffect( renderer );
 
-    if ( WEBVR.isAvailable() === true ) {
+    if ( webVR.isAvailable() === true ) {
 
-        document.body.appendChild( WEBVR.getButton( effect ) );
+        document.body.appendChild( webVR.getButton( effect ) );
 
     }
 

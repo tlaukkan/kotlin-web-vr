@@ -3,21 +3,24 @@
 
 declare var navigator: Navigator;
 
-export var WEBVR = {
+export class WebVR {
+	constructor() {
+		
+	}
 
-	isLatestAvailable: function () {
+	isLatestAvailable = () => {
 
 		return navigator.getVRDisplays !== undefined;
 
-	},
+	}
 
-	isAvailable: function () {
+	isAvailable = () => {
 
 		return navigator.getVRDisplays !== undefined || navigator.getVRDevices !== undefined;
 
-	},
+	}
 
-	getMessage: function () {
+	getMessage = () => {
 
 		var message;
 
@@ -66,9 +69,9 @@ export var WEBVR = {
 
 		}
 
-	},
+	}
 
-	getButton: function ( effect ) {
+	getButton = ( effect ) => {
 
 		var button = document.createElement( 'button' );
 		button.style.position = 'absolute';
