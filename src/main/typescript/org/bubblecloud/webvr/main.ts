@@ -154,22 +154,37 @@ function init() {
     applicationContext.cameraManager = cameraManager;
 
     cameraManager.standing = true;
-
-
+    
     // controllers
 
     var controllerManager: ControllerManager = new ControllerManager(applicationContext);
+
+    controllerManager.controllerHandlers["OpenVR Gamepad"] = function (controller: Controller) {
+        var gamepad = controller.gamepad;
+        var buttons = gamepad.buttons;
+        var padTouched: boolean = false;
+        for (var i = 0; i < buttons.length; i++) {
+            var button: any = <any> buttons[i];
+            if (button.pressed) {
+                console.log("Button " + i + " pressed with value: " + button.value);
+            }
+            if (button.touched) {
+                console.log("Button " + i + " touched with value: " + button.value);
+            }
+            if (i == 0 && button.touched) {
+                padTouched = true;
+            }
+        }
+
+        var axes = gamepad.axes;
+        for (var i = 0; i < axes.length; i++) {
+            var axis = axes[i];
+            if (padTouched) {
+                console.log("Axis " + i + ": " + axis);
+            }
+        }
+    }
     applicationContext.controllerManager = controllerManager;
-
-    /*
-    controller1 = new Controller(0);
-    controller1.standingMatrix = cameraManager.getStandingMatrix();
-    scene.add(controller1);
-
-    controller2 = new Controller(1);
-    controller2.standingMatrix = cameraManager.getStandingMatrix();
-    scene.add(controller2);
-    */
 
     var vivePath = 'models/obj/vive-controller/';
     var loader = new OBJLoader();
@@ -181,11 +196,7 @@ function init() {
         (<MeshBasicMaterial>controller.material).map = loader.load(vivePath + 'onepointfive_texture.png');
         (<MeshBasicMaterial>controller.material).specularMap = loader.load(vivePath + 'onepointfive_spec.png');
 
-        controllerManager.viveControllerModel = object;
-
-        //controller1.add(object.clone());
-        //controller2.add(object.clone());
-
+        controllerManager.controllerModels["OpenVR Gamepad"] = object;
     });
 
     displayManager = new DisplayManager(renderer);
@@ -197,10 +208,7 @@ function init() {
 
     }
 
-    //
-
     window.addEventListener('resize', onWindowResize, false);
-
 }
 
 function onWindowResize() {

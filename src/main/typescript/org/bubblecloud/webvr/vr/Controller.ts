@@ -21,19 +21,28 @@ export class Controller extends Object3D {
      */
     type: string;
     /**
+     * The controller handler.
+     */
+    handler: (controller: Controller) => void;
+    /**
      * The standaing matrix.
      * @type {THREE.Matrix4}
      */
     standingMatrix = new THREE.Matrix4();
+    /**
+     * The game pad.
+     */
+    gamepad: Gamepad;
 
     /**
      * Constructor which sets controller index
      * @param index the controller index
      */
-    constructor(index: number, type: string) {
+    constructor(index: number, type: string, handler: (controller: Controller) => void) {
         super();
         this.index = index;
         this.type = type;
+        this.handler = handler;
         this.matrixAutoUpdate = false;
         this.update();
     }
@@ -47,21 +56,22 @@ export class Controller extends Object3D {
 
         var gamepad: Gamepad = navigator.getGamepads()[this.index];
 
-        if (gamepad !== undefined && gamepad.id == "OpenVR Gamepad" && gamepad.pose !== null) {
+        if (gamepad !== undefined) {
 
-            var pose = gamepad.pose;
+            var pose = (<any> gamepad).pose;
 
-            this.position.fromArray(pose.position);
-            this.quaternion.fromArray(pose.orientation);
-            this.matrix.compose(this.position, this.quaternion, this.scale);
-            this.matrix.multiplyMatrices(this.standingMatrix, this.matrix);
-            this.matrixWorldNeedsUpdate = true;
+            if (pose) {
+                this.position.fromArray(pose.position);
+                this.quaternion.fromArray(pose.orientation);
+                this.matrix.compose(this.position, this.quaternion, this.scale);
+                this.matrix.multiplyMatrices(this.standingMatrix, this.matrix);
+                this.matrixWorldNeedsUpdate = true;
+
+                this.gamepad = gamepad;
+                this.handler(this);
+            }
 
             this.visible = true;
-
-        } else {
-
-            this.visible = false;
 
         }
 
