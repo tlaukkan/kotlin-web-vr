@@ -6,6 +6,7 @@ import Object3D = THREE.Object3D;
 
 import {WebVR} from "./vr/WebVR";
 import {CameraManager} from "./vr/CameraManager";
+import {SceneManager} from "./vr/SceneManager";
 import {Controller} from "./vr/Controller";
 import {DisplayManager} from "./vr/DisplayManager";
 import {ControllerManager} from "./vr/ControllerManager";
@@ -24,6 +25,14 @@ window.addEventListener('resize', onResize, false);
 animateLoop();
 
 function init() {
+    context.mediaManager = new MediaManager(context);
+    context.cameraManager = new CameraManager(context);
+    context.sceneManager = new SceneManager(context);
+    context.displayManager = new DisplayManager(context);
+    context.controllerManager = new ControllerManager(context);
+
+    context.controllerManager.controllerHandlers["OpenVR Gamepad"] = handleViveController;
+
     var webVR = new WebVR();
 
     if (!webVR.isAvailable()) {
@@ -33,26 +42,11 @@ function init() {
     var container = document.createElement('div');
     document.body.appendChild(container);
 
-    context.mediaManager = new MediaManager(context);
-    context.scene = new THREE.Scene();
-    context.camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 10);
-    context.scene.add(context.camera);
-    context.renderer = new THREE.WebGLRenderer({antialias: true});
-    context.renderer.setClearColor(0x101010);
-    context.renderer.setPixelRatio(window.devicePixelRatio);
-    context.renderer.setSize(window.innerWidth, window.innerHeight);
-    context.renderer.sortObjects = false;
-    context.renderer = context.renderer;
-    context.cameraManager = new CameraManager(context.camera);
-    context.controllerManager = new ControllerManager(context);
-    context.controllerManager.controllerHandlers["OpenVR Gamepad"] = handleViewController;
-    context.displayManager = new DisplayManager(context.renderer);
-
     container.appendChild(context.renderer.domElement);
 
     if (webVR.isAvailable()) {
         document.body.appendChild(webVR.getButton(context.displayManager));
-    }
+    } 
 }
 
 function load() {
@@ -111,7 +105,6 @@ function load() {
 function animateLoop() {
     requestAnimationFrame(animateLoop);
     
-    context.cameraManager.update();
     for (var i = 0; i < room.children.length; i++) {
 
         var cube = room.children[i];
@@ -136,6 +129,7 @@ function animateLoop() {
         cube.rotation.x += 0.01;
     }
 
+    context.cameraManager.update();
     context.displayManager.render(context.scene, context.camera);
 }
 
@@ -146,7 +140,7 @@ function onResize() {
 }
 
 
-function handleViewController(controller: Controller) {
+function handleViveController(controller: Controller) {
     var gamepad = controller.gamepad;
     var buttons = gamepad.buttons;
     var padTouched: boolean = false;

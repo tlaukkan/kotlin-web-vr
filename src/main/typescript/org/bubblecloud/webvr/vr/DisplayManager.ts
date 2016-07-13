@@ -1,6 +1,7 @@
 /// <reference path="../../../../../../../typings/globals/webvr-api/index.d.ts" />
 /// <reference path="../../../../../../../typings/globals/three/index.d.ts" />
 
+import {ApplicationContext} from "./ApplicationContext";
 declare var navigator: Navigator;
 
 /**
@@ -42,8 +43,14 @@ export class DisplayManager {
 
     onError;
 
-    constructor(renderer, onError?) {
-        this.renderer = renderer;
+    constructor(context: ApplicationContext, onError?) {
+        context.renderer = new THREE.WebGLRenderer({antialias: true});
+        context.renderer.setClearColor(0x101010);
+        context.renderer.setPixelRatio(window.devicePixelRatio);
+        context.renderer.setSize(window.innerWidth, window.innerHeight);
+        context.renderer.sortObjects = false;
+
+        this.renderer = context.renderer;
         this.onError = onError;
         this.rendererSize = this.renderer.getSize();
         this.rendererPixelRatio = this.renderer.getPixelRatio();

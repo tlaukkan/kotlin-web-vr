@@ -1,6 +1,7 @@
 /// <reference path="../../../../../../../typings/globals/webvr-api/index.d.ts" />
 /// <reference path="../../../../../../../typings/globals/three/index.d.ts" />
 
+import {ApplicationContext} from "./ApplicationContext";
 declare var navigator:Navigator;
 
 /**
@@ -49,11 +50,13 @@ export class CameraManager {
 
     /**
      * Default constructor for defining camera and error callback.
-     * @param camera the camera
+     * @param context the application context
      * @param onError the error callback
      */
-	constructor(camera: THREE.Camera, onError?: (message: string) => void) {
-		this.camera = camera;
+	constructor(context: ApplicationContext, onError?: (message: string) => void) {
+		context.camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 10);
+		
+		this.camera = context.camera;
 		this.onError = onError;
         this.standing = true;
 		if (navigator.getVRDisplays) {
