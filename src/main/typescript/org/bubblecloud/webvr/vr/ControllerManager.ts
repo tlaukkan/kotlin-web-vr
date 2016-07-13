@@ -2,7 +2,7 @@
 /// <reference path="../../../../../../../typings/globals/three/index.d.ts" />
 
 import {Controller} from "./Controller";
-import {ApplicationContext} from "./ApplicationContext";
+import {ApplicationContext} from "../ApplicationContext";
 import violet = THREE.ColorKeywords.violet;
 
 declare var navigator: Navigator;

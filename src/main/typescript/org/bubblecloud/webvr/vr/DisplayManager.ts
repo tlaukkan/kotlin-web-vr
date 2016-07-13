@@ -1,7 +1,7 @@
 /// <reference path="../../../../../../../typings/globals/webvr-api/index.d.ts" />
 /// <reference path="../../../../../../../typings/globals/three/index.d.ts" />
 
-import {ApplicationContext} from "./ApplicationContext";
+import {ApplicationContext} from "../ApplicationContext";
 declare var navigator: Navigator;
 
 /**
@@ -14,7 +14,6 @@ declare var navigator: Navigator;
 * Chromium: https://drive.google.com/folderview?id=0BzudLt22BqGRbW9WTHMtOWMzNjQ&usp=sharing#list
 *
 */
-
 
 export class DisplayManager {
 

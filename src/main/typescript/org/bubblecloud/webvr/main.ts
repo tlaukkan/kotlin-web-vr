@@ -6,12 +6,12 @@ import Object3D = THREE.Object3D;
 
 import {WebVR} from "./vr/WebVR";
 import {CameraManager} from "./vr/CameraManager";
-import {SceneManager} from "./vr/SceneManager";
+import {SceneManager} from "./scene/SceneManager";
 import {Controller} from "./vr/Controller";
 import {DisplayManager} from "./vr/DisplayManager";
 import {ControllerManager} from "./vr/ControllerManager";
-import {ApplicationContext} from "./vr/ApplicationContext";
-import {MediaManager} from "./vr/MediaManager";
+import {ApplicationContext} from "./ApplicationContext";
+import {MediaManager} from "./media/MediaManager";
 
 var room;
 

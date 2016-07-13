@@ -6,7 +6,7 @@ import Object3D = THREE.Object3D;
 declare var navigator:Navigator;
 
 /**
- * The Vive controller object.
+ * The VR controller object.
  *
  * @author Tommi S.E. Laukkanen / https://github.com/tlaukkan
  * @author mrdoob / http://mrdoob.com/

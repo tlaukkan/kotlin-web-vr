@@ -1,7 +1,7 @@
 /// <reference path="../../../../../../../typings/globals/webvr-api/index.d.ts" />
 /// <reference path="../../../../../../../typings/globals/three/index.d.ts" />
 
-import {ApplicationContext} from "./ApplicationContext";
+import {ApplicationContext} from "../ApplicationContext";
 import {OBJLoader} from "./OBJLoader";
 
 declare var canvasLoader: any;
