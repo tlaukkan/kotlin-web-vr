@@ -51,7 +51,7 @@ export class Controller extends Object3D {
      * Updates object state according controller physical state.
      */
     update = () => {
-
+        // TODO integrate this with main update loop
         requestAnimationFrame(this.update);
 
         var gamepad: Gamepad = navigator.getGamepads()[this.index];

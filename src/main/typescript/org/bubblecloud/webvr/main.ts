@@ -103,7 +103,12 @@ function load() {
 }
 
 function animateLoop() {
-    requestAnimationFrame(animateLoop);
+    //requestAnimationFrame(animateLoop);
+    if (context.displayManager.display) {
+        context.displayManager.display.requestAnimationFrame(animateLoop);
+    } else {
+        requestAnimationFrame(animateLoop);
+    }
     
     for (var i = 0; i < room.children.length; i++) {
 

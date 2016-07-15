@@ -1,5 +1,8 @@
 package org.bubblecloud.webvr
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import org.bubblecloud.webvr.model.Envelope
+import org.bubblecloud.webvr.model.Node
 import javax.ws.rs.client.ClientBuilder
 import javax.ws.rs.client.WebTarget
 
@@ -27,6 +30,8 @@ class NodesResourceTest {
         LogManager.getLogManager().readConfiguration(this.javaClass.getResourceAsStream("/logging.properties"))
 
         server = RestServer()
+        server!!.startup()
+
         val c = ClientBuilder.newClient()
         target = c.target(server!!.url)
     }
