@@ -2,9 +2,7 @@ package org.bubblecloud.webvr
 
 import logger
 import org.bubblecloud.webvr.model.Envelope
-import org.bubblecloud.webvr.model.Node
 import org.glassfish.grizzly.websockets.WebSocket
-import java.net.URI
 import java.util.*
 
 class Transmitter() {

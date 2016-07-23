@@ -12,8 +12,6 @@ class WebVrWebSocketApplication : WebSocketApplication() {
         super.onConnect(socket)
         val remoteHost = ((socket as DefaultWebSocket).upgradeRequest).remoteHost
         val remotePort = socket.upgradeRequest.remotePort
-        println(remoteHost)
-        println(remotePort)
         TRANSMITTER.addSession(Session(remoteHost, remotePort, socket))
     }
 
@@ -30,8 +28,6 @@ class WebVrWebSocketApplication : WebSocketApplication() {
     override fun onMessage(socket: WebSocket?, text: String?) {
         super.onMessage(socket, text)
         socket!!.send(text)
-        println(((socket as DefaultWebSocket).upgradeRequest).remoteHost)
-        println(((socket as DefaultWebSocket).upgradeRequest).remotePort)
     }
 
     override fun isApplicationRequest(request: HttpRequestPacket?): Boolean {

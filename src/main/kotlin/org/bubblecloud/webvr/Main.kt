@@ -5,6 +5,6 @@ val CELL = Cell()
 val TRANSMITTER = Transmitter()
 
 fun main(args : Array<String>) {
-    val serverMain = RestServer()
+    val serverMain = Server()
     serverMain.startup()
 }

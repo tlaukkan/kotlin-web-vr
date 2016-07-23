@@ -23,13 +23,13 @@ import javax.ws.rs.core.Response
 
 class NodesResourceTest {
 
-    private var server: RestServer? = null
+    private var server: Server? = null
     private var target: WebTarget? = null
 
     @Before fun setUp() {
         LogManager.getLogManager().readConfiguration(this.javaClass.getResourceAsStream("/logging.properties"))
 
-        server = RestServer()
+        server = Server()
         server!!.startup()
 
         val c = ClientBuilder.newClient()
