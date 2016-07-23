@@ -25,7 +25,7 @@ class NodesResource {
 
         CELL.addNode(node)
 
-        log.debug("Created $nodeId.")
+        log.fine("Created $nodeId.")
         return Response.created(builder.build()).entity(nodeId).build()
     }
 
@@ -35,10 +35,10 @@ class NodesResource {
         node.uri = URI.create("${uriInfo.baseUri}nodes/$nodeId")
 
         if (CELL.updateNode(node)) {
-            log.debug("Updated $nodeId.")
+            log.fine("Updated $nodeId.")
             return Response.ok().build()
         } else {
-            log.debug("Node to update not found: $nodeId.")
+            log.fine("Node to update not found: $nodeId.")
             return Response.status(Response.Status.NOT_FOUND).build()
         }
     }
@@ -47,10 +47,10 @@ class NodesResource {
     @DELETE fun deleteNode(@PathParam("nodeId") nodeId: UUID, @Context uriInfo: UriInfo): Response {
         val nodeUri : URI = URI.create("${uriInfo.baseUri}nodes/$nodeId")
         if (CELL.removeNode(nodeUri)) {
-            log.debug("Deleted $nodeId.")
+            log.fine("Deleted $nodeId.")
             return Response.ok().build()
         } else {
-            log.debug("Node to delete not found: $nodeId.")
+            log.fine("Node to delete not found: $nodeId.")
             return Response.status(Response.Status.NOT_FOUND).build()
         }
     }
