@@ -1,6 +1,5 @@
 import java.util.logging.Logger
 
-
 fun <T: Any> unwrapCompanionClass(ofClass: Class<T>): Class<*> {
     return if (ofClass.enclosingClass != null && ofClass.enclosingClass.kotlin.java == ofClass) {
         ofClass.enclosingClass

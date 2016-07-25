@@ -4,13 +4,14 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import logger
 import org.bubblecloud.webvr.model.Envelope
 import org.bubblecloud.webvr.model.Message
+import org.bubblecloud.webvr.model.Session
 import org.glassfish.grizzly.websockets.Broadcaster
 import org.glassfish.grizzly.websockets.OptimizedBroadcaster
 import org.glassfish.grizzly.websockets.WebSocket
 import java.util.*
 import java.util.logging.Level
 
-class Transmitter() {
+class Network() {
 
     private val log = logger()
 
@@ -79,6 +80,10 @@ class Transmitter() {
     @Synchronized fun broadcast(envelope: Envelope) {
         val jsonString = mapper.writeValueAsString(envelope)
         broadcaster.broadcast(sessions.keys, jsonString)
+    }
+
+    fun  getSession(socket: WebSocket?): Session? {
+        return sessions[socket]
     }
 
 

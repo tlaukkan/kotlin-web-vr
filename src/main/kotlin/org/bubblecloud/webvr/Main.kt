@@ -2,9 +2,9 @@ package org.bubblecloud.webvr
 
 val CELL = Cell()
 
-val TRANSMITTER = Transmitter()
+val NETWORK = Network()
 
 fun main(args : Array<String>) {
-    val serverMain = Server()
+    val serverMain = VrServer()
     serverMain.startup()
 }

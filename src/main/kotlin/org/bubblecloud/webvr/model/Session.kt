@@ -1,4 +1,4 @@
-package org.bubblecloud.webvr
+package org.bubblecloud.webvr.model
 
 import org.glassfish.grizzly.websockets.WebSocket
 

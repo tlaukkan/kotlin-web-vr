@@ -13,7 +13,7 @@ import javax.ws.rs.core.UriInfo
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Path("nodes")
-class NodesResource {
+class NodeRestService {
     val log = logger()
 
     @POST fun addNode(node: Node, @Context uriInfo: UriInfo): Response {

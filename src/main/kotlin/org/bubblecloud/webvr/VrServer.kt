@@ -10,28 +10,29 @@ import java.net.URI
 
 import javax.ws.rs.core.UriBuilder
 
-class Server(val url: String = "http://localhost:8080/") {
+class VrServer(val url: String = "http://localhost:8080/") {
     private val log = logger()
 
     val uri: URI = UriBuilder.fromUri(url).build()
-    val config = ResourceConfig(NodesResource::class.java)
+    val config = ResourceConfig(NodeRestService::class.java)
     val server: HttpServer = GrizzlyHttpServerFactory.createHttpServer(uri, config, false, null, false)
     val addon = WebSocketAddOn()
 
     init {
-        System.setProperty("java.util.logging.SimpleFormatter.format","%1\$tT,%1\$tN [%4\$s]%3\$s: %5\$s %6\$s %n ")
+        System.setProperty("java.util.logging.SimpleFormatter.format","%1\$tT [%4\$s] %5\$s %6\$s %n")
     }
 
     fun startup(): Unit {
-        log.info("VR server startup.")
+        log.info("VR server startup...")
         server.getListener("grizzly").registerAddOn(addon)
-        val webSocketApplication = WebVrWebSocketApplication()
-        WebSocketEngine.getEngine().register("/ws", "/echo", webSocketApplication)
+        val wsListener = WebSocketListener()
+        WebSocketEngine.getEngine().register("", "/ws", wsListener)
         server.start()
-        log.info("VR server started.")
+        log.info("VR server startup.")
     }
 
     fun shutdown(): Unit {
+        log.info("VR server shutdown...")
         server.shutdownNow()
         log.info("VR server shutdown.")
     }

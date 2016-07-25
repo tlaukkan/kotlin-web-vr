@@ -20,12 +20,12 @@ import java.util.logging.LogManager
 class WebSocketTest {
     private val log = logger()
 
-    private var server: Server? = null
+    private var server: VrServer? = null
 
     @Before fun setUp() {
         LogManager.getLogManager().readConfiguration(this.javaClass.getResourceAsStream("/logging.properties"))
 
-        server = Server()
+        server = VrServer()
         server!!.startup()
     }
 
@@ -36,7 +36,7 @@ class WebSocketTest {
     @Test fun testWebSocket() {
 
         var receivedMessages = ArrayList<String>()
-        val clientEndPoint = object: WebSocketClient(URI("ws://localhost:8080/ws/echo"), Draft_17()) {
+        val clientEndPoint = object: WebSocketClient(URI("ws://localhost:8080/ws"), Draft_17()) {
             override fun onOpen(handshake: ServerHandshake) {}
             override fun onClose(code: Int, reason: String, remote: Boolean) {}
             override fun onMessage(message: String) {
@@ -52,8 +52,9 @@ class WebSocketTest {
         val handshakeRequest = Message("handshake-request", mapOf(
                 "software" to "kotlin-web-vr",
                 "protocol-dialect" to "vr-state-synchronisation",
-                "protocol-versions" to "1.0")
+                "protocol-versions" to listOf("0.9", "1.0"))
         )
+
         val original = Envelope()
         original.messages = listOf(handshakeRequest)
         original.nodes = listOf(Node())
