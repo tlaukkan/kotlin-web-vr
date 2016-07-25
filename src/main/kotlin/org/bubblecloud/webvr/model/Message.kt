@@ -2,6 +2,7 @@ package org.bubblecloud.webvr.model
 
 import java.util.*
 
-data class Message(var properties: Map<String, Object> = TreeMap()) {
+data class Message(var type: String = "console-message",
+                   var properties: Map<String, Any> = TreeMap()) {
 
 }

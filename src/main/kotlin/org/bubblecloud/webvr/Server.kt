@@ -19,7 +19,7 @@ class Server(val url: String = "http://localhost:8080/") {
     val addon = WebSocketAddOn()
 
     init {
-        System.setProperty("java.util.logging.SimpleFormatter.format","%4\$s: %5\$s%n")
+        System.setProperty("java.util.logging.SimpleFormatter.format","%1\$tT,%1\$tN [%4\$s]%3\$s: %5\$s %6\$s %n ")
     }
 
     fun startup(): Unit {
