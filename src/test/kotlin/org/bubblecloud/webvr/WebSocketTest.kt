@@ -33,21 +33,15 @@ class WebSocketTest {
 
     @Test fun testWebSocket() {
 
+        var receivedJsonString: String? = null
         val clientEndPoint = object: WebSocketClient(URI("ws://localhost:8080/ws/echo"), Draft_17()) {
-
+            override fun onOpen(handshake: ServerHandshake) {}
+            override fun onClose(code: Int, reason: String, remote: Boolean) {}
             override fun onMessage(message: String) {
-                log.info(message)
+                receivedJsonString = message
             }
-
-            override fun onOpen(handshake: ServerHandshake) {
-            }
-
-            override fun onClose(code: Int, reason: String, remote: Boolean) {
-            }
-
             override fun onError(ex: Exception) {
                 log.log(Level.SEVERE, "WebSocket error.", ex)
-                ex.printStackTrace()
             }
         }
 
@@ -60,7 +54,11 @@ class WebSocketTest {
         val jsonString = mapper.writeValueAsString(original)
         clientEndPoint.send(jsonString)
 
-        Thread.sleep(1000)
+        while (receivedJsonString == null) {
+            Thread.sleep(100)
+        }
+
+        Assert.assertEquals(jsonString, receivedJsonString)
 
         clientEndPoint.close()
     }

@@ -27,7 +27,8 @@ class WebVrWebSocketApplication : WebSocketApplication() {
 
     override fun onMessage(socket: WebSocket?, text: String?) {
         super.onMessage(socket, text)
-        socket!!.send(text)
+        TRANSMITTER.receive(socket!!, text!!)
+        //socket!!.send(text)
     }
 
     override fun isApplicationRequest(request: HttpRequestPacket?): Boolean {
