@@ -12,6 +12,10 @@ import {DisplayManager} from "./vr/DisplayManager";
 import {ControllerManager} from "./vr/ControllerManager";
 import {ApplicationContext} from "./ApplicationContext";
 import {MediaManager} from "./media/MediaManager";
+import {Network} from "./Network";
+
+var network = new Network();
+//network.connect();
 
 var room;
 
