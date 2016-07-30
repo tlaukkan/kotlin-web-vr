@@ -15,7 +15,7 @@ import {MediaManager} from "./media/MediaManager";
 import {Network} from "./Network";
 
 var network = new Network();
-//network.connect();
+network.connect();
 
 var room;
 
@@ -101,7 +101,7 @@ function load() {
         object.userData.velocity.x = Math.random() * 0.01 - 0.005;
         object.userData.velocity.y = Math.random() * 0.01 - 0.005;
         object.userData.velocity.z = Math.random() * 0.01 - 0.005;
-
+ 
         room.add(object);
     }
 }

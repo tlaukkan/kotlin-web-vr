@@ -2,6 +2,7 @@ package org.bubblecloud.webvr
 
 import logger
 import org.glassfish.grizzly.http.server.HttpServer
+import org.glassfish.grizzly.http.server.StaticHttpHandler
 import org.glassfish.grizzly.websockets.WebSocketAddOn
 import org.glassfish.grizzly.websockets.WebSocketEngine
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory
@@ -24,9 +25,13 @@ class VrServer(val url: String = "http://localhost:8080/") {
 
     fun startup(): Unit {
         log.info("VR server startup...")
+
+        server.serverConfiguration.addHttpHandler(StaticHttpHandler("build/resources/main/webapp"))
         server.getListener("grizzly").registerAddOn(addon)
         val wsListener = WebSocketListener()
         WebSocketEngine.getEngine().register("", "/ws", wsListener)
+
+        server.getListener("grizzly").getFileCache().setEnabled(false);
         server.start()
         log.info("VR server startup.")
     }

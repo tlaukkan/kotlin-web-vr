@@ -13,7 +13,7 @@ export class Network {
 
         this.socket = new WebSocket(this.webSocketUrl);
 
-        this.socket.onopen = function() {
+        this.socket.onopen = () => {
             console.log("Socket opened: " + this.socket.url);
 
             var handshakeRequest = new Message();
@@ -30,15 +30,17 @@ export class Network {
             this.send(envelope);
         };
 
-        this.socket.onclose = function() {
+        this.socket.onclose = () =>  {
             console.log("Socket closed: " + this.socket.url);
         };
 
-        this.socket.onerror = function(event: Event) {
+        this.socket.onerror = (event: Event) => {
             console.log("Socket error: " + this.socket.url + " - " + event);
         };
 
-        this.socket.onmessage = this.onMessage;
+        this.socket.onmessage = (messageEvent: MessageEvent) => {
+            this.onMessage(messageEvent);
+        }
 
     };
 

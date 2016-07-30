@@ -17,11 +17,6 @@ var watchedBrowserify = watchify(browserify({
     packageCache: {}
 }).plugin(tsify));
 
-gulp.task("copy-html", function () {
-    return gulp.src(paths.pages)
-        .pipe(gulp.dest("build/resources/main/webapp"));
-});
-
 function bundle() {
     return watchedBrowserify
         .bundle()
@@ -29,6 +24,6 @@ function bundle() {
         .pipe(gulp.dest("build/resources/main/webapp"));
 }
 
-gulp.task("default", ["copy-html"], bundle);
+gulp.task("default", bundle);
 watchedBrowserify.on("update", bundle);
 watchedBrowserify.on("log", gutil.log);
