@@ -26,7 +26,7 @@ class VrServer(val url: String = "http://localhost:8080/") {
     fun startup(): Unit {
         log.info("VR server startup...")
 
-        server.serverConfiguration.addHttpHandler(StaticHttpHandler("build/resources/main/webapp"))
+        server.serverConfiguration.addHttpHandler(StaticHttpHandler("out/resources/main/webapp"))
         server.getListener("grizzly").registerAddOn(addon)
         val wsListener = WebSocketListener()
         WebSocketEngine.getEngine().register("", "/ws", wsListener)

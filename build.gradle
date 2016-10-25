@@ -1,3 +1,6 @@
 group 'org.bubblecloud'
 version '1.0.0-SNAPSHOT'
 
+allprojects {
+    buildDir = "${project.rootDir}/out"
+}

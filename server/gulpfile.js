@@ -21,7 +21,7 @@ function bundle() {
     return watchedBrowserify
         .bundle()
         .pipe(source('bundle.js'))
-        .pipe(gulp.dest("build/resources/main/webapp"));
+        .pipe(gulp.dest("../out/resources/main/webapp"));
 }
 
 gulp.task("default", bundle);
