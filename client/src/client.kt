@@ -15,7 +15,11 @@ fun main(args: Array<String>) {
     document.body!!.appendChild(renderer.domElement)
 
     var geometry = BoxGeometry(1, 1, 1)
-    var material = MeshBasicMaterial(mapOf("color" to 0x00ff00))
+
+    var material = MeshBasicMaterial(object {
+        var color: Int = 0xffff00
+    })
+
     var cube = Mesh(geometry, material)
     scene.add(cube)
 
