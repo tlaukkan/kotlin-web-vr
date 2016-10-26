@@ -96,3 +96,5 @@ interface Gamepad {
 }
 
 
+@native
+val navigator: Navigator = noImpl
