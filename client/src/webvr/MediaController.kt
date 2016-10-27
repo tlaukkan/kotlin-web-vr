@@ -13,14 +13,14 @@ class MediaController {
     val objLoader = OBJLoader()
     val textureLoader = TextureLoader()
 
-    fun loadModel(name: String, path: String, onLoad: (name: String, model:Object3D) -> Unit) {
+    fun loadModel(path: String, onLoad: (path: String, model:Object3D) -> Unit) {
         this.objLoader.load(path, { obj ->
-            this.models[name] = obj
-            onLoad(name, obj)
+            this.models[path] = obj
+            onLoad(path, obj)
         })
     }
 
-    fun loadTexture(path: String, onLoad: (name: String, texture:Texture) -> Unit) {
+    fun loadTexture(path: String, onLoad: (path: String, texture:Texture) -> Unit) {
         return this.textureLoader.load(path, { texture ->
             this.textures[path] = texture
             onLoad(path, texture)

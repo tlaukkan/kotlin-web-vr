@@ -17,7 +17,7 @@ import kotlin.browser.window
 import kotlin.dom.addClass
 import kotlin.dom.onClick
 
-class DisplayController(virtualRealityController: VirtualRealityController, graphicsController: GraphicsController) {
+class DisplayController(displayDeviceController: DisplayDeviceController, renderer: Renderer) {
 
     var eyeTranslationL = Vector3()
     var eyeTranslationR = Vector3()
@@ -45,12 +45,12 @@ class DisplayController(virtualRealityController: VirtualRealityController, grap
     init {
         addEnterVrButton()
 
-        display = virtualRealityController.display!!
-        renderer = graphicsController.renderer
-        camera = graphicsController.camera
+        display = displayDeviceController.display!!
+        this.renderer = renderer.renderer
+        camera = renderer.camera
 
-        scene = graphicsController.scene
-        canvas = renderer.domElement
+        scene = renderer.scene
+        canvas = this.renderer.domElement
 
         rendererWidth = window.innerWidth
         rendererHeight = window.innerHeight
@@ -141,25 +141,20 @@ class DisplayController(virtualRealityController: VirtualRealityController, grap
 
     fun render(scene: Scene, camera: PerspectiveCamera) {
 
-        var pose = this.display.getPose();
-
-        if (pose.orientation !== null) {
-            this.camera.quaternion.fromArray(floatsToDoubles(pose.orientation).toTypedArray())
-            //this.camera.quaternion.fromArray(Array.prototype.slice.call(pose.orientation));
-        }
+        var pose = this.display.getPose()
 
         if (pose.position !== null) {
             this.camera.position.fromArray(floatsToDoubles(pose.position).toTypedArray())
-            //this.camera.position.fromArray(Array.prototype.slice.call(pose.position));
-        } else {
-            this.camera.position = Vector3(0.0, 0.0, 0.0)
-            //this.camera.position.set(0, 0, 0);
+            this.camera.quaternion.fromArray(floatsToDoubles(pose.orientation).toTypedArray())
+            this.camera.updateMatrix()
+
+            this.standingMatrix.fromArray(floatsToDoubles(this.display.stageParameters.sittingToStandingTransform).toTypedArray())
+            this.camera.applyMatrix(this.standingMatrix)
+
+            this.camera.position.multiplyScalar(this.scale)
         }
 
-        this.camera.updateMatrix()
 
-        this.standingMatrix.fromArray(floatsToDoubles(this.display.stageParameters.sittingToStandingTransform).toTypedArray())
-        this.camera.applyMatrix(this.standingMatrix)
 
         /*if (this.standing) {
 
@@ -179,7 +174,7 @@ class DisplayController(virtualRealityController: VirtualRealityController, grap
 
         }*/
 
-        this.camera.position.multiplyScalar(this.scale)
+
 
 
 

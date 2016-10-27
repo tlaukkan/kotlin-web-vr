@@ -8,12 +8,13 @@ import kotlin.browser.window
 /**
  * Created by tlaukkan on 10/26/2016.
  */
-class GraphicsController {
+class Renderer {
 
     val scene: Scene
     val renderer: WebGLRenderer
     val camera: PerspectiveCamera
     val cube: Mesh
+
     init {
         scene = Scene()
         camera = PerspectiveCamera(75.0, window.innerWidth / window.innerHeight, 0.1, 1000.0)

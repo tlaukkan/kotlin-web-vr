@@ -12,7 +12,7 @@ import kotlin.dom.onClick
 /**
  * Created by tlaukkan on 10/26/2016.
  */
-class VirtualRealityController {
+class DisplayDeviceController {
 
     var display: VRDisplay? = null
 

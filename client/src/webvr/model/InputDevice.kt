@@ -14,7 +14,7 @@ import kotlin.browser.window
  * @author Tommi S.E. Laukkanen / https://github.com/tlaukkan
  * @author mrdoob / http://mrdoob.com/
  */
-class Controller (index: Int, type: String, handler: (controller: Controller) -> Unit) : Object3D() {
+class InputDevice(index: Int, type: String, handler: (controller: InputDevice) -> Unit) : Object3D() {
     /**
      * The controller ID.
      */

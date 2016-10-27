@@ -2,38 +2,38 @@ import threejs.MeshBasicMaterial
 import threejs.MeshPhongMaterial
 import threejs.Object3D
 import webvr.*
-import webvr.model.Controller
+import webvr.model.InputDevice
 import kotlin.browser.window
 
 fun main(args: Array<String>) {
     println("VR client startup...")
 
-    val virtualRealityController = VirtualRealityController()
+    val displayDeviceController = DisplayDeviceController()
 
-    virtualRealityController.startup({
-        val graphicsController = GraphicsController()
-        val displayController = DisplayController(virtualRealityController, graphicsController)
-        val controllerController = ControllerController(displayController)
+    displayDeviceController.startup({
+        val renderer = Renderer()
+        val displayController = DisplayController(displayDeviceController, renderer)
+        val inputDeviceController = InputDeviceController(displayController)
         val mediaController = MediaController()
-        controllerController.controllerHandlers["OpenVR Gamepad"] = ::handleViveController
+        val inputController = InputController(inputDeviceController)
 
         var vivePath = "models/obj/vive-controller/"
-        mediaController.loadModel("OpenVR Gamepad", vivePath + "vr_controller_vive_1_5.obj", { name, model ->
-            var controller: Object3D = model.children[0]
+        mediaController.loadModel(vivePath + "vr_controller_vive_1_5.obj", { path, model ->
+            var inputDeviceModel: Object3D = model.children[0]
 
-            mediaController.loadTexture(vivePath + "onepointfive_texture.png", { name, texture ->
-                (controller.material as MeshPhongMaterial).map = texture
+            mediaController.loadTexture(vivePath + "onepointfive_texture.png", { path, texture ->
+                (inputDeviceModel.material as MeshPhongMaterial).map = texture
             })
-            mediaController.loadTexture(vivePath + "onepointfive_spec.png", { name, texture ->
-                (controller.material as MeshPhongMaterial).specularMap = texture
+            mediaController.loadTexture(vivePath + "onepointfive_spec.png", { path, texture ->
+                (inputDeviceModel.material as MeshPhongMaterial).specularMap = texture
             })
 
-            controllerController.controllerModels["OpenVR Gamepad"] = model
+            inputDeviceController.inputDeviceModels["OpenVR Gamepad"] = model
         })
 
         fun render(time: Double) : Unit {
-            graphicsController.render(time)
-            displayController.render(graphicsController.scene, graphicsController.camera)
+            renderer.render(time)
+            displayController.render(renderer.scene, renderer.camera)
             window.requestAnimationFrame(::render)
         }
         render(1.0)
@@ -43,27 +43,3 @@ fun main(args: Array<String>) {
     })
 }
 
-fun handleViveController(controller: Controller) {
-    var gamepad = controller.gamepad!!
-    var padTouched: Boolean = false
-    for (button in gamepad.buttons) {
-        var i = gamepad.buttons.indexOf(button)
-        if (button.pressed) {
-            console.log("Button $i pressed with value: ${button.value}")
-        }
-        if (button.touched) {
-            console.log("Button $i touched with value: ${button.value}")
-        }
-        if (i == 0 && button.touched) {
-            padTouched = true
-        }
-    }
-
-    var axes = gamepad.axes
-    for (axis in axes) {
-        var i = axes.indexOf(axis)
-        if (padTouched) {
-            console.log("Axis $i: $axis")
-        }
-    }
-}

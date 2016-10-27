@@ -1,18 +1,18 @@
 package webvr
 
 import threejs.Object3D
-import webvr.model.Controller
+import webvr.model.InputDevice
 import webvrapi.Gamepad
 import webvrapi.getGamepads
 import webvrapi.navigator
 import kotlin.browser.window
 
-class ControllerController(displayController: DisplayController) {
+class InputDeviceController(displayController: DisplayController) {
 
     val displayController = displayController
-    var controllers: MutableMap<Int, Controller> = mutableMapOf()
-    var controllerModels: MutableMap<String, Object3D> = mutableMapOf()
-    var controllerHandlers: MutableMap<String, (controller: Controller) -> Unit> = mutableMapOf()
+    var inputDevices: MutableMap<Int, InputDevice> = mutableMapOf()
+    var inputDeviceModels: MutableMap<String, Object3D> = mutableMapOf()
+    var inputDeviceHandlers: MutableMap<String, (controller: InputDevice) -> Unit> = mutableMapOf()
 
     init {
         this.update()
@@ -29,38 +29,38 @@ class ControllerController(displayController: DisplayController) {
             //println("Got gamepad: " + gamepad.id)
             //println("Got connected: " + gamepad.connected)
             //println("Got pose: " + gamepad.pose);
-            if (gamepad != null && gamepad.connected && gamepad.pose != null && this.controllerHandlers[gamepad.id] != null && this.controllers[gamepad.index] == null) {
-                var controller: Controller = Controller(gamepad.index, gamepad.id, this.controllerHandlers[gamepad.id]!!)
+            if (gamepad != null && gamepad.connected && gamepad.pose != null && this.inputDeviceHandlers[gamepad.id] != null && this.inputDevices[gamepad.index] == null) {
+                var controller: InputDevice = InputDevice(gamepad.index, gamepad.id, this.inputDeviceHandlers[gamepad.id]!!)
                 controller.standingMatrix = displayController.standingMatrix
 
-                this.controllers[gamepad.index] = controller
-                console.log("Controller added: " + gamepad.index + ":" + gamepad.id)
+                this.inputDevices[gamepad.index] = controller
+                console.log("InputDevice added: " + gamepad.index + ":" + gamepad.id)
                 console.log("Buttons: " + gamepad.buttons.size)
                 console.log("Axes: " + gamepad.axes.size)
             }
         }
 
-        for (index in controllers.keys) {
-            var controller = controllers[index]!!
+        for (index in inputDevices.keys) {
+            var controller = inputDevices[index]!!
             var gamepad: Gamepad = navigator.getGamepads()[controller.index]
 
             // Delete controller if gamepad does not exist or is of different type.
             if (gamepad == null || (gamepad.id != controller.type || !gamepad.connected || gamepad.pose == null) ) {
 
                 displayController.scene.remove(controller)
-                controllers.remove(index)
-                println("Controller removed: " + gamepad.index + ":" + gamepad.id)
+                inputDevices.remove(index)
+                println("InputDevice removed: " + gamepad.index + ":" + gamepad.id)
                 continue
             }
 
             // If model has not been set then attempt to set it.
             if (controller.children.size == 0) {
                 // Detect gamepad type and apply appropriate model.
-                if (controllerModels[gamepad.id] != null) {
-                    controller.add(this.controllerModels[gamepad.id]!!.clone(true))
+                if (inputDeviceModels[gamepad.id] != null) {
+                    controller.add(this.inputDeviceModels[gamepad.id]!!.clone(true))
 
                     displayController.scene.add(controller)
-                    console.log("Controller model set and added to scene: " + gamepad.index + ":" + gamepad.id)
+                    console.log("InputDevice model set and added to scene: " + gamepad.index + ":" + gamepad.id)
                 }
             }
         }
