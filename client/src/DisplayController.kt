@@ -75,9 +75,18 @@ class DisplayController(virtualRealityController: VirtualRealityController, grap
             val vrLayer = object {
                 var source = canvas
             }
-            display.requestPresent(arrayOf(vrLayer))
+            println("Starting to present VR...")
+            display.requestPresent(arrayOf(vrLayer)).catch { error ->
+                println("Failed to start presenting VR: $error")
+            }.then {
+                println("Started presenting VR.")
+            }
         } else {
-            display.exitPresent()
+            display.exitPresent().catch { error ->
+                println("Failed to stop presenting VR: $error")
+            }. then {
+                println("Stopped presenting VR.")
+            }
         }
     }
 
@@ -115,6 +124,9 @@ class DisplayController(virtualRealityController: VirtualRealityController, grap
     }
 
     fun render(scene: Scene, camera: PerspectiveCamera) {
+
+
+
 
         if (isPresenting) {
 
@@ -182,7 +194,7 @@ class DisplayController(virtualRealityController: VirtualRealityController, grap
 
             }
 
-            this.display.submitFrame()
+            this.display.submitFrame(display.getPose())
 
         } else {
             // Regular render mode if not HMD
