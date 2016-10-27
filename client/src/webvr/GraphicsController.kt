@@ -35,6 +35,12 @@ class GraphicsController {
         cube = Mesh(geometry, material)
         scene.add(cube)
 
+        //scene.add(HemisphereLight(0x404020, 0x202040, 0.5))
+
+        var light = DirectionalLight(0xffffff)
+        light.position.set(1.0, 1.0, 1.0)
+        scene.add(light)
+
         camera.position.z = 5.0
     }
 

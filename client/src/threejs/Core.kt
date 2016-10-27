@@ -95,5 +95,5 @@ open class Object3D(
 
   @native fun applyMatrix(matrix: Matrix4): Unit = noImpl
 
-  @native fun clone(recursive: Boolean): Object3D = noImpl
+  @native open fun clone(recursive: Boolean): Object3D = noImpl
 }

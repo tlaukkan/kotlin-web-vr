@@ -31,3 +31,13 @@ class DirectionalLight(color: Int, intensity: Double = 1.0) : Light(color) {
   @native
   var shadowMapHeight: Int = 512
 }
+
+@native("THREE.HemisphereLight")
+open class HemisphereLight(skyColorHex: Int, groundColorHex: Int, intensity: Double) : Light(skyColorHex) {
+
+  var groundColor: Color
+  var intensity: Number
+
+  fun copy(source: HemisphereLight): HemisphereLight
+  override fun  clone(recursive: Boolean): HemisphereLight
+}
