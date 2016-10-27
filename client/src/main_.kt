@@ -1,9 +1,6 @@
-import threejs.MeshBasicMaterial
 import threejs.MeshPhongMaterial
 import threejs.Object3D
 import webvr.*
-import webvr.model.InputDevice
-import kotlin.browser.window
 
 fun main(args: Array<String>) {
     println("VR client startup...")
@@ -11,23 +8,34 @@ fun main(args: Array<String>) {
     val displayDeviceController = DisplayDeviceController()
 
     displayDeviceController.startup({
-        val renderer = Renderer()
-        val displayController = DisplayController(displayDeviceController, renderer)
-        val inputDeviceController = InputDeviceController(displayController)
-        val mediaController = MediaController()
-        val inputController = InputController(inputDeviceController)
+        val renderer: Renderer
+        val displayController: DisplayController
+        val inputDeviceController: InputDeviceController
+        val mediaController: MediaController
+        val inputController: InputController
+        try {
+            renderer = Renderer()
+            displayController = DisplayController(displayDeviceController, renderer)
+            inputDeviceController = InputDeviceController(displayController)
+            mediaController = MediaController()
+            inputController = InputController(inputDeviceController)
 
-        loadMedia(inputDeviceController, mediaController)
+            loadMedia(inputDeviceController, mediaController)
+        } catch (t: Throwable) {
+            println("VR client startup error: $t")
+            return@startup
+        }
 
-        fun render(time: Number) : Unit {
+        fun render(time: Number): Unit {
+            var timeMillis = time.toLong()
             displayDeviceController.display!!.requestAnimationFrame(::render)
-            renderer.render(time.toLong())
+            renderer.render(timeMillis)
             displayController.render(renderer.scene, renderer.camera)
         }
-        render(1.0)
 
+        displayDeviceController.display!!.requestAnimationFrame(::render)
     }, { error ->
-        println("Startup interrupted: " + error)
+        println("VR clinet startup error: $error")
     })
 }
 
