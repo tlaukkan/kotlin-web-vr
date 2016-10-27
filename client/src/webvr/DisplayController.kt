@@ -204,8 +204,8 @@ class DisplayController(virtualRealityController: VirtualRealityController, grap
             this.eyeTranslationL.z = safeParseDouble(offsetLeft.get(2))!!
             var offsetRight: List<String> = eyeParamsR.offset.toString().split(",")
             this.eyeTranslationR.x = safeParseDouble(offsetRight.get(0))!!
-            this.eyeTranslationR.y = safeParseDouble(offsetRight.get(0))!!
-            this.eyeTranslationR.z = safeParseDouble(offsetRight.get(0))!!
+            this.eyeTranslationR.y = safeParseDouble(offsetRight.get(1))!!
+            this.eyeTranslationR.z = safeParseDouble(offsetRight.get(2))!!
             this.eyeFOVL = eyeParamsL.fieldOfView
             this.eyeFOVR = eyeParamsR.fieldOfView
 
