@@ -75,6 +75,8 @@ interface VRStageParameters {
 @native
 fun Navigator.getVRDisplays(): Promise<Array<VRDisplay>> = noImpl
 @native
+fun Navigator.getGamepads(): Array<Gamepad> = noImpl
+@native
 var Navigator.activeVRDisplays: Array<VRDisplay> get() = noImpl
 @native
 var Window.onvrdisplayconnected: (ev: Event) -> Any get() = noImpl
@@ -92,9 +94,23 @@ fun Window.addEventListener(type: Any /* "vrdisplaypresentchange"*/, listener: (
 */
 @native
 interface Gamepad {
-    var displayId: Number
+    @native var index: Int
+    @native var id: String
+    @native var displayId: Number
+    @native var pose: VRPose
+    @native var connected: Boolean
+    @native var buttons: Array<GamepadButton>
+    @native var axes: Array<Number>
+    @native var mapping: String
+    @native var timestamp: Number
 }
 
+@native
+interface GamepadButton {
+    @native var touched: Boolean
+    @native var pressed: Boolean
+    @native var value: Number
+}
 
 @native
 val navigator: Navigator = noImpl

@@ -31,6 +31,7 @@ class DisplayController(virtualRealityController: VirtualRealityController, grap
     var rendererHeight: Double
     var rendererPixelRatio: Double
 
+    val scene: Scene
     val display: VRDisplay
     val renderer: WebGLRenderer
     val canvas: Element
@@ -48,7 +49,8 @@ class DisplayController(virtualRealityController: VirtualRealityController, grap
         renderer = graphicsController.renderer
         camera = graphicsController.camera
 
-        canvas = renderer.domElement;
+        scene = graphicsController.scene
+        canvas = renderer.domElement
 
         rendererWidth = window.innerWidth
         rendererHeight = window.innerHeight
@@ -254,15 +256,6 @@ class DisplayController(virtualRealityController: VirtualRealityController, grap
             this.renderer.render(scene, camera)
         }
 
-    }
-
-    fun floatsToDoubles(float32Array: Float32Array) : List<Double> {
-        val stringArray = float32Array.toString().split(",")
-        val doubleList = ArrayList<Double>()
-        for (str in stringArray) {
-            doubleList.add(safeParseDouble(str)!!)
-        }
-        return doubleList
     }
 
     fun fovToProjection(fov: VRFieldOfView, rightHanded: Boolean, zNear_: Double, zFar_: Double): Matrix4 {

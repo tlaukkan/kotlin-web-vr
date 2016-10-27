@@ -71,6 +71,7 @@ class Matrix4() {
   fun applyToVector3Array(a: Array<Double>): Matrix4 = noImpl
   fun getMaxScaleOnAxis(): Double = noImpl
 
+  fun compose(translation: Vector3, rotation: Quaternion, scale: Vector3): Matrix4 = noImpl
   fun decompose(translation: Vector3, rotation: Quaternion, scale: Vector3): Array<Any> = noImpl
   fun fromArray(array: Array<Any>): Matrix4 = noImpl
 }
