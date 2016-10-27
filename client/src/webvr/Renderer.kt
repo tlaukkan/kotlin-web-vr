@@ -45,7 +45,7 @@ class Renderer {
         camera.position.z = 5.0
     }
 
-    fun render(time: Double) {
+    fun render(time: Long) {
 
         cube.rotation.x += 0.1
         cube.rotation.y += 0.1

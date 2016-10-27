@@ -17,29 +17,33 @@ fun main(args: Array<String>) {
         val mediaController = MediaController()
         val inputController = InputController(inputDeviceController)
 
-        var vivePath = "models/obj/vive-controller/"
-        mediaController.loadModel(vivePath + "vr_controller_vive_1_5.obj", { path, model ->
-            var inputDeviceModel: Object3D = model.children[0]
+        loadMedia(inputDeviceController, mediaController)
 
-            mediaController.loadTexture(vivePath + "onepointfive_texture.png", { path, texture ->
-                (inputDeviceModel.material as MeshPhongMaterial).map = texture
-            })
-            mediaController.loadTexture(vivePath + "onepointfive_spec.png", { path, texture ->
-                (inputDeviceModel.material as MeshPhongMaterial).specularMap = texture
-            })
-
-            inputDeviceController.inputDeviceModels["OpenVR Gamepad"] = model
-        })
-
-        fun render(time: Double) : Unit {
-            renderer.render(time)
+        fun render(time: Number) : Unit {
+            displayDeviceController.display!!.requestAnimationFrame(::render)
+            renderer.render(time.toLong())
             displayController.render(renderer.scene, renderer.camera)
-            window.requestAnimationFrame(::render)
         }
         render(1.0)
 
     }, { error ->
         println("Startup interrupted: " + error)
+    })
+}
+
+private fun loadMedia(inputDeviceController: InputDeviceController, mediaController: MediaController) {
+    var vivePath = "models/obj/vive-controller/"
+    mediaController.loadModel(vivePath + "vr_controller_vive_1_5.obj", { path, model ->
+        var inputDeviceModel: Object3D = model.children[0]
+
+        mediaController.loadTexture(vivePath + "onepointfive_texture.png", { path, texture ->
+            (inputDeviceModel.material as MeshPhongMaterial).map = texture
+        })
+        mediaController.loadTexture(vivePath + "onepointfive_spec.png", { path, texture ->
+            (inputDeviceModel.material as MeshPhongMaterial).specularMap = texture
+        })
+
+        inputDeviceController.inputDeviceModels["OpenVR Gamepad"] = model
     })
 }
 

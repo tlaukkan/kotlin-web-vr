@@ -1,9 +1,6 @@
 package webvr
 
-import threejs.OBJLoader
-import threejs.Object3D
-import threejs.Texture
-import threejs.TextureLoader
+import threejs.*
 
 class MediaController {
 
