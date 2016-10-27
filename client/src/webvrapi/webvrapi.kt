@@ -22,17 +22,17 @@ open class VRDisplay : EventTarget {
     open var depthFar: Number = noImpl
     open fun requestAnimationFrame(callback: (Number)->Unit): Number = noImpl
     open fun cancelAnimationFrame(handle: Number): Unit = noImpl
-    open fun requestPresent(layers: Array<VRLayer>): Promise<Unit> = noImpl
+    open fun requestPresent(layers: Array<Any>): Promise<Unit> = noImpl
     open fun exitPresent(): Promise<Unit> = noImpl
     open fun getLayers(): Array<VRLayer> = noImpl
     open fun submitFrame(pose: VRPose? = null): Unit = noImpl
 }
 
 @native
-open class VRLayer {
-    open var source: HTMLCanvasElement = noImpl
-    open var leftBounds: Array<Number> = noImpl
-    open var rightBounds: Array<Number> = noImpl
+interface VRLayer {
+    var source: HTMLCanvasElement
+    var leftBounds: Array<Number>
+    var rightBounds: Array<Number>
 }
 @native
 interface VRDisplayCapabilities {

@@ -1,3 +1,4 @@
+import kotlin.browser.window
 
 fun main(args: Array<String>) {
     println("VR client startup...")
@@ -6,10 +7,17 @@ fun main(args: Array<String>) {
 
     val virtualRealityController = VirtualRealityController()
 
-    var graphicsController: GraphicsController
-
     virtualRealityController.startup({
-        graphicsController = GraphicsController()
+        val graphicsController = GraphicsController()
+        val displayController = DisplayController(virtualRealityController, graphicsController)
+
+        fun render(time: Double) {
+            graphicsController.render(time)
+            displayController.render(graphicsController.scene, graphicsController.camera)
+            window.requestAnimationFrame(::render)
+        }
+        render(1.0)
+
     }, { error ->
         println("Startup interrupted: " + error)
     })

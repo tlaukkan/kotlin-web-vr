@@ -25,7 +25,6 @@ class VirtualRealityController {
                 } else {
                     display = displays[0]
                     println("VR display detected: " + display!!.displayName)
-                    addEnterVrButton()
                     then()
                 }
             })
@@ -35,23 +34,5 @@ class VirtualRealityController {
         }
     }
 
-    private fun addEnterVrButton(): Node {
-        var button = document.createElement("button")
-        button.addClass("enter-vr-button")
-        button.textContent = "ENTER VR"
-        button.onClick {
-            // effect.isPresenting ? effect.exitPresent() : effect.requestPresent();
-        }
-
-        window.addEventListener("vrdisplaypresentchange", {
-            if ("ENTER VR".equals(button.textContent)) {
-                button.textContent = "EXIT VR"
-            } else {
-                button.textContent = "ENTER VR"
-            }
-        }, false)
-
-        return document.body!!.appendChild(button)
-    }
 
 }

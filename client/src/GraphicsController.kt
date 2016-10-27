@@ -8,16 +8,20 @@ import kotlin.browser.window
  */
 class GraphicsController {
 
+    val scene: Scene
     val renderer: WebGLRenderer
-
+    val camera: PerspectiveCamera
+    val cube: Mesh
     init {
-        var scene = Scene()
-
-        var camera = PerspectiveCamera(75.0, window.innerWidth / window.innerHeight, 0.1, 1000.0)
-
+        scene = Scene()
+        camera = PerspectiveCamera(75.0, window.innerWidth / window.innerHeight, 0.1, 1000.0)
         renderer = WebGLRenderer()
         renderer.setSize(window.innerWidth, window.innerHeight)
         renderer.setPixelRatio(window.devicePixelRatio)
+        //renderer.sortObjects = false
+        renderer.setClearColor(0x101010)
+
+
         document.body!!.appendChild(renderer.domElement)
 
         var geometry = BoxGeometry(1, 1, 1)
@@ -26,20 +30,17 @@ class GraphicsController {
             var color: Int = 0xffff00
         })
 
-        var cube = Mesh(geometry, material)
+        cube = Mesh(geometry, material)
         scene.add(cube)
 
         camera.position.z = 5.0
+    }
 
-        fun render(time: Double) {
-            window.requestAnimationFrame(::render)
+    fun render(time: Double) {
 
-            cube.rotation.x += 0.1
-            cube.rotation.y += 0.1
+        cube.rotation.x += 0.1
+        cube.rotation.y += 0.1
 
-            renderer.render(scene, camera)
-        }
-
-        render(1.0)
+        renderer.render(scene, camera)
     }
 }

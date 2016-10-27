@@ -1,10 +1,16 @@
+import org.w3c.dom.Element
+import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.Node
 import threejs.*
 import webvrapi.VRDisplay
 import webvrapi.VRFieldOfView
+import webvrapi.VRLayer
+import kotlin.browser.document
 import kotlin.browser.window
+import kotlin.dom.addClass
+import kotlin.dom.onClick
 
-class DisplayManager(virtualRealityController: VirtualRealityController, graphicsController: GraphicsController) {
+class DisplayController(virtualRealityController: VirtualRealityController, graphicsController: GraphicsController) {
 
     var eyeTranslationL = Vector3()
     var eyeTranslationR = Vector3()
@@ -20,13 +26,15 @@ class DisplayManager(virtualRealityController: VirtualRealityController, graphic
 
     val display: VRDisplay
     val renderer: WebGLRenderer
-    val canvas: Node
+    val canvas: Element
 
 
     val cameraL: PerspectiveCamera
     val cameraR: PerspectiveCamera
 
     init {
+        addEnterVrButton()
+
         display = virtualRealityController.display!!
         renderer = graphicsController.renderer
 
@@ -35,16 +43,6 @@ class DisplayManager(virtualRealityController: VirtualRealityController, graphic
         rendererWidth = window.innerWidth
         rendererHeight = window.innerHeight
         rendererPixelRatio = window.devicePixelRatio
-
-        /*
-        renderer = WebGLRenderer({antialias: true});
-        renderer.setClearColor(0x101010);
-        renderer.setPixelRatio(window.devicePixelRatio);
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.sortObjects = false;
-        this.renderer = context.renderer;
-        */
-
 
         window.addEventListener("vrdisplaypresentchange", { onVrDisplayPresentChange() }, false)
 
@@ -74,7 +72,10 @@ class DisplayManager(virtualRealityController: VirtualRealityController, graphic
             return
         }
         if (present) {
-            display.requestPresent(display.getLayers())
+            val vrLayer = object {
+                var source = canvas
+            }
+            display.requestPresent(arrayOf(vrLayer))
         } else {
             display.exitPresent()
         }
@@ -130,12 +131,14 @@ class DisplayManager(virtualRealityController: VirtualRealityController, graphic
             var eyeParamsL = this.display.getEyeParameters("left")
             var eyeParamsR = this.display.getEyeParameters("right")
 
-            this.eyeTranslationL.x = eyeParamsL.offset.get(0)!!.toDouble()
-            this.eyeTranslationL.y = eyeParamsL.offset.get(1)!!.toDouble()
-            this.eyeTranslationL.z = eyeParamsL.offset.get(2)!!.toDouble()
-            this.eyeTranslationR.x = eyeParamsL.offset.get(0)!!.toDouble()
-            this.eyeTranslationR.y = eyeParamsL.offset.get(1)!!.toDouble()
-            this.eyeTranslationR.z = eyeParamsL.offset.get(2)!!.toDouble()
+            var offsetLeft: List<String> = eyeParamsL.offset.toString().split(",")
+            this.eyeTranslationL.x = safeParseDouble(offsetLeft.get(0))!!
+            this.eyeTranslationL.y = safeParseDouble(offsetLeft.get(1))!!
+            this.eyeTranslationL.z = safeParseDouble(offsetLeft.get(2))!!
+            var offsetRight: List<String> = eyeParamsR.offset.toString().split(",")
+            this.eyeTranslationR.x = safeParseDouble(offsetRight.get(0))!!
+            this.eyeTranslationR.y = safeParseDouble(offsetRight.get(0))!!
+            this.eyeTranslationR.z = safeParseDouble(offsetRight.get(0))!!
             this.eyeFOVL = eyeParamsL.fieldOfView
             this.eyeFOVR = eyeParamsR.fieldOfView
 
@@ -188,7 +191,20 @@ class DisplayManager(virtualRealityController: VirtualRealityController, graphic
 
     }
 
-    fun fovToProjection(fov: VRFieldOfView, rightHanded: Boolean, zNear: Double, zFar: Double): Matrix4 {
+    fun fovToProjection(fov: VRFieldOfView, rightHanded: Boolean, zNear_: Double, zFar_: Double): Matrix4 {
+
+        val zNear: Double
+        if (zNear_ === undefined) {
+            zNear = 0.01
+        } else {
+            zNear = zNear_
+        }
+        val zFar: Double
+        if (zFar_ === undefined) {
+            zFar = 10000.0
+        } else {
+            zFar = zFar_
+        }
 
         var DEG2RAD = Math.PI / 180.0
 
@@ -256,6 +272,32 @@ class DisplayManager(virtualRealityController: VirtualRealityController, graphic
         var pyscale = 2.0 / ( fov.upTan + fov.downTan )
         var pyoffset = ( fov.upTan - fov.downTan ) * pyscale * 0.5
         return NDCScaleOffset(pxscale, pyscale, pxoffset, pyoffset)
+    }
+
+
+    private fun addEnterVrButton(): Node {
+        var button = document.createElement("button")
+        button.addClass("enter-vr-button")
+        button.textContent = "ENTER VR"
+        button.onClick {
+
+            if (isPresenting) {
+                exitPresent()
+            } else {
+                requestPresent()
+            }
+            // effect.isPresenting ? effect.exitPresent() : effect.requestPresent();
+        }
+
+        window.addEventListener("vrdisplaypresentchange", {
+            if ("ENTER VR".equals(button.textContent)) {
+                button.textContent = "EXIT VR"
+            } else {
+                button.textContent = "ENTER VR"
+            }
+        }, false)
+
+        return document.body!!.appendChild(button)
     }
 }
 
