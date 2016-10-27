@@ -87,4 +87,6 @@ open class Object3D(
   @native fun updateMatrixWorld(): Unit = noImpl
 
   @native fun translateOnAxis(axis: Vector3, distance: Number): Object3D = noImpl
+
+  @native fun  applyMatrix(matrix: Matrix4): Unit = noImpl
 }

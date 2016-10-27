@@ -2,9 +2,11 @@ import org.w3c.dom.Element
 import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.Node
 import threejs.*
+import webvrapi.Float32Array
 import webvrapi.VRDisplay
 import webvrapi.VRFieldOfView
 import webvrapi.VRLayer
+import java.util.*
 import kotlin.browser.document
 import kotlin.browser.window
 import kotlin.dom.addClass
@@ -28,15 +30,18 @@ class DisplayController(virtualRealityController: VirtualRealityController, grap
     val renderer: WebGLRenderer
     val canvas: Element
 
-
+    val camera: PerspectiveCamera
     val cameraL: PerspectiveCamera
     val cameraR: PerspectiveCamera
+
+    val standingMatrix = Matrix4()
 
     init {
         addEnterVrButton()
 
         display = virtualRealityController.display!!
         renderer = graphicsController.renderer
+        camera = graphicsController.camera
 
         canvas = renderer.domElement;
 
@@ -107,9 +112,13 @@ class DisplayController(virtualRealityController: VirtualRealityController, grap
 
             renderer.setPixelRatio(1)
             renderer.setSize(eyeWidth * 2, eyeHeight)
+            rendererWidth = eyeWidth * 2
+            rendererHeight = eyeHeight
         } else {
             renderer.setPixelRatio(this.rendererPixelRatio)
-            renderer.setSize(rendererWidth, rendererHeight)
+            renderer.setSize(window.innerWidth, window.innerHeight)
+            rendererWidth = window.innerWidth
+            rendererHeight = window.innerHeight
         }
 
     }
@@ -125,6 +134,45 @@ class DisplayController(virtualRealityController: VirtualRealityController, grap
 
     fun render(scene: Scene, camera: PerspectiveCamera) {
 
+        var pose = this.display.getPose();
+
+        if (pose.orientation !== null) {
+            this.camera.quaternion.fromArray(floatsToDoubles(pose.orientation).toTypedArray())
+            //this.camera.quaternion.fromArray(Array.prototype.slice.call(pose.orientation));
+        }
+
+        if (pose.position !== null) {
+            this.camera.position.fromArray(floatsToDoubles(pose.position).toTypedArray())
+            //this.camera.position.fromArray(Array.prototype.slice.call(pose.position));
+        } else {
+            this.camera.position = Vector3(0.0, 0.0, 0.0)
+            //this.camera.position.set(0, 0, 0);
+        }
+
+        this.camera.updateMatrix()
+
+        this.standingMatrix.fromArray(floatsToDoubles(this.display.stageParameters.sittingToStandingTransform).toTypedArray())
+        this.camera.applyMatrix(this.standingMatrix)
+
+        /*if (this.standing) {
+
+            if (this.display.stageParameters) {
+
+                this.camera.updateMatrix();
+
+                this.standingMatrix.fromArray(Array.prototype.slice.call(
+                        this.display.stageParameters.sittingToStandingTransform));
+                this.camera.applyMatrix(this.standingMatrix);
+
+            } else {
+
+                this.camera.position.setY(this.camera.position.y + this.userHeight);
+
+            }
+
+        }*/
+
+        this.camera.position.multiplyScalar(this.scale)
 
 
 
@@ -201,6 +249,15 @@ class DisplayController(virtualRealityController: VirtualRealityController, grap
             this.renderer.render(scene, camera)
         }
 
+    }
+
+    fun floatsToDoubles(float32Array: Float32Array) : List<Double> {
+        val stringArray = float32Array.toString().split(",")
+        val doubleList = ArrayList<Double>()
+        for (str in stringArray) {
+            doubleList.add(safeParseDouble(str)!!)
+        }
+        return doubleList
     }
 
     fun fovToProjection(fov: VRFieldOfView, rightHanded: Boolean, zNear_: Double, zFar_: Double): Matrix4 {

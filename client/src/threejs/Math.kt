@@ -18,7 +18,7 @@ class Color(hexString: String) {
 
 @native("THREE.Quaternion")
 class Quaternion(x: Double, y: Double, z: Double, w: Double) {
-
+  fun fromArray(array: Array<Any>): Quaternion = noImpl
 }
 
 @native("THREE.Matrix3")
@@ -72,6 +72,7 @@ class Matrix4() {
   fun getMaxScaleOnAxis(): Double = noImpl
 
   fun decompose(translation: Vector3, rotation: Quaternion, scale: Vector3): Array<Any> = noImpl
+  fun fromArray(array: Array<Any>): Matrix4 = noImpl
 }
 
 @native("THREE.Euler")
@@ -176,4 +177,5 @@ class Vector3(
   fun equals(v: Vector3): Unit = noImpl
   fun fromArray(array: Array<Double>, offset:Int): Unit = noImpl
   fun toArray(array: Array<Double>, offset:Int): Unit = noImpl
+  fun fromArray(array: Array<Any>): Vector3 = noImpl
 }
