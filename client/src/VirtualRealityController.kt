@@ -16,9 +16,9 @@ class VirtualRealityController {
 
     fun startup(then: () -> Unit, error: (message: String) -> Unit) {
         try {
-            navigator.getVRDisplays().catch { error ->
+            navigator.getVRDisplays().catch({ error ->
                 error("Error getting VR displays: $error")
-            }.then({ displays ->
+            }).then({ displays ->
                 if (displays.size == 0) {
                     println("No VR display detected.")
                     error("No VR display detected.")

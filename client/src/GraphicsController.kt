@@ -8,13 +8,16 @@ import kotlin.browser.window
  */
 class GraphicsController {
 
+    val renderer: WebGLRenderer
+
     init {
         var scene = Scene()
 
         var camera = PerspectiveCamera(75.0, window.innerWidth / window.innerHeight, 0.1, 1000.0)
 
-        var renderer = WebGLRenderer()
+        renderer = WebGLRenderer()
         renderer.setSize(window.innerWidth, window.innerHeight)
+        renderer.setPixelRatio(window.devicePixelRatio)
         document.body!!.appendChild(renderer.domElement)
 
         var geometry = BoxGeometry(1, 1, 1)

@@ -13,4 +13,12 @@ open class WebGLRenderer {
   @native fun render(scene: Scene, camera: PerspectiveCamera): Unit = noImpl
   @native fun clear(): Unit = noImpl
   @native fun clearDepth(): Unit = noImpl
+
+  @native fun setViewport(x: Number, y: Number, width: Number, height: Number): Unit = noImpl
+  @native fun setScissor(x: Number, y: Number, width: Number, height: Number): Unit = noImpl
+  @native fun setScissorTest(enable: Boolean): Unit = noImpl
+
+  @native fun getPixelRatio(): Number = noImpl
+  @native fun setPixelRatio(value: Number): Unit = noImpl
+
 }

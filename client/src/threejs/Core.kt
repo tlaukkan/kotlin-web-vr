@@ -71,6 +71,10 @@ open class Object3D(
   @native var rotation: Euler = noImpl,
   @native var scale: Vector3 = noImpl
 ) {
+
+  @native var matrixWorld: Matrix4
+  @native var quaternion: Quaternion
+
   //Functions
   fun add(obj: Object3D): Unit = noImpl
   fun remove(obj: Object3D): Unit = noImpl
@@ -81,4 +85,6 @@ open class Object3D(
 
   @native fun updateMatrix(): Unit = noImpl
   @native fun updateMatrixWorld(): Unit = noImpl
+
+  @native fun translateOnAxis(axis: Vector3, distance: Number): Object3D = noImpl
 }

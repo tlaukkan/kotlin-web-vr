@@ -3,10 +3,12 @@ package threejs
 @native("THREE.Scene")
 open class Scene : Object3D() {
   //Properties
-  @native
-  var fog: FogExp2 = noImpl
+  @native var fog: FogExp2 = noImpl
+  @native var autoUpdate: Boolean = noImpl
+
   //Functions
   fun add(a: Any): Unit = noImpl
+
 }
 
 @native("THREE.FogExp2")

@@ -70,6 +70,8 @@ class Matrix4() {
   fun clone(): Matrix4 = noImpl
   fun applyToVector3Array(a: Array<Double>): Matrix4 = noImpl
   fun getMaxScaleOnAxis(): Double = noImpl
+
+  fun decompose(translation: Vector3, rotation: Quaternion, scale: Vector3): Array<Any> = noImpl
 }
 
 @native("THREE.Euler")
