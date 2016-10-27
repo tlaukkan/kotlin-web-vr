@@ -1,3 +1,6 @@
+import webvr.DisplayController
+import webvr.GraphicsController
+import webvr.VirtualRealityController
 import kotlin.browser.window
 
 fun main(args: Array<String>) {

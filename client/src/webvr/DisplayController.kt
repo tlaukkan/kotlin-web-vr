@@ -1,7 +1,12 @@
+package webvr
+
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.Node
 import threejs.*
+import webvr.model.FovPort
+import webvr.model.NDCScaleOffset
+import webvr.model.Rectangle
 import webvrapi.Float32Array
 import webvrapi.VRDisplay
 import webvrapi.VRFieldOfView

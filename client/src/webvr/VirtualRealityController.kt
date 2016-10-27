@@ -1,3 +1,5 @@
+package webvr
+
 import org.w3c.dom.Node
 import webvrapi.VRDisplay
 import webvrapi.getVRDisplays

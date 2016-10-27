@@ -1,3 +1,5 @@
+package webvr
+
 import threejs.*
 import threejs.Extra.BoxGeometry
 import kotlin.browser.document
