@@ -1,7 +1,7 @@
-import webvr.ControllerController
-import webvr.DisplayController
-import webvr.GraphicsController
-import webvr.VirtualRealityController
+import threejs.MeshBasicMaterial
+import threejs.MeshPhongMaterial
+import threejs.Object3D
+import webvr.*
 import webvr.model.Controller
 import kotlin.browser.window
 
@@ -14,7 +14,22 @@ fun main(args: Array<String>) {
         val graphicsController = GraphicsController()
         val displayController = DisplayController(virtualRealityController, graphicsController)
         val controllerController = ControllerController(displayController)
+        val mediaController = MediaController()
         controllerController.controllerHandlers["OpenVR Gamepad"] = ::handleViveController
+
+        var vivePath = "models/obj/vive-controller/"
+        mediaController.loadModel("OpenVR Gamepad", vivePath + "vr_controller_vive_1_5.obj", { name, model ->
+            var controller: Object3D = model.children[0]
+
+            mediaController.loadTexture(vivePath + "onepointfive_texture.png", { name, texture ->
+                (controller.material as MeshPhongMaterial).map = texture
+            })
+            mediaController.loadTexture(vivePath + "onepointfive_spec.png", { name, texture ->
+                (controller.material as MeshPhongMaterial).specularMap = texture
+            })
+
+            controllerController.controllerModels["OpenVR Gamepad"] = model
+        })
 
         fun render(time: Double) : Unit {
             graphicsController.render(time)
@@ -34,10 +49,10 @@ fun handleViveController(controller: Controller) {
     for (button in gamepad.buttons) {
         var i = gamepad.buttons.indexOf(button)
         if (button.pressed) {
-            console.log("Button " + i + " pressed with value: " + button.value)
+            console.log("Button $i pressed with value: ${button.value}")
         }
         if (button.touched) {
-            console.log("Button " + i + " touched with value: " + button.value)
+            console.log("Button $i touched with value: ${button.value}")
         }
         if (i == 0 && button.touched) {
             padTouched = true
@@ -48,7 +63,7 @@ fun handleViveController(controller: Controller) {
     for (axis in axes) {
         var i = axes.indexOf(axis)
         if (padTouched) {
-            console.log("Axis " + i + ": " + axis);
+            console.log("Axis $i: $axis")
         }
     }
 }

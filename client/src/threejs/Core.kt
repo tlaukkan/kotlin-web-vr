@@ -77,6 +77,7 @@ open class Object3D(
   @native var quaternion: Quaternion
   @native var matrixAutoUpdate: Boolean
   @native var matrixWorldNeedsUpdate: Boolean
+  @native var material: Material
 
   @native var visible: Boolean
   //Functions

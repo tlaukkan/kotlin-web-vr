@@ -6,6 +6,8 @@ import org.w3c.dom.Element
 open class WebGLRenderer {
   @native var domElement: Element = noImpl
   @native var autoClear: Boolean = noImpl
+  @native var sortObjects: Boolean = noImpl
+
   //Functions
   fun setSize(innerWidth: Double, innerHeight: Double): Unit = noImpl
 

@@ -36,7 +36,14 @@ open class Material {
 
 @native("THREE.MeshBasicMaterial")
 class MeshBasicMaterial(parameters: Any) : Material() {
+  @native var map: Texture
+  @native var specularMap: Texture
+}
 
+@native("THREE.MeshPhongMaterial")
+class MeshPhongMaterial(parameters: Any) : Material() {
+  @native var map: Texture
+  @native var specularMap: Texture
 }
 
 @native("THREE.MeshLambertMaterial")

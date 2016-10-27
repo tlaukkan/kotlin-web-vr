@@ -20,7 +20,7 @@ class GraphicsController {
         renderer = WebGLRenderer()
         renderer.setSize(window.innerWidth, window.innerHeight)
         renderer.setPixelRatio(window.devicePixelRatio)
-        //renderer.sortObjects = false
+        renderer.sortObjects = false
         renderer.setClearColor(0x101010)
 
 
