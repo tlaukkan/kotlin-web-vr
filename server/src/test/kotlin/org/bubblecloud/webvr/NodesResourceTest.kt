@@ -33,7 +33,7 @@ class NodesResourceTest {
         server!!.startup()
 
         val c = ClientBuilder.newClient()
-        target = c.target(server!!.url)
+        target = c.target(server!!.url + "api")
     }
 
     @After fun tearDown() {

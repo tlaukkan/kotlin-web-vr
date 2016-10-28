@@ -1,5 +1,7 @@
 package org.bubblecloud.webvr
 
+import org.bubblecloud.webvr.model.Cell
+
 val CELL = Cell()
 
 val NETWORK = Network()
