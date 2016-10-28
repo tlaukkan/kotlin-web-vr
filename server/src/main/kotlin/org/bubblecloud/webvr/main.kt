@@ -1,8 +1,8 @@
 package org.bubblecloud.webvr
 
-import org.bubblecloud.webvr.model.Cell
-
 val CELL = Cell()
+
+val IDENTITY_STORE = IdentityStore()
 
 val NETWORK = Network()
 

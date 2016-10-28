@@ -1,4 +1,4 @@
-package org.bubblecloud.webvr.model
+package org.bubblecloud.webvr
 
 import org.bubblecloud.webvr.model.Node
 import java.net.URI
