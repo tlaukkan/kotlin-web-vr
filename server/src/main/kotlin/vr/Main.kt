@@ -2,7 +2,7 @@ package vr
 
 import vr.network.NetworkServer
 
-val CELL = Cell()
+//val CELL = Cell("Default")
 
 val IDENTITY_STORE = IdentityStore()
 

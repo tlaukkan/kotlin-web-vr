@@ -1,9 +1,6 @@
 package vr
 
 import logger
-import vr.network.model.Envelope
-import vr.network.model.HandshakeRequest
-import vr.network.model.Node
 import vr.network.NetworkClient
 import vr.util.Mapper
 import vr.network.WsClient
@@ -11,6 +8,7 @@ import org.junit.After
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
+import vr.network.model.*
 import java.util.*
 import java.util.logging.Level
 import java.util.logging.LogManager
@@ -57,23 +55,20 @@ class WebSocketTest {
 
         val handshakeRequest = HandshakeRequest("kotlin-web-vr", "vr-state-synchronisation", arrayOf("0.9", "1.0"))
 
-        val originalNodes = listOf(Node())
         val original = Envelope()
         val values: MutableList<Any> = mutableListOf()
         values.addAll(listOf(handshakeRequest))
-        values.addAll(originalNodes)
         mapper.writeValuesToEnvelope(original, values)
 
         client.send(mapper.writeValue(original))
 
-        while (receivedMessages.size < 2) {
+        while (receivedMessages.size < 1) {
             Thread.sleep(100)
         }
 
-        val receivedEnvelope = mapper.readValue(receivedMessages[1], Envelope::class.java)
-        val receivedValues = mapper.readValuesFromEnvelope(receivedEnvelope)
+        val receivedEnvelope = mapper.readValue(receivedMessages[0], Envelope::class.java)
 
-        Assert.assertEquals(originalNodes, receivedValues)
+        Assert.assertEquals("HandshakeResponse", receivedEnvelope.values[0].type)
 
         client.close()
     }
@@ -89,8 +84,16 @@ class WebSocketTest {
         }
 
         var connected = false
-        client.onConnected = {
+        var handshakeResponse: HandshakeResponse? = null
+        client.onConnected = { handshakeResponse_ ->
             connected = true
+            handshakeResponse = handshakeResponse_
+        }
+        var cellSelected = false
+        var cellSelectedName = ""
+        client.onCellSelected = { cellSelectedResponse ->
+            cellSelected = true
+            cellSelectedName = cellSelectedResponse.cellName
         }
         client.onDisconnected = { reason ->
             log.log(Level.INFO, "WebSocket close: $reason")
@@ -104,6 +107,19 @@ class WebSocketTest {
 
         log.info("Connected.")
         Assert.assertTrue(client.connected)
+        Assert.assertNotNull(handshakeResponse)
+
+        val defaultCellName = handshakeResponse!!.cellNames[0]
+        log.info("Selecting default cell $defaultCellName ...")
+        client.send(listOf(CellSelectRequest(defaultCellName)))
+
+        while (!cellSelected) {
+            Thread.sleep(10)
+        }
+
+        log.info("Selected cell.")
+        Assert.assertTrue(client.cellSelected)
+        Assert.assertEquals(defaultCellName, cellSelectedName)
 
         log.info("Sending node...")
         val node = Node()

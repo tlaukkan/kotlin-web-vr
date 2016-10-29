@@ -28,6 +28,7 @@ class VrServer(val url: String = "http://localhost:8080/") {
     }
 
     fun startup(): Unit {
+        NETWORK_SERVER.addCell(Cell("Default"))
         log.info("VR server startup...")
         server.start()
         log.info("VR server startup.")

@@ -1,13 +1,12 @@
 package vr
 
 import vr.network.model.Node
-import java.net.URI
 import java.util.*
 
 /**
  * Created by tlaukkan on 7/9/2016.
  */
-class Cell {
+class Cell(val name: String) {
     private val nodes: MutableMap<String, Node> = HashMap()
 
     @Synchronized fun addNode(node: Node) : Boolean {

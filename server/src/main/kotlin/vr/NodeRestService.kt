@@ -22,7 +22,8 @@ class NodeRestService {
         node.id = nodeId
         node.url = "${uriInfo.baseUri}nodes/$nodeId"
 
-        CELL.addNode(node)
+        val cell = NETWORK_SERVER.getCells().iterator().next()
+        cell.addNode(node)
 
         log.fine("Created $nodeId.")
         return Response.created(builder.build()).entity(nodeId).build()
@@ -33,7 +34,8 @@ class NodeRestService {
         node.id = nodeId
         node.url = "${uriInfo.baseUri}nodes/$nodeId"
 
-        if (CELL.updateNode(node)) {
+        val cell = NETWORK_SERVER.getCells().iterator().next()
+        if (cell.updateNode(node)) {
             log.fine("Updated $nodeId.")
             return Response.ok().build()
         } else {
@@ -45,7 +47,8 @@ class NodeRestService {
     @Path("{nodeId}")
     @DELETE fun deleteNode(@PathParam("nodeId") nodeId: String, @Context uriInfo: UriInfo): Response {
         val nodeUrl : String = "${uriInfo.baseUri}nodes/$nodeId"
-        if (CELL.removeNode(nodeUrl)) {
+        val cell = NETWORK_SERVER.getCells().iterator().next()
+        if (cell.removeNode(nodeUrl)) {
             log.fine("Deleted $nodeId.")
             return Response.ok().build()
         } else {
@@ -57,14 +60,16 @@ class NodeRestService {
     @Path("{nodeId}")
     @GET fun getNode(@PathParam("nodeId") nodeId: UUID, @Context uriInfo: UriInfo): Node? {
         val nodeUrl : String = "${uriInfo.baseUri}nodes/$nodeId"
-        if (CELL.hasNode(nodeUrl)) {
-            return CELL.getNode(nodeUrl)
+        val cell = NETWORK_SERVER.getCells().iterator().next()
+        if (cell.hasNode(nodeUrl)) {
+            return cell.getNode(nodeUrl)
         } else {
             return null
         }
     }
 
     @GET fun getNodes(): List<Node> {
-        return CELL.getNodes()
+        val cell = NETWORK_SERVER.getCells().iterator().next()
+        return cell.getNodes()
     }
 }

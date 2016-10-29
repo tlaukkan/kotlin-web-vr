@@ -6,6 +6,7 @@ import vr.network.model.HandshakeRequest
 import vr.network.model.HandshakeResponse
 import vr.util.Mapper
 import vr.network.WsClient
+import vr.network.model.CellSelectResponse
 import java.util.logging.Level
 
 class NetworkClient(val url: String) {
@@ -14,8 +15,11 @@ class NetworkClient(val url: String) {
     private val mapper = Mapper()
 
     var connected = false
+    var cellSelected = false
+    var cellName = ""
 
-    var onConnected: (() -> Unit)? = null
+    var onConnected: ((handshakeResponse: HandshakeResponse) -> Unit)? = null
+    var onCellSelected: ((cellSelectResponse: CellSelectResponse) -> Unit)? = null
     var onReceive: ((value: Any) -> Unit)? = null
     var onDisconnected: ((reason: String) -> Unit)? = null
 
@@ -58,7 +62,17 @@ class NetworkClient(val url: String) {
             if (value.accepted) {
                 connected = true
                 if (onConnected != null) {
-                    onConnected!!.invoke()
+                    onConnected!!.invoke(value)
+                }
+            } else {
+                shutdown()
+            }
+        } else if (value is CellSelectResponse) {
+            if (value.success) {
+                cellSelected = true
+                cellName = value.cellName
+                if (onCellSelected != null) {
+                    onCellSelected!!.invoke(value)
                 }
             } else {
                 shutdown()

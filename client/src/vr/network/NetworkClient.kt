@@ -1,16 +1,17 @@
 package vr.network
 
-import vr.network.model.Envelope
-import vr.network.model.HandshakeRequest
-import vr.network.model.HandshakeResponse
+import vr.network.model.*
 
 class NetworkClient(val url: String) {
     private val wsClient = WsClient(url)
     private val mapper = Mapper()
 
     var connected = false
+    var cellSelected = false
+    var cellName = ""
 
     var onConnected: ((handshakeResponse: HandshakeResponse) -> Unit)? = null
+    var onCellSelected: ((cellSelectResponse: CellSelectResponse) -> Unit)? = null
     var onReceive: ((type: String, value: Any) -> Unit)? = null
     var onDisconnected: (() -> Unit)? = null
 
@@ -55,6 +56,17 @@ class NetworkClient(val url: String) {
                 connected = true
                 if (onConnected != null) {
                     onConnected!!.invoke(handshakeResponse)
+                }
+            } else {
+                shutdown()
+            }
+        } else if ("CellSelectResponse".equals(type)) {
+            val cellSelectResponse: CellSelectResponse = value
+            if (cellSelectResponse.success) {
+                cellSelected = true
+                cellName = value.cellName
+                if (onCellSelected != null) {
+                    onCellSelected!!.invoke(value)
                 }
             } else {
                 shutdown()

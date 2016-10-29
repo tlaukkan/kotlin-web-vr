@@ -1,18 +1,21 @@
 import vr.network.NetworkClient
 import lib.threejs.MeshPhongMaterial
 import lib.threejs.Object3D
+import vr.network.model.CellSelectRequest
 import vr.webvr.*
 
 fun main(args: Array<String>) {
     println("VR client startup...")
 
-    //val m = PrimitiveHashMap<Int>(js("({a: 1, b: {c: 3, d: 4}})"))
-    //println(m)
-
     val client = NetworkClient("ws://localhost:8080/ws")
 
     client.onConnected = { handshakeResponse ->
         println("Connected " + client.url + " (" + handshakeResponse.software + ")")
+        client.send(listOf(CellSelectRequest(handshakeResponse.cellNames[0])))
+    }
+
+    client.onCellSelected = { cellSelectResponse ->
+        println("Cell selected: " + cellSelectResponse.cellName)
     }
 
     client.onReceive = { type, value ->
@@ -22,6 +25,7 @@ fun main(args: Array<String>) {
     client.onDisconnected = {
         println("Disconnected")
     }
+
 
     val displayDeviceController = DisplayDeviceController()
 

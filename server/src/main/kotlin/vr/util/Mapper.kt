@@ -15,6 +15,8 @@ class Mapper {
         addValueClass(Node::class.java)
         addValueClass(HandshakeRequest::class.java)
         addValueClass(HandshakeResponse::class.java)
+        addValueClass(CellSelectRequest::class.java)
+        addValueClass(CellSelectResponse::class.java)
     }
 
     fun addValueClass(valueClass: Any): Unit {
