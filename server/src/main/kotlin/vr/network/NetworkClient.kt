@@ -20,25 +20,21 @@ class NetworkClient(val url: String) {
     var onDisconnected: ((reason: String) -> Unit)? = null
 
     init {
+        wsClient.onOpen = { startup() }
         wsClient.onMessage = { message -> onMessage(message) }
         wsClient.onError = { e -> onError(e) }
         wsClient.onClose = { code, reason, remote -> onClose(code, reason, remote) }
+        wsClient.connect()
     }
 
-    fun startup() : Boolean {
-        if (wsClient.connect()) {
-            val handshakeRequest = HandshakeRequest("kotlin-web-vr", "vr-state-synchronisation", arrayOf("0.9", "1.0"))
+    private fun startup() {
+        val handshakeRequest = HandshakeRequest("kotlin-web-vr", "vr-state-synchronisation", arrayOf("0.9", "1.0"))
 
-            val envelope = Envelope()
-            val values: MutableList<Any> = mutableListOf()
-            values.addAll(listOf(handshakeRequest))
-            mapper.writeValuesToEnvelope(envelope, values)
-            wsClient.send(mapper.writeValue(envelope))
-
-            return true
-        } else {
-            return false
-        }
+        val envelope = Envelope()
+        val values: MutableList<Any> = mutableListOf()
+        values.addAll(listOf(handshakeRequest))
+        mapper.writeValuesToEnvelope(envelope, values)
+        wsClient.send(mapper.writeValue(envelope))
     }
 
     fun shutdown() {

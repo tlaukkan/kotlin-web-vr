@@ -44,8 +44,16 @@ class WebSocketTest {
         client.onError = { e ->
             log.log(Level.SEVERE, "WebSocket error.", e)
         }
+        var connected = false
+        client.onOpen = {
+            connected = true
+        }
 
-        Assert.assertTrue(client.connect())
+        client.connect()
+
+        while (!connected) {
+            Thread.sleep(10)
+        }
 
         val handshakeRequest = HandshakeRequest("kotlin-web-vr", "vr-state-synchronisation", arrayOf("0.9", "1.0"))
 
@@ -90,9 +98,6 @@ class WebSocketTest {
         }
 
         log.info("Connecting...")
-        Assert.assertTrue(client.startup())
-
-        log.info("Handshaking...")
         while (!connected) {
             Thread.sleep(10)
         }

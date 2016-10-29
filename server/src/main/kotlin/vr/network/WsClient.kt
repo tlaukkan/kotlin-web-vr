@@ -47,8 +47,8 @@ class WsClient(url: String) {
         }
     }
 
-    fun connect(): Boolean {
-        return client.connectBlocking()
+    fun connect() {
+        client.connect()
     }
 
     fun send(text: String) {
