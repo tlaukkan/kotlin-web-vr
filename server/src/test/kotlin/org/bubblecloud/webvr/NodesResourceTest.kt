@@ -2,8 +2,6 @@ package org.bubblecloud.webvr
 
 import org.bubblecloud.webvr.model.Node
 import org.bubblecloud.webvr.util.RestClient
-import javax.ws.rs.client.ClientBuilder
-import javax.ws.rs.client.WebTarget
 
 import org.junit.After
 import org.junit.Before
@@ -17,16 +15,14 @@ import java.util.logging.LogManager
 class NodesResourceTest {
 
     private var server: VrServer = VrServer()
-    private var target: WebTarget? = null
     private var client: RestClient<Node> = RestClient(server.url + "api", "nodes", Node::class.java)
 
-    @Before fun setUp() {
+    init {
         LogManager.getLogManager().readConfiguration(this.javaClass.getResourceAsStream("/logging.properties"))
+    }
 
+    @Before fun setUp() {
         server.startup()
-
-        val c = ClientBuilder.newClient()
-        target = c.target(server!!.url + "api")
     }
 
     @After fun tearDown() {
