@@ -22,23 +22,23 @@ class RestClient<T>(url: String, val path: String, val valueObjectClass: Class<T
         })
     }
 
-    fun get(id: UUID): Node {
+    fun get(id: String): Node {
         return target.path("$path/$id").request().get(object : GenericType<Node>() {} )
     }
 
-    fun post(value: T): UUID {
+    fun post(value: T): String {
         val response = target.path(path).request().post(Entity.entity(value, MediaType.APPLICATION_JSON))
         if (response.status!=Response.Status.CREATED.statusCode) {
             throw IOException("Rest put failed with status code: ${response.status}.")
         }
-        return response.readEntity(UUID::class.java)
+        return response.readEntity(String::class.java)
     }
 
-    fun put(id: UUID, value: T) {
+    fun put(id: String, value: T) {
         target!!.path("$path/$id").request().put(Entity.entity(value, MediaType.APPLICATION_JSON))
     }
 
-    fun delete(id: UUID) {
+    fun delete(id: String) {
         target!!.path("$path/$id").request().delete()
     }
 

@@ -32,7 +32,7 @@ class NodesResourceTest {
     @Test fun testNodeResources() {
         assertEquals(0, client.get().size)
 
-        val nodeId: UUID = client.post(Node())
+        val nodeId: String = client.post(Node())
 
         val node = client.get(nodeId)
 

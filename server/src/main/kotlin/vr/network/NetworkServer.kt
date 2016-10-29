@@ -61,13 +61,13 @@ class NetworkServer() {
                 }
                 if (value is Node) {
                     if (!value.removed) {
-                        if (CELL.hasNode(value.uri)) {
+                        if (CELL.hasNode(value.url)) {
                             CELL.updateNode(value)
                         } else {
                             CELL.addNode(value)
                         }
                     } else {
-                        CELL.removeNode(value.uri)
+                        CELL.removeNode(value.url)
                     }
                     nodes.add(value)
                 }

@@ -8,41 +8,41 @@ import java.util.*
  * Created by tlaukkan on 7/9/2016.
  */
 class Cell {
-    private val nodes: MutableMap<URI, Node> = HashMap()
+    private val nodes: MutableMap<String, Node> = HashMap()
 
     @Synchronized fun addNode(node: Node) : Boolean {
-        if (nodes.containsKey(node.uri)) {
+        if (nodes.containsKey(node.url)) {
             return false
         }
-        nodes[node.uri] = node
+        nodes[node.url] = node
         return true
     }
 
     @Synchronized fun updateNode(node: Node) : Boolean {
-        if (!nodes.containsKey(node.uri)) {
+        if (!nodes.containsKey(node.url)) {
             return false
         }
-        nodes[node.uri] = node
+        nodes[node.url] = node
         return true
     }
 
-    @Synchronized fun removeNode(uri: URI) : Boolean {
-        if (!nodes.containsKey(uri)) {
+    @Synchronized fun removeNode(url: String) : Boolean {
+        if (!nodes.containsKey(url)) {
             return false
         }
-        nodes.remove(uri)
+        nodes.remove(url)
         return true
     }
 
-    @Synchronized fun hasNode(uri: URI) : Boolean {
-        return nodes.containsKey(uri)
+    @Synchronized fun hasNode(url: String) : Boolean {
+        return nodes.containsKey(url)
     }
 
-    @Synchronized fun getNode(uri: URI) : Node {
-        if (!nodes.containsKey(uri)) {
-            throw IllegalArgumentException("No such node: " + uri)
+    @Synchronized fun getNode(url: String) : Node {
+        if (!nodes.containsKey(url)) {
+            throw IllegalArgumentException("No such node: " + url)
         }
-        return nodes[uri]!!
+        return nodes[url]!!
     }
 
     @Synchronized fun getNodes() : List<Node>  {

@@ -2,7 +2,6 @@ package vr
 
 import logger
 import vr.network.model.Node
-import java.net.URI
 import java.util.*
 import javax.ws.rs.*
 import javax.ws.rs.core.Context
@@ -17,11 +16,11 @@ class NodeRestService {
     val log = logger()
 
     @POST fun addNode(node: Node, @Context uriInfo: UriInfo): Response {
-        val nodeId = UUID.randomUUID()
+        val nodeId = UUID.randomUUID().toString()
         val builder = uriInfo.absolutePathBuilder
         builder.path(nodeId.toString())
         node.id = nodeId
-        node.uri = URI.create("${uriInfo.baseUri}nodes/$nodeId")
+        node.url = "${uriInfo.baseUri}nodes/$nodeId"
 
         CELL.addNode(node)
 
@@ -30,9 +29,9 @@ class NodeRestService {
     }
 
     @Path("{nodeId}")
-    @PUT fun updateNode(@PathParam("nodeId") nodeId: UUID, node: Node, @Context uriInfo: UriInfo): Response {
+    @PUT fun updateNode(@PathParam("nodeId") nodeId: String, node: Node, @Context uriInfo: UriInfo): Response {
         node.id = nodeId
-        node.uri = URI.create("${uriInfo.baseUri}nodes/$nodeId")
+        node.url = "${uriInfo.baseUri}nodes/$nodeId"
 
         if (CELL.updateNode(node)) {
             log.fine("Updated $nodeId.")
@@ -44,9 +43,9 @@ class NodeRestService {
     }
 
     @Path("{nodeId}")
-    @DELETE fun deleteNode(@PathParam("nodeId") nodeId: UUID, @Context uriInfo: UriInfo): Response {
-        val nodeUri : URI = URI.create("${uriInfo.baseUri}nodes/$nodeId")
-        if (CELL.removeNode(nodeUri)) {
+    @DELETE fun deleteNode(@PathParam("nodeId") nodeId: String, @Context uriInfo: UriInfo): Response {
+        val nodeUrl : String = "${uriInfo.baseUri}nodes/$nodeId"
+        if (CELL.removeNode(nodeUrl)) {
             log.fine("Deleted $nodeId.")
             return Response.ok().build()
         } else {
@@ -57,9 +56,9 @@ class NodeRestService {
 
     @Path("{nodeId}")
     @GET fun getNode(@PathParam("nodeId") nodeId: UUID, @Context uriInfo: UriInfo): Node? {
-        val nodeUri : URI = URI.create("${uriInfo.baseUri}nodes/$nodeId")
-        if (CELL.hasNode(nodeUri)) {
-            return CELL.getNode(nodeUri)
+        val nodeUrl : String = "${uriInfo.baseUri}nodes/$nodeId"
+        if (CELL.hasNode(nodeUrl)) {
+            return CELL.getNode(nodeUrl)
         } else {
             return null
         }
