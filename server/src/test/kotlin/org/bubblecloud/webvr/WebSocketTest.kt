@@ -5,6 +5,7 @@ import logger
 import org.bubblecloud.webvr.model.Envelope
 import org.bubblecloud.webvr.model.Message
 import org.bubblecloud.webvr.model.Node
+import org.bubblecloud.webvr.util.Mapper
 import org.java_websocket.client.WebSocketClient
 import org.java_websocket.drafts.Draft_17
 import org.java_websocket.handshake.ServerHandshake
@@ -34,6 +35,7 @@ class WebSocketTest {
     }
 
     @Test fun testWebSocket() {
+        val mapper = Mapper()
 
         var receivedMessages = ArrayList<String>()
         val clientEndPoint = object: WebSocketClient(URI("ws://localhost:8080/ws"), Draft_17()) {
@@ -55,12 +57,14 @@ class WebSocketTest {
                 "protocol-versions" to listOf("0.9", "1.0"))
         )
 
+        val originalNodes = listOf(Node())
         val original = Envelope()
-        original.messages = listOf(handshakeRequest)
-        original.nodes = listOf(Node())
+        val values: MutableList<Any> = mutableListOf()
+        values.addAll(listOf(handshakeRequest))
+        values.addAll(originalNodes)
+        mapper.writeValuesToEnvelope(original, values)
 
-        val mapper: ObjectMapper = ObjectMapper()
-        val jsonString = mapper.writeValueAsString(original)
+        val jsonString = mapper.writeValue(original)
         clientEndPoint.send(jsonString)
 
         while (receivedMessages.size < 2) {
@@ -68,8 +72,9 @@ class WebSocketTest {
         }
 
         val receivedEnvelope = mapper.readValue(receivedMessages[1], Envelope::class.java)
+        val receivedValues = mapper.readValuesFromEnvelope(receivedEnvelope)
 
-        Assert.assertEquals(original.nodes, receivedEnvelope.nodes)
+        Assert.assertEquals(originalNodes, receivedValues)
 
         clientEndPoint.close()
     }
