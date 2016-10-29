@@ -47,12 +47,10 @@ class WsClient(url: String) {
         }
     }
 
-    @Throws(InterruptedException::class)
     fun connect(): Boolean {
         return client.connectBlocking()
     }
 
-    @Throws(NotYetConnectedException::class)
     fun send(text: String) {
         client.send(text)
     }

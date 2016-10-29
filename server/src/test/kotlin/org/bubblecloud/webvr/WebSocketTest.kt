@@ -102,7 +102,7 @@ class WebSocketTest {
 
         log.info("Sending node...")
         val node = Node()
-        client.sendValues(listOf(node))
+        client.send(listOf(node))
 
         log.info("Waiting node broadcast...")
         while (received.size < 1) {

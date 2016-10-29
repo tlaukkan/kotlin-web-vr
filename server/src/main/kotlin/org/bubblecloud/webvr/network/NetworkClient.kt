@@ -4,7 +4,6 @@ import logger
 import org.bubblecloud.webvr.model.Envelope
 import org.bubblecloud.webvr.model.HandshakeRequest
 import org.bubblecloud.webvr.model.HandshakeResponse
-import org.bubblecloud.webvr.model.Node
 import org.bubblecloud.webvr.util.Mapper
 import org.bubblecloud.webvr.util.WsClient
 import java.util.logging.Level
@@ -46,7 +45,7 @@ class NetworkClient(val url: String) {
         wsClient.close()
     }
 
-    fun sendValues(values: List<Any>) {
+    fun send(values: List<Any>) {
         val envelope = Envelope()
         mapper.writeValuesToEnvelope(envelope, values)
         wsClient.send(mapper.writeValue(envelope))

@@ -1,3 +1,4 @@
+import network.NetworkClient
 import threejs.MeshPhongMaterial
 import threejs.Object3D
 import webvr.*
@@ -8,7 +9,19 @@ fun main(args: Array<String>) {
     //val m = PrimitiveHashMap<Int>(js("({a: 1, b: {c: 3, d: 4}})"))
     //println(m)
 
+    val client = NetworkClient("ws://localhost:8080/ws")
 
+    client.onConnected = { handshakeResponse ->
+        println("Connected " + client.url + " (" + handshakeResponse.software + ")")
+    }
+
+    client.onReceive = { value ->
+        println("Received value: $value")
+    }
+
+    client.onDisconnected = {
+        println("Disconnected")
+    }
 
     val displayDeviceController = DisplayDeviceController()
 
