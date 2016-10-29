@@ -2,7 +2,7 @@ package vr.webvr.model
 
 import lib.threejs.Matrix4
 import lib.threejs.Object3D
-import vr.webvr.floatsToDoubles
+import vr.util.floatsToDoubles
 import lib.webvrapi.Gamepad
 import lib.webvrapi.getGamepads
 import lib.webvrapi.navigator

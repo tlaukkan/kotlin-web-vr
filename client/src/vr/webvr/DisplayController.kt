@@ -8,6 +8,7 @@ import vr.webvr.model.NDCScaleOffset
 import vr.webvr.model.Rectangle
 import lib.webvrapi.VRDisplay
 import lib.webvrapi.VRFieldOfView
+import vr.util.floatsToDoubles
 import kotlin.browser.document
 import kotlin.browser.window
 import kotlin.dom.addClass

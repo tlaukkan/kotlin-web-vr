@@ -1,5 +1,17 @@
 package vr.util
 
+import lib.webvrapi.Float32Array
+import java.util.*
+
+fun floatsToDoubles(float32Array: Float32Array) : List<Double> {
+    val stringArray = float32Array.toString().split(",")
+    val doubleList = ArrayList<Double>()
+    for (str in stringArray) {
+        doubleList.add(safeParseDouble(str)!!)
+    }
+    return doubleList
+}
+
 /**
  * Writes given plain data object containing only primitives, arrays and other similar data objects as JSON string.
  */
