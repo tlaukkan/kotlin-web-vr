@@ -8,11 +8,12 @@ import org.glassfish.grizzly.http.server.NetworkListener
 import org.glassfish.grizzly.ssl.SSLEngineConfigurator
 import org.glassfish.grizzly.websockets.WebSocketAddOn
 import org.glassfish.grizzly.websockets.WebSocketEngine
-import vr.grizzly.GrizzlyHttpContainer
+import vr.util.grizzly.GrizzlyHttpContainer
 import org.glassfish.grizzly.http.server.StaticHttpHandler
 import org.glassfish.jersey.process.JerseyProcessingUncaughtExceptionHandler
 import org.glassfish.jersey.server.ResourceConfig
 import org.glassfish.jersey.server.spi.Container
+import vr.network.WebSocketListener
 import java.net.URI
 
 import javax.ws.rs.core.UriBuilder

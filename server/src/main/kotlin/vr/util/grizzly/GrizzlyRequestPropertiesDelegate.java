@@ -38,7 +38,7 @@
  * holder.
  */
 
-package vr.grizzly;
+package vr.util.grizzly;
 
 import java.util.Collection;
 

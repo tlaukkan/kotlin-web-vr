@@ -49,7 +49,6 @@ class NetworkClient(val url: String) {
     private fun processReceivedValue(pair: Pair<String, Any>) {
         val type = pair.first
         val value : dynamic = pair.second
-        println("$type, ${JSON.stringify(value)}")
         if ("HandshakeResponse".equals(type)) {
             val handshakeResponse: HandshakeResponse = value
             if (handshakeResponse.accepted) {
