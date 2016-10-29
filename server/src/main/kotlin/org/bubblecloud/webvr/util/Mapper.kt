@@ -1,19 +1,20 @@
 package org.bubblecloud.webvr.util
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import org.bubblecloud.webvr.model.Envelope
-import org.bubblecloud.webvr.model.Message
-import org.bubblecloud.webvr.model.Node
-import org.bubblecloud.webvr.model.TypedValue
+import logger
+import org.bubblecloud.webvr.model.*
+import java.util.logging.Level
 
 class Mapper {
 
+    private val log = logger()
     val valueClasses = mutableMapOf<String, Any>()
     val mapper = ObjectMapper()
 
     init {
         addValueClass(Node::class.java)
-        addValueClass(Message::class.java)
+        addValueClass(HandshakeRequest::class.java)
+        addValueClass(HandshakeResponse::class.java)
     }
 
     fun addValueClass(valueClass: Any): Unit {
@@ -26,6 +27,8 @@ class Mapper {
             if (valueClasses.containsKey(typedValue.type)) {
                 val valueClass = valueClasses[typedValue.type]
                 values.add(mapper.readValue(typedValue.json, valueClass as Class<Any>))
+            } else {
+                log.log(Level.WARNING, "Unknown value type in envelope: ${typedValue.type}")
             }
         }
         return values

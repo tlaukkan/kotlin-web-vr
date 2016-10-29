@@ -1,5 +1,3 @@
 package org.bubblecloud.webvr.model
 
-data class Envelope(var values: Array<TypedValue> = emptyArray()) {
-
-}
+data class Envelope(var values: Array<TypedValue> = emptyArray())

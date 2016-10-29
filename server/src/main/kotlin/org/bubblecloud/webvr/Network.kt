@@ -1,10 +1,7 @@
 package org.bubblecloud.webvr
 
 import logger
-import org.bubblecloud.webvr.model.Envelope
-import org.bubblecloud.webvr.model.Message
-import org.bubblecloud.webvr.model.Node
-import org.bubblecloud.webvr.model.Session
+import org.bubblecloud.webvr.model.*
 import org.bubblecloud.webvr.util.Mapper
 import org.glassfish.grizzly.websockets.Broadcaster
 import org.glassfish.grizzly.websockets.OptimizedBroadcaster
@@ -45,23 +42,20 @@ class Network() {
             val nodes : MutableList<Any> = mutableListOf()
 
             for (value in values) {
-                if (value is Message) {
-                    if (value.type.equals("handshake-request")) {
-                        log.info("Handshake accepted : ${session.remoteHost}:${session.remotePort} (${value.properties["software"]})")
+                if (value is HandshakeRequest) {
+                    log.info("Handshake accepted : ${session.remoteHost}:${session.remotePort} (${value.software})")
 
-                        val responseEnvelope = Envelope()
-                        val handshakeResponse = Message("handshake-response", mapOf(
-                                "software" to "kotlin-web-vr",
-                                "protocol-dialect" to "vr-state-synchronisation",
-                                "protocol-version" to "1.0",
-                                "accepted" to "true"
-                        ))
-                        val values : MutableList<Any> = mutableListOf()
-                        values.add(handshakeResponse)
-                        values.addAll(CELL.getNodes())
-                        mapper.writeValuesToEnvelope(responseEnvelope, values)
-                        socket.send(mapper.writeValue(responseEnvelope))
-                    }
+                    val responseEnvelope = Envelope()
+                    val handshakeResponse = HandshakeResponse(
+                            "kotlin-web-vr",
+                            "vr-state-synchronisation",
+                            "1.0",
+                            true)
+                    val values : MutableList<Any> = mutableListOf()
+                    values.add(handshakeResponse)
+                    values.addAll(CELL.getNodes())
+                    mapper.writeValuesToEnvelope(responseEnvelope, values)
+                    socket.send(mapper.writeValue(responseEnvelope))
                 }
                 if (value is Node) {
                     if (!value.removed) {

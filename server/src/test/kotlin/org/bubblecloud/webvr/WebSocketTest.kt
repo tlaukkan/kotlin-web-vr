@@ -1,9 +1,8 @@
 package org.bubblecloud.webvr
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import logger
 import org.bubblecloud.webvr.model.Envelope
-import org.bubblecloud.webvr.model.Message
+import org.bubblecloud.webvr.model.HandshakeRequest
 import org.bubblecloud.webvr.model.Node
 import org.bubblecloud.webvr.util.Mapper
 import org.java_websocket.client.WebSocketClient
@@ -51,11 +50,7 @@ class WebSocketTest {
 
         Assert.assertTrue(clientEndPoint.connectBlocking())
 
-        val handshakeRequest = Message("handshake-request", mapOf(
-                "software" to "kotlin-web-vr",
-                "protocol-dialect" to "vr-state-synchronisation",
-                "protocol-versions" to listOf("0.9", "1.0"))
-        )
+        val handshakeRequest = HandshakeRequest("kotlin-web-vr", "vr-state-synchronisation", arrayOf("0.9", "1.0"))
 
         val originalNodes = listOf(Node())
         val original = Envelope()
