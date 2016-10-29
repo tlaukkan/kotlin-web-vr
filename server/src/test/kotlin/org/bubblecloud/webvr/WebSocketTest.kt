@@ -4,6 +4,7 @@ import logger
 import org.bubblecloud.webvr.model.Envelope
 import org.bubblecloud.webvr.model.HandshakeRequest
 import org.bubblecloud.webvr.model.Node
+import org.bubblecloud.webvr.network.NetworkClient
 import org.bubblecloud.webvr.util.Mapper
 import org.bubblecloud.webvr.util.WsClient
 import org.junit.After
@@ -31,7 +32,7 @@ class WebSocketTest {
         server.shutdown()
     }
 
-    @Test fun testWebSocket() {
+    @Test fun testWsClient() {
         val mapper = Mapper()
 
         var receivedMessages = ArrayList<String>()
@@ -69,4 +70,58 @@ class WebSocketTest {
         client.close()
     }
 
+    @Test fun testNetworkClient() {
+        val mapper = Mapper()
+
+        var received = ArrayList<Any>()
+
+        val client = NetworkClient("ws://localhost:8080/ws")
+        client.onReceive = { value ->
+            received.add(value)
+        }
+
+        var connected = false
+        client.onConnected = {
+            connected = true
+        }
+        client.onDisconnected = { reason ->
+            log.log(Level.INFO, "WebSocket close: $reason")
+            connected = false
+        }
+
+        log.info("Connecting...")
+        Assert.assertTrue(client.startup())
+
+        log.info("Handshaking...")
+        while (!connected) {
+            Thread.sleep(10)
+        }
+
+        log.info("Connected.")
+        Assert.assertTrue(client.connected)
+
+        log.info("Sending node...")
+        val node = Node()
+        client.sendValues(listOf(node))
+
+        log.info("Waiting node broadcast...")
+        while (received.size < 1) {
+            Thread.sleep(10)
+        }
+        log.info("Received node broadcast")
+
+
+        Assert.assertEquals(node, received[0])
+
+        log.info("Disconnecting...")
+        client.shutdown()
+
+        while (connected) {
+            Thread.sleep(10)
+        }
+        log.info("Disconnected.")
+
+        Assert.assertFalse(client.connected)
+
+    }
 }

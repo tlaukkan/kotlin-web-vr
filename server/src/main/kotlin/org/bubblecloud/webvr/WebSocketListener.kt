@@ -16,17 +16,17 @@ class WebSocketListener : WebSocketApplication() {
         super.onConnect(socket)
         val remoteHost = ((socket as DefaultWebSocket).upgradeRequest).remoteHost
         val remotePort = socket.upgradeRequest.remotePort
-        NETWORK.addSession(Session(remoteHost, remotePort, socket))
+        NETWORK_SERVER.addSession(Session(remoteHost, remotePort, socket))
     }
 
     override fun onClose(socket: WebSocket?, frame: DataFrame?) {
         socket!!
         super.onClose(socket, frame)
-        NETWORK.removeSession(socket)
+        NETWORK_SERVER.removeSession(socket)
     }
 
     override fun onError(webSocket: WebSocket?, t: Throwable?): Boolean {
-        val session: Session? = NETWORK.getSession(webSocket)
+        val session: Session? = NETWORK_SERVER.getSession(webSocket)
         if (session != null) {
             log.log(Level.SEVERE, "Error in web socket communication: ${session.remoteHost} : ${session.remotePort}", t)
         } else {
@@ -37,7 +37,7 @@ class WebSocketListener : WebSocketApplication() {
 
     override fun onMessage(socket: WebSocket?, text: String?) {
         super.onMessage(socket, text)
-        NETWORK.receive(socket!!, text!!)
+        NETWORK_SERVER.receive(socket!!, text!!)
     }
 
     override fun handshake(handshake: HandShake?) {

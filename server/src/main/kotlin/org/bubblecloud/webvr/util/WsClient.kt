@@ -8,24 +8,24 @@ import java.nio.channels.NotYetConnectedException
 
 class WsClient(url: String) {
 
-    var onOpenHandler: ((handshakedata: ServerHandshake?) -> Unit)? = null
-    var onCloseHandler: ((code: Int, reason: String, remote: Boolean) -> Unit)? = null
+    var onOpen: ((handshakedata: ServerHandshake?) -> Unit)? = null
+    var onClose: ((code: Int, reason: String, remote: Boolean) -> Unit)? = null
     var onMessage: ((message: String) -> Unit)? = null
     var onError: ((ex: Exception) -> Unit)? = null
 
     val client = object : WebSocketClient(URI(url), Draft_17()) {
         override fun onOpen(handshakedata: ServerHandshake?) {
             synchronized(this) {
-                if (onOpenHandler != null) {
-                    onOpenHandler!!.invoke(handshakedata)
+                if (onOpen != null) {
+                    onOpen!!.invoke(handshakedata)
                 }
             }
         }
 
         override fun onClose(code: Int, reason: String?, remote: Boolean) {
             synchronized(this) {
-                if (onCloseHandler != null) {
-                    onCloseHandler!!.invoke(code, reason!!, remote)
+                if (onClose != null) {
+                    onClose!!.invoke(code, reason!!, remote)
                 }
             }
         }

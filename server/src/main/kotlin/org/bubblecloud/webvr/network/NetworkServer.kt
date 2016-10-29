@@ -1,6 +1,7 @@
-package org.bubblecloud.webvr
+package org.bubblecloud.webvr.network
 
 import logger
+import org.bubblecloud.webvr.CELL
 import org.bubblecloud.webvr.model.*
 import org.bubblecloud.webvr.util.Mapper
 import org.glassfish.grizzly.websockets.Broadcaster
@@ -9,7 +10,7 @@ import org.glassfish.grizzly.websockets.WebSocket
 import java.util.*
 import java.util.logging.Level
 
-class Network() {
+class NetworkServer() {
 
     private val log = logger()
 
