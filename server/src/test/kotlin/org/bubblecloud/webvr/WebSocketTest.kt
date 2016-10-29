@@ -6,14 +6,10 @@ import org.bubblecloud.webvr.model.HandshakeRequest
 import org.bubblecloud.webvr.model.Node
 import org.bubblecloud.webvr.util.Mapper
 import org.bubblecloud.webvr.util.WsClient
-import org.java_websocket.client.WebSocketClient
-import org.java_websocket.drafts.Draft_17
-import org.java_websocket.handshake.ServerHandshake
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
-import java.net.URI
 import java.util.*
 import java.util.logging.Level
 import java.util.logging.LogManager
