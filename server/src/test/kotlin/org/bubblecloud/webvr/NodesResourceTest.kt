@@ -26,7 +26,7 @@ class NodesResourceTest {
     }
 
     @After fun tearDown() {
-        server!!.shutdown()
+        server.shutdown()
     }
 
     @Test fun testNodeResources() {

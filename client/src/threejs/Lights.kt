@@ -35,9 +35,9 @@ class DirectionalLight(color: Int, intensity: Double = 1.0) : Light(color) {
 @native("THREE.HemisphereLight")
 open class HemisphereLight(skyColorHex: Int, groundColorHex: Int, intensity: Double) : Light(skyColorHex) {
 
-  var groundColor: Color
-  var intensity: Number
+  var groundColor: Color = noImpl
+  var intensity: Number = noImpl
 
-  fun copy(source: HemisphereLight): HemisphereLight
-  override fun  clone(recursive: Boolean): HemisphereLight
+  fun copy(source: HemisphereLight): HemisphereLight = noImpl
+  override fun  clone(recursive: Boolean): HemisphereLight = noImpl
 }

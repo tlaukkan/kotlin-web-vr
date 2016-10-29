@@ -4,14 +4,10 @@ import org.khronos.webgl.ArrayBuffer
 
 @native
 class Float32Array {
-    @native
-    var Float32Array.BYTES_PER_ELEMENT: Number get() = noImpl
-    @native
-    var Float32Array.buffer: ArrayBuffer get() = noImpl
-    @native
-    var Float32Array.byteLength: Number get() = noImpl
-    @native
-    var Float32Array.byteOffset: Number get() = noImpl
+    var BYTES_PER_ELEMENT: Number = noImpl
+    var buffer: ArrayBuffer = noImpl
+    var byteLength: Number = noImpl
+    var byteOffset: Number = noImpl
 
     @native
     open fun copyWithin(target: Number, start: Number, end: Number? = null): Float32Array = noImpl

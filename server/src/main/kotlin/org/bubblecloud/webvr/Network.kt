@@ -43,7 +43,7 @@ class Network() {
             if (messages != null && messages.size == 1 && messages[0].type.equals("handshake-request")) {
                 log.info("Handshake accepted : ${session.remoteHost}:${session.remotePort} (${messages[0].properties["software"]})")
 
-                val envelope = Envelope()
+                val responseEnvelope = Envelope()
                 val handshakeResponse = Message("handshake-response", mapOf(
                         "software" to "kotlin-web-vr",
                         "protocol-dialect" to "vr-state-synchronisation",
@@ -51,9 +51,9 @@ class Network() {
                         "accepted" to "true"
                 ))
 
-                envelope.nodes = CELL.getNodes()
-                envelope.messages = listOf(handshakeResponse)
-                socket.send(mapper.writeValueAsString(envelope))
+                responseEnvelope.nodes = CELL.getNodes()
+                responseEnvelope.messages = listOf(handshakeResponse)
+                socket.send(mapper.writeValueAsString(responseEnvelope))
             }
 
             val nodes = envelope.nodes

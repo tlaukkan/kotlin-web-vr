@@ -15,37 +15,31 @@
 			a {
 				color: #f00;
 			}
-			.canvasloader-container {
-				position:absolute;
-				top:50%;
-				left:50%;
+			.enter-vr-button {
+				position: absolute;
+				left: calc(50% - 50px);
+				bottom: 20px;
+				width: 100px;
+				border: 0;
+				padding: 8px;
+				cursor: pointer;
+				background-color: #000;
+				color: #fff;
+				font-family: SansSerif;
+				font-style: normal;
+				text-align: center;
+				z-index: 999;
 			}
 		</style>
 	</head>
 	<body>
 
-		<!-- This script creates a new CanvasLoader instance and places it in the wrapper div -->
-		<div id="canvasloader-container" class="canvasloader-container"></div>
-		<script src="lib/heartcode-canvasloader-min.js"></script>
-		<script type="text/javascript">
-			var canvasLoader = new CanvasLoader('canvasloader-container');
-			canvasLoader.setColor('#1a4261')
-			canvasLoader.setShape('spiral'); // default is 'oval'
-			canvasLoader.setDiameter(103); // default is 40
-			canvasLoader.setDensity(38); // default is 40
-			canvasLoader.setSpeed(1); // default is 2
-			canvasLoader.setFPS(29); // default is 24
-			canvasLoader.show();
-
-			// This bit is only for positioning - not necessary
-			var loaderObj = document.getElementById("canvasLoader");
-			loaderObj.style.position = "absolute";
-			loaderObj.style["top"] = canvasLoader.getDiameter() * -0.5 + "px";
-			loaderObj.style["left"] = canvasLoader.getDiameter() * -0.5 + "px";
-		</script>
-
-		<script src="lib/three.js"></script>
-		<script src="bundle.js"></script>
+	<script src="lib/three.js"></script>
+	<script src="lib/OBJLoader.js"></script>
+	<script src="lib/kotlin.meta.js"></script>
+	<script src="lib/kotlin.js"></script>
+	<script src="client.meta.js"></script>
+	<script src="client.js"></script>
 
 	</body>
 </html>

@@ -72,12 +72,12 @@ open class Object3D(
   @native var scale: Vector3 = noImpl
 ) {
 
-  @native var matrix: Matrix4
-  @native var matrixWorld: Matrix4
-  @native var quaternion: Quaternion
-  @native var matrixAutoUpdate: Boolean
-  @native var matrixWorldNeedsUpdate: Boolean
-  @native var material: Material
+  @native var matrix: Matrix4 = noImpl
+  @native var matrixWorld: Matrix4 = noImpl
+  @native var quaternion: Quaternion = noImpl
+  @native var matrixAutoUpdate: Boolean = noImpl
+  @native var matrixWorldNeedsUpdate: Boolean = noImpl
+  @native var material: Material = noImpl
 
   @native var visible: Boolean
   //Functions

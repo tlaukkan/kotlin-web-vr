@@ -5,6 +5,11 @@ import webvr.*
 fun main(args: Array<String>) {
     println("VR client startup...")
 
+    //val m = PrimitiveHashMap<Int>(js("({a: 1, b: {c: 3, d: 4}})"))
+    //println(m)
+
+
+
     val displayDeviceController = DisplayDeviceController()
 
     displayDeviceController.startup({
