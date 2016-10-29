@@ -1,7 +1,7 @@
-import network.NetworkClient
-import threejs.MeshPhongMaterial
-import threejs.Object3D
-import webvr.*
+import vr.network.NetworkClient
+import lib.threejs.MeshPhongMaterial
+import lib.threejs.Object3D
+import vr.webvr.*
 
 fun main(args: Array<String>) {
     println("VR client startup...")
@@ -15,7 +15,7 @@ fun main(args: Array<String>) {
         println("Connected " + client.url + " (" + handshakeResponse.software + ")")
     }
 
-    client.onReceive = { value ->
+    client.onReceive = { type, value ->
         println("Received value: $value")
     }
 
