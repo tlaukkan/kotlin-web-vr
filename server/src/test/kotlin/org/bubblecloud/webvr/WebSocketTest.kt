@@ -5,6 +5,7 @@ import org.bubblecloud.webvr.model.Envelope
 import org.bubblecloud.webvr.model.HandshakeRequest
 import org.bubblecloud.webvr.model.Node
 import org.bubblecloud.webvr.util.Mapper
+import org.bubblecloud.webvr.util.WsClient
 import org.java_websocket.client.WebSocketClient
 import org.java_websocket.drafts.Draft_17
 import org.java_websocket.handshake.ServerHandshake
@@ -20,35 +21,34 @@ import java.util.logging.LogManager
 class WebSocketTest {
     private val log = logger()
 
-    private var server: VrServer? = null
+    private var server: VrServer = VrServer()
+
+    init {
+        LogManager.getLogManager().readConfiguration(this.javaClass.getResourceAsStream("/logging.properties"))
+    }
 
     @Before fun setUp() {
-        LogManager.getLogManager().readConfiguration(this.javaClass.getResourceAsStream("/logging.properties"))
-
-        server = VrServer()
-        server!!.startup()
+        server.startup()
     }
 
     @After fun tearDown() {
-        server!!.shutdown()
+        server.shutdown()
     }
 
     @Test fun testWebSocket() {
         val mapper = Mapper()
 
         var receivedMessages = ArrayList<String>()
-        val clientEndPoint = object: WebSocketClient(URI("ws://localhost:8080/ws"), Draft_17()) {
-            override fun onOpen(handshake: ServerHandshake) {}
-            override fun onClose(code: Int, reason: String, remote: Boolean) {}
-            override fun onMessage(message: String) {
-                receivedMessages.add(message)
-            }
-            override fun onError(ex: Exception) {
-                log.log(Level.SEVERE, "WebSocket error.", ex)
-            }
+
+        val client = WsClient("ws://localhost:8080/ws")
+        client.onMessage = { message ->
+            receivedMessages.add(message)
+        }
+        client.onError = { e ->
+            log.log(Level.SEVERE, "WebSocket error.", e)
         }
 
-        Assert.assertTrue(clientEndPoint.connectBlocking())
+        Assert.assertTrue(client.connect())
 
         val handshakeRequest = HandshakeRequest("kotlin-web-vr", "vr-state-synchronisation", arrayOf("0.9", "1.0"))
 
@@ -59,8 +59,7 @@ class WebSocketTest {
         values.addAll(originalNodes)
         mapper.writeValuesToEnvelope(original, values)
 
-        val jsonString = mapper.writeValue(original)
-        clientEndPoint.send(jsonString)
+        client.send(mapper.writeValue(original))
 
         while (receivedMessages.size < 2) {
             Thread.sleep(100)
@@ -71,7 +70,7 @@ class WebSocketTest {
 
         Assert.assertEquals(originalNodes, receivedValues)
 
-        clientEndPoint.close()
+        client.close()
     }
 
 }
