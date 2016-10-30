@@ -41,8 +41,10 @@ class Renderer {
 
         //scene.add(HemisphereLight(0x404020, 0x202040, 0.5))
 
+        scene.add(AmbientLight(0xffffff, 0.5))
+
         var light = DirectionalLight(0xffffff)
-        light.position.set(1.0, 1.0, 1.0)
+        light.position.set(0.0, 1.0, 0.0)
         scene.add(light)
 
         //camera.position.z = 5.0

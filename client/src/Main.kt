@@ -95,8 +95,8 @@ private fun loadMedia(displayController: DisplayController, inputDeviceControlle
         monster.scale.y = 0.002
         monster.scale.z = 0.002
 
-        monster.position.x = 0.0
-        monster.position.y = 5.0
+        monster.position.x = -10.0
+        monster.position.y = 0.0
         monster.position.z = 0.0
         displayController.scene.add(monster)
     })

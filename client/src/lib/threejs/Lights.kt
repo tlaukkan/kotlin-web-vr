@@ -32,6 +32,11 @@ class DirectionalLight(color: Int, intensity: Double = 1.0) : Light(color) {
   var shadowMapHeight: Int = 512
 }
 
+
+@native("THREE.AmbientLight")
+class AmbientLight(color: Int, intensity: Double = 1.0) : Light(color) {
+
+}
 @native("THREE.HemisphereLight")
 open class HemisphereLight(skyColorHex: Int, groundColorHex: Int, intensity: Double) : Light(skyColorHex) {
 
