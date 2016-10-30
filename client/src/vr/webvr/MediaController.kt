@@ -11,6 +11,11 @@ class MediaController {
     val colladaLoader = ColladaLoader()
     val textureLoader = TextureLoader()
 
+    init {
+        val dynamicColladaLoader: dynamic = colladaLoader
+        dynamicColladaLoader.options.convertUpAxis = true
+    }
+
     fun loadModel(path: String, onLoad: (path: String, model:Object3D) -> Unit) {
         if (path.endsWith(".obj")) {
             this.objLoader.load(path, { obj ->

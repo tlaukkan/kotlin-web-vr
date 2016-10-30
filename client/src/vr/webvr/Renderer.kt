@@ -45,7 +45,7 @@ class Renderer {
         light.position.set(1.0, 1.0, 1.0)
         scene.add(light)
 
-        camera.position.z = 5.0
+        //camera.position.z = 5.0
     }
 
     fun render(time: Long) {

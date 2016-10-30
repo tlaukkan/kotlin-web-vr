@@ -85,7 +85,7 @@ private fun loadMedia(displayController: DisplayController, inputDeviceControlle
 
         monster1.position.x = 0.0
         monster1.position.y = 0.0
-        monster1.position.z = 0.0
+        monster1.position.z = 5.0
         displayController.scene.add(monster1)
     })
 
