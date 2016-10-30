@@ -79,3 +79,8 @@ class PointsMaterialParameters : Material() {
   @native var fog: Boolean = noImpl
   @native var map: Texture? = noImpl
 }
+
+@native("THREE.MultiMaterial")
+class MultiMaterial(materials: Array<Material>) : Material() {
+
+}

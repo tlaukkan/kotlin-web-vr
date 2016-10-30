@@ -78,16 +78,27 @@ private fun loadMedia(displayController: DisplayController, inputDeviceControlle
     })
 
     mediaController.loadModel("models/collada/monster/monster.dae", { path, model ->
-        var monster1 = model.clone(true)
-        monster1.scale.x = 0.002
-        monster1.scale.y = 0.002
-        monster1.scale.z = 0.002
+        var monster = model.clone(true)
+        monster.scale.x = 0.002
+        monster.scale.y = 0.002
+        monster.scale.z = 0.002
 
-        monster1.position.x = 0.0
-        monster1.position.y = 0.0
-        monster1.position.z = 5.0
-        displayController.scene.add(monster1)
+        monster.position.x = 0.0
+        monster.position.y = 0.0
+        monster.position.z = 5.0
+        displayController.scene.add(monster)
     })
 
+    mediaController.loadModel("models/animated/monster/monster.js", { path, model ->
+        var monster = model.clone(true)
+        monster.scale.x = 0.002
+        monster.scale.y = 0.002
+        monster.scale.z = 0.002
+
+        monster.position.x = 0.0
+        monster.position.y = 5.0
+        monster.position.z = 0.0
+        displayController.scene.add(monster)
+    })
 }
 

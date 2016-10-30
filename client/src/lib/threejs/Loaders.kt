@@ -5,6 +5,12 @@ class OBJLoader {
   @native fun load(path : String, callback: (obj: Object3D) -> Unit): Unit = noImpl
 }
 
+@native("THREE.JSONLoader")
+class JSONLoader {
+  @native fun load(path : String, callback: (geometry: Geometry, materials: Array<Material>) -> Unit): Unit = noImpl
+}
+
+
 @native
 interface Collada {
 

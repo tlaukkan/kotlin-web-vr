@@ -10,6 +10,7 @@ class MediaController {
     val objLoader = OBJLoader()
     val colladaLoader = ColladaLoader()
     val textureLoader = TextureLoader()
+    val jsonLoader = JSONLoader()
 
     init {
         val dynamicColladaLoader: dynamic = colladaLoader
@@ -26,6 +27,14 @@ class MediaController {
             this.colladaLoader.load(path, { collada ->
                 this.models[path] = collada.scene
                 onLoad(path, collada.scene)
+            })
+        } else if (path.endsWith(".js")) {
+            this.jsonLoader.load(path, { geometry, materials ->
+                val faceMaterial = MultiMaterial(materials)
+                var mesh = Mesh(geometry, faceMaterial)
+                this.models[path] = mesh
+                println("Loaded JSON model: " + path)
+                onLoad(path, mesh)
             })
         }
     }
