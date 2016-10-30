@@ -72,6 +72,9 @@ open class Object3D(
   @native var scale: Vector3 = noImpl
 ) {
 
+  @native var int: Int = noImpl
+  @native var uuid: String = noImpl
+  @native var name: String = noImpl
   @native var matrix: Matrix4 = noImpl
   @native var matrixWorld: Matrix4 = noImpl
   @native var quaternion: Quaternion = noImpl

@@ -8,6 +8,8 @@ open class Scene : Object3D() {
 
   //Functions
   fun add(a: Any): Unit = noImpl
+  fun remove(a: Any): Unit = noImpl
+  fun getObjectByName(name: String): Object3D? = noImpl
 
 }
 

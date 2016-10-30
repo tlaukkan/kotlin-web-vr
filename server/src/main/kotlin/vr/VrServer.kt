@@ -14,6 +14,7 @@ import org.glassfish.jersey.process.JerseyProcessingUncaughtExceptionHandler
 import org.glassfish.jersey.server.ResourceConfig
 import org.glassfish.jersey.server.spi.Container
 import vr.network.WebSocketListener
+import vr.network.model.LightFieldNode
 import java.net.URI
 
 import javax.ws.rs.core.UriBuilder
@@ -29,6 +30,8 @@ class VrServer(val url: String = "http://localhost:8080/") {
 
     fun startup(): Unit {
         NETWORK_SERVER.addCell(Cell("Default"))
+        NETWORK_SERVER.getCell("Default").addNode(LightFieldNode("8a58122a-e03e-4ce8-b907-461d047b483f"))
+
         log.info("VR server startup...")
         server.start()
         log.info("VR server startup.")

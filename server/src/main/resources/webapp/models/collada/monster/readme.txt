@@ -1,1 +1,1 @@
-Model from http://www.3drt.com/downloads.htm
+ModelNode from http://www.3drt.com/downloads.htm

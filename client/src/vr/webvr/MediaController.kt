@@ -21,11 +21,13 @@ class MediaController {
         if (path.endsWith(".obj")) {
             this.objLoader.load(path, { obj ->
                 this.models[path] = obj
+                println("Loaded OBJ model: " + path)
                 onLoad(path, obj)
             })
         } else if (path.endsWith(".dae")) {
             this.colladaLoader.load(path, { collada ->
                 this.models[path] = collada.scene
+                println("Loaded Collada model: " + path)
                 onLoad(path, collada.scene)
             })
         } else if (path.endsWith(".js")) {
@@ -42,6 +44,7 @@ class MediaController {
     fun loadTexture(path: String, onLoad: (path: String, texture:Texture) -> Unit) {
         return this.textureLoader.load(path, { texture ->
             this.textures[path] = texture
+            println("Loaded texture: " + path)
             onLoad(path, texture)
         })
     }

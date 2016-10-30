@@ -8,26 +8,6 @@ import vr.webvr.*
 fun main(args: Array<String>) {
     println("VR client startup...")
 
-    val client = NetworkClient("ws://localhost:8080/ws")
-
-    client.onConnected = { handshakeResponse ->
-        println("Connected " + client.url + " (" + handshakeResponse.software + ")")
-        client.send(listOf(CellSelectRequest(handshakeResponse.cellNames[0])))
-    }
-
-    client.onCellSelected = { cellSelectResponse ->
-        println("Cell selected: " + cellSelectResponse.cellName)
-    }
-
-    client.onReceive = { type, value ->
-        println("Received value: $value")
-    }
-
-    client.onDisconnected = {
-        println("Disconnected")
-    }
-
-
     val displayDeviceController = DisplayDeviceController()
 
     displayDeviceController.startup({
@@ -36,12 +16,33 @@ fun main(args: Array<String>) {
         val inputDeviceController: InputDeviceController
         val mediaController: MediaController
         val inputController: InputController
+        val virtualRealityController: VirtualRealityController
         try {
             renderer = Renderer()
             displayController = DisplayController(displayDeviceController, renderer)
             inputDeviceController = InputDeviceController(displayController)
             mediaController = MediaController()
             inputController = InputController(inputDeviceController)
+            virtualRealityController = VirtualRealityController(displayController)
+
+            val client = NetworkClient("ws://localhost:8080/ws")
+
+            client.onConnected = { handshakeResponse ->
+                println("Connected " + client.url + " (" + handshakeResponse.software + ")")
+                client.send(listOf(CellSelectRequest(handshakeResponse.cellNames[0])))
+            }
+
+            client.onCellSelected = { cellSelectResponse ->
+                println("Cell selected: " + cellSelectResponse.cellName)
+            }
+
+            client.onReceive = { type, value ->
+                virtualRealityController.onReceive(type, value)
+            }
+
+            client.onDisconnected = {
+                println("Disconnected")
+            }
 
             loadMedia(displayController, inputDeviceController, mediaController)
         } catch (t: Throwable) {

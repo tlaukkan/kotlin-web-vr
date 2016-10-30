@@ -18,6 +18,15 @@ class Color(hexString: String) {
 
 @native("THREE.Quaternion")
 class Quaternion(x: Double, y: Double, z: Double, w: Double) {
+  @native
+  var x: Double = noImpl
+  @native
+  var y: Double = noImpl
+  @native
+  var z: Double = noImpl
+  @native
+  var w: Double = noImpl
+
   fun fromArray(array: Array<Any>): Quaternion = noImpl
 }
 

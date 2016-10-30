@@ -10,5 +10,6 @@ val NETWORK_SERVER = NetworkServer()
 
 fun main(args : Array<String>) {
     val serverMain = VrServer()
+
     serverMain.startup()
 }

@@ -25,3 +25,11 @@ fun toJson(value: Any): String {
 fun <T : Any> fromJson(string: String): T {
     return JSON.parse(string)
 }
+
+/**
+ * Dynamic cast to be able to cast JSON parsed objects to their type.
+ */
+fun <T> dynamicCast(obj: Any) : T {
+    val dynamicNode: dynamic = obj
+    return dynamicNode
+}

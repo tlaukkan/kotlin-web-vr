@@ -76,11 +76,11 @@ class WebSocketTest {
     @Test fun testNetworkClient() {
         val mapper = Mapper()
 
-        var received = ArrayList<Any>()
+        var receivedValues = ArrayList<Any>()
 
         val client = NetworkClient("ws://localhost:8080/ws")
         client.onReceive = { value ->
-            received.add(value)
+            receivedValues.add(value)
         }
 
         var connected = false
@@ -122,17 +122,26 @@ class WebSocketTest {
         Assert.assertEquals(defaultCellName, cellSelectedName)
 
         log.info("Sending node...")
-        val node = Node()
+        val node = Node(UUID.randomUUID().toString())
         client.send(listOf(node))
 
         log.info("Waiting node broadcast...")
-        while (received.size < 1) {
+        while (true) {
             Thread.sleep(10)
+            var found = false
+            for (receivedValue in receivedValues) {
+                //System.out.println(mapper.writeValue(node))
+                //System.out.println(mapper.writeValue(receivedValue))
+                if (mapper.writeValue(receivedValue).equals(mapper.writeValue(node))) {
+                    found = true
+                    break
+                }
+            }
+            if (found) {
+                break
+            }
         }
         log.info("Received node broadcast")
-
-
-        Assert.assertEquals(node, received[0])
 
         log.info("Disconnecting...")
         client.shutdown()

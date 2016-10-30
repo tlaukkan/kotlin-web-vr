@@ -10,6 +10,9 @@ class Cell(val name: String) {
     private val nodes: MutableMap<String, Node> = HashMap()
 
     @Synchronized fun addNode(node: Node) : Boolean {
+        if ("00000000-0000-0000-0000-000000000000".equals(node.id)) {
+            return false
+        }
         if (nodes.containsKey(node.url)) {
             return false
         }
