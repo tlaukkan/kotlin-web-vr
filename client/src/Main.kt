@@ -78,7 +78,7 @@ private fun loadMedia(displayController: DisplayController, inputDeviceControlle
         inputDeviceController.inputDeviceModels["OpenVR Gamepad"] = model
     })
 
-    mediaController.loadModel("models/collada/monster/monster.dae", { path, model ->
+    /*mediaController.loadModel("models/collada/monster/monster.dae", { path, model ->
         var monster = model.clone(true)
         monster.scale.x = 0.002
         monster.scale.y = 0.002
@@ -88,7 +88,7 @@ private fun loadMedia(displayController: DisplayController, inputDeviceControlle
         monster.position.y = 0.0
         monster.position.z = 5.0
         displayController.scene.add(monster)
-    })
+    })*/
 
     mediaController.loadModel("models/animated/monster/monster.js", { path, model ->
         var monster = model.clone(true)
