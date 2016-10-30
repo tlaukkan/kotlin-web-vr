@@ -43,10 +43,10 @@ class Renderer {
 
         //scene.add(AmbientLight(0xffffff, 0.5))
 
-        var light = DirectionalLight(0xffffff, 1.0)
-        light.position.set(0.0, 10.0, 0.0)
-        light.updateMatrix()
-        scene.add(light)
+        //var light = DirectionalLight(0xffffff, 0.1)
+        //light.position.set(0.0, 10.0, 0.0)
+        //light.updateMatrix()
+        //scene.add(light)
 
         //camera.position.z = 5.0
     }

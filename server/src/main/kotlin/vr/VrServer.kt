@@ -30,7 +30,6 @@ class VrServer(val url: String = "http://localhost:8080/") {
 
     fun startup(): Unit {
         NETWORK_SERVER.addCell(Cell("Default"))
-        NETWORK_SERVER.getCell("Default").addNode(LightFieldNode("8a58122a-e03e-4ce8-b907-461d047b483f", 0xffffff, 0.1))
 
         log.info("VR server startup...")
         server.start()

@@ -8,9 +8,25 @@ abstract class NodeActuator(var controller: VirtualRealityController, var type: 
 
     abstract fun add(node: Node): Unit
 
-    abstract fun update(node: Node): Unit
+    protected fun add(node: Node, obj: Object3D) {
+        obj.name = node.id
+        updateObjectFromNode(obj, node)
+        controller.scene.add(obj)
+    }
 
-    abstract fun remove(node: Node): Unit
+    open fun update(node: Node) {
+        val obj = controller.scene.getObjectByName(node.id)
+        if (obj != null) {
+            updateObjectFromNode(obj, node)
+        }
+    }
+
+    open fun remove(node: Node) {
+        val obj = controller.scene.getObjectByName(node.id)
+        if (obj != null) {
+            controller.scene.remove(obj)
+        }
+    }
 
     fun updateObjectFromNode(obj: Object3D, node: Node) {
         obj.position.x = node.position.x

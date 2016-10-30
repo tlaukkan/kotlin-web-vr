@@ -1,6 +1,8 @@
 package vr.webvr.actuators
 
 import lib.threejs.AmbientLight
+import lib.threejs.DirectionalLight
+import lib.threejs.Object3D
 import vr.network.model.LightFieldNode
 import vr.network.model.Node
 import vr.util.dynamicCast
@@ -10,23 +12,22 @@ class LightFieldActuator(controller: VirtualRealityController) : NodeActuator(co
 
     override fun add(node: Node) {
         val typedNode: LightFieldNode = dynamicCast(node)
-        val obj = AmbientLight(typedNode.color, typedNode.intensity)
+        println(JSON.stringify(typedNode))
+        val obj: Object3D
+        if (typedNode.direction == null) {
+            obj = AmbientLight(typedNode.color, typedNode.intensity)
+        } else {
+            obj = DirectionalLight(typedNode.color, typedNode.intensity)
+            obj.position.x = typedNode.direction!!.x
+            obj.position.y = typedNode.direction!!.y
+            obj.position.z = typedNode.direction!!.z
+        }
         obj.name = node.id
-        updateObjectFromNode(obj, node)
+        obj.updateMatrix()
+        obj.updateMatrixWorld()
+//        add(node, obj)
         controller.scene.add(obj)
+
     }
 
-    override fun update(node: Node) {
-        val obj = controller.scene.getObjectByName(node.id)
-        if (obj != null) {
-            updateObjectFromNode(obj, node)
-        }
-    }
-
-    override fun remove(node: Node) {
-        val obj = controller.scene.getObjectByName(node.id)
-        if (obj != null) {
-            controller.scene.remove(obj)
-        }
-    }
 }
