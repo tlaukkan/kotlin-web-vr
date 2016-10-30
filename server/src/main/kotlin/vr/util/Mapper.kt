@@ -15,6 +15,7 @@ class Mapper {
         addValueClass(Node::class.java)
         addValueClass(LightFieldNode::class.java)
         addValueClass(ModelNode::class.java)
+        addValueClass(PrimitiveNode::class.java)
         addValueClass(HandshakeRequest::class.java)
         addValueClass(HandshakeResponse::class.java)
         addValueClass(CellSelectRequest::class.java)

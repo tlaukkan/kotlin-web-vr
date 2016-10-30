@@ -11,19 +11,19 @@ fun main(args: Array<String>) {
     val displayDeviceController = DisplayDeviceController()
 
     displayDeviceController.startup({
-        val renderer: Renderer
+        val rendererController: RendererController
         val displayController: DisplayController
         val inputDeviceController: InputDeviceController
         val mediaController: MediaController
         val inputController: InputController
         val virtualRealityController: VirtualRealityController
         try {
-            renderer = Renderer()
-            displayController = DisplayController(displayDeviceController, renderer)
+            rendererController = RendererController()
+            displayController = DisplayController(displayDeviceController, rendererController)
             inputDeviceController = InputDeviceController(displayController)
             mediaController = MediaController()
             inputController = InputController(inputDeviceController)
-            virtualRealityController = VirtualRealityController(displayController)
+            virtualRealityController = VirtualRealityController(displayController, mediaController)
 
             val client = NetworkClient("ws://localhost:8080/ws")
 
@@ -53,8 +53,8 @@ fun main(args: Array<String>) {
         fun render(time: Number): Unit {
             var timeMillis = time.toLong()
             displayDeviceController.display!!.requestAnimationFrame(::render)
-            renderer.render(timeMillis)
-            displayController.render(renderer.scene, renderer.camera)
+            rendererController.render(timeMillis)
+            displayController.render(rendererController.scene, rendererController.camera)
         }
 
         displayDeviceController.display!!.requestAnimationFrame(::render)

@@ -12,7 +12,6 @@ class LightFieldActuator(controller: VirtualRealityController) : NodeActuator(co
 
     override fun add(node: Node) {
         val typedNode: LightFieldNode = dynamicCast(node)
-        println(JSON.stringify(typedNode))
         val obj: Object3D
         if (typedNode.direction == null) {
             obj = AmbientLight(typedNode.color, typedNode.intensity)

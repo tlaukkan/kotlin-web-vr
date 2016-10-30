@@ -4,8 +4,9 @@ import vr.network.model.Node
 import vr.util.dynamicCast
 import vr.webvr.actuators.NodeActuator
 import vr.webvr.actuators.LightFieldActuator
+import vr.webvr.actuators.PrimitiveActuator
 
-class VirtualRealityController(var displayController: DisplayController) {
+class VirtualRealityController(var displayController: DisplayController, var mediaController: MediaController) {
 
     var scene = displayController.scene
     val nodeActuators: MutableMap<String, NodeActuator> = mutableMapOf()
@@ -17,6 +18,7 @@ class VirtualRealityController(var displayController: DisplayController) {
 
     init {
         addNodeActuator(LightFieldActuator(this))
+        addNodeActuator(PrimitiveActuator(this))
     }
 
     fun onReceive(type: String, value: Any) {
