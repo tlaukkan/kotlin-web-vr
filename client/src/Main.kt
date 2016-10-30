@@ -1,6 +1,7 @@
 import vr.network.NetworkClient
 import lib.threejs.MeshPhongMaterial
 import lib.threejs.Object3D
+import lib.threejs.Vector3
 import vr.network.model.CellSelectRequest
 import vr.webvr.*
 
@@ -42,7 +43,7 @@ fun main(args: Array<String>) {
             mediaController = MediaController()
             inputController = InputController(inputDeviceController)
 
-            loadMedia(inputDeviceController, mediaController)
+            loadMedia(displayController, inputDeviceController, mediaController)
         } catch (t: Throwable) {
             println("VR client startup error: $t")
             return@startup
@@ -61,7 +62,7 @@ fun main(args: Array<String>) {
     })
 }
 
-private fun loadMedia(inputDeviceController: InputDeviceController, mediaController: MediaController) {
+private fun loadMedia(displayController: DisplayController, inputDeviceController: InputDeviceController, mediaController: MediaController) {
     var vivePath = "models/obj/vive-controller/"
     mediaController.loadModel(vivePath + "vr_controller_vive_1_5.obj", { path, model ->
         var inputDeviceModel: Object3D = model.children[0]
@@ -75,5 +76,18 @@ private fun loadMedia(inputDeviceController: InputDeviceController, mediaControl
 
         inputDeviceController.inputDeviceModels["OpenVR Gamepad"] = model
     })
+
+    mediaController.loadModel("models/collada/monster/monster.dae", { path, model ->
+        var monster1 = model.clone(true)
+        monster1.scale.x = 0.002
+        monster1.scale.y = 0.002
+        monster1.scale.z = 0.002
+
+        monster1.position.x = 0.0
+        monster1.position.y = 0.0
+        monster1.position.z = 0.0
+        displayController.scene.add(monster1)
+    })
+
 }
 

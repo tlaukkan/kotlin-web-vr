@@ -8,13 +8,21 @@ class MediaController {
     val textures: MutableMap<String, Texture> = mutableMapOf()
 
     val objLoader = OBJLoader()
+    val colladaLoader = ColladaLoader()
     val textureLoader = TextureLoader()
 
     fun loadModel(path: String, onLoad: (path: String, model:Object3D) -> Unit) {
-        this.objLoader.load(path, { obj ->
-            this.models[path] = obj
-            onLoad(path, obj)
-        })
+        if (path.endsWith(".obj")) {
+            this.objLoader.load(path, { obj ->
+                this.models[path] = obj
+                onLoad(path, obj)
+            })
+        } else if (path.endsWith(".dae")) {
+            this.colladaLoader.load(path, { collada ->
+                this.models[path] = collada.scene
+                onLoad(path, collada.scene)
+            })
+        }
     }
 
     fun loadTexture(path: String, onLoad: (path: String, texture:Texture) -> Unit) {

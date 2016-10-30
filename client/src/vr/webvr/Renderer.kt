@@ -34,6 +34,9 @@ class Renderer {
         })
 
         cube = Mesh(geometry, material)
+        cube.scale.x = 0.1
+        cube.scale.y = 0.1
+        cube.scale.z = 0.1
         scene.add(cube)
 
         //scene.add(HemisphereLight(0x404020, 0x202040, 0.5))
