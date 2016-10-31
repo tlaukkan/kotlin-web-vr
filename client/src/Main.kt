@@ -15,14 +15,12 @@ fun main(args: Array<String>) {
         val displayController: DisplayController
         val inputDeviceController: InputDeviceController
         val mediaController: MediaController
-        val inputController: InputController
         val virtualRealityController: VirtualRealityController
         try {
             rendererController = RendererController()
             displayController = DisplayController(displayDeviceController, rendererController)
             inputDeviceController = InputDeviceController(displayController)
             mediaController = MediaController()
-            inputController = InputController(inputDeviceController)
             virtualRealityController = VirtualRealityController(displayController, mediaController)
 
             val client = NetworkClient("ws://localhost:8080/ws")

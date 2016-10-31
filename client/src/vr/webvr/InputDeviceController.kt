@@ -16,6 +16,8 @@ class InputDeviceController(displayController: DisplayController) {
 
     init {
         this.update()
+
+        val openVRGamepad = OpenVrGamepad(this)
     }
 
     fun update() {
