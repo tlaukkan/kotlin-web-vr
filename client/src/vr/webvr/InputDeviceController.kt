@@ -6,6 +6,7 @@ import lib.webvrapi.Gamepad
 import lib.webvrapi.getGamepads
 import lib.webvrapi.navigator
 import vr.webvr.devices.OpenVrGamepad
+import vr.webvr.tools.DefaultTool
 import kotlin.browser.window
 
 class InputDeviceController(displayController: DisplayController) {
@@ -54,6 +55,10 @@ class InputDeviceController(displayController: DisplayController) {
                     println("Unknown gamepad ${gamepad.id}")
                     continue
                 }
+
+                controller.tools.add(DefaultTool(controller))
+                controller.tools[0].activate()
+
                 controller.standingMatrix = displayController.standingMatrix
 
                 this.inputDevices[gamepad.index] = controller

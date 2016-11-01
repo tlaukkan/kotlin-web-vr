@@ -6,6 +6,7 @@ import vr.util.floatsToDoubles
 import lib.webvrapi.Gamepad
 import lib.webvrapi.getGamepads
 import lib.webvrapi.navigator
+import vr.webvr.tools.Tool
 import kotlin.browser.window
 
 /**
@@ -19,6 +20,7 @@ abstract class InputDevice(index: Int, type: String) {
     val index = index
     val type = type
 
+    val tools: MutableList<Tool> = mutableListOf()
     var gamepad: Gamepad? = null
     val entity: Object3D = Object3D()
 
