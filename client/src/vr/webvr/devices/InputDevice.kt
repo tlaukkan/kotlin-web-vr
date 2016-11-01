@@ -1,4 +1,4 @@
-package vr.webvr.model
+package vr.webvr.devices
 
 import lib.threejs.Matrix4
 import lib.threejs.Object3D
@@ -14,7 +14,7 @@ import kotlin.browser.window
  * @author Tommi S.E. Laukkanen / https://github.com/tlaukkan
  * @author mrdoob / http://mrdoob.com/
  */
-class InputDevice(index: Int, type: String, handler: (controller: InputDevice) -> Unit) : Object3D() {
+abstract class InputDevice(index: Int, type: String) {
     /**
      * The controller ID.
      */
@@ -24,10 +24,6 @@ class InputDevice(index: Int, type: String, handler: (controller: InputDevice) -
      */
     val type = type
     /**
-     * The controller handler.
-     */
-    val handler = handler
-    /**
      * The standaing matrix.
      * @type {THREE.Matrix4}
      */
@@ -36,18 +32,23 @@ class InputDevice(index: Int, type: String, handler: (controller: InputDevice) -
      * The game pad.
      */
     var gamepad: Gamepad? = null
+    /**
+     * The entity
+     */
+    val entity: Object3D = Object3D()
 
     init {
-        this.matrixAutoUpdate = false
-        this.update()
+        this.entity.matrixAutoUpdate = false
+        this.render()
     }
+
+    abstract fun processInput()
 
     /**
      * Updates object state according controller physical state.
      */
-    fun update() : Unit {
-        // TODO integrate this with main update loop
-        window.requestAnimationFrame( { this.update()})
+    fun render() : Unit {
+        window.requestAnimationFrame( { this.render()})
 
         var gamepad: Gamepad = navigator.getGamepads()[this.index]
 
@@ -56,17 +57,17 @@ class InputDevice(index: Int, type: String, handler: (controller: InputDevice) -
             var pose = gamepad.pose
 
             if (pose != null && pose != undefined) {
-                this.position.fromArray(floatsToDoubles(pose.position).toTypedArray())
-                this.quaternion.fromArray(floatsToDoubles(pose.orientation).toTypedArray())
-                this.matrix.compose(this.position, this.quaternion, this.scale)
-                this.matrix.multiplyMatrices(this.standingMatrix, this.matrix)
-                this.matrixWorldNeedsUpdate = true
+                this.entity.position.fromArray(floatsToDoubles(pose.position).toTypedArray())
+                this.entity.quaternion.fromArray(floatsToDoubles(pose.orientation).toTypedArray())
+                this.entity.matrix.compose(this.entity.position, this.entity.quaternion, this.entity.scale)
+                this.entity.matrix.multiplyMatrices(this.standingMatrix, this.entity.matrix)
+                this.entity.matrixWorldNeedsUpdate = true
 
                 this.gamepad = gamepad
-                this.handler(this)
+                //this.processInput()
             }
 
-            this.visible = true
+            this.entity.visible = true
         }
 
     }

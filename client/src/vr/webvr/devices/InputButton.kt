@@ -1,8 +1,5 @@
-package vr.webvr
+package vr.webvr.devices
 
-/**
- * Created by tlaukkan on 10/31/2016.
- */
 enum class InputButton {
     TOUCH_PAD,
     TRIGGER,
