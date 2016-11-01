@@ -73,7 +73,7 @@ class InputDeviceController(displayController: DisplayController) {
             // Delete controller if gamepad does not exist or is of different type.
             if (gamepad == null || (gamepad.id != controller.type || !gamepad.connected || gamepad.pose == null) ) {
 
-                displayController.scene.remove(controller)
+                displayController.scene.remove(controller.entity)
                 inputDevices.remove(index)
                 println("InputDevice removed: " + gamepad.index + ":" + gamepad.id)
                 continue
