@@ -11,44 +11,35 @@ import kotlin.browser.window
 /**
  * The VR controller object.
  *
- * @author Tommi S.E. Laukkanen / https://github.com/tlaukkan
  * @author mrdoob / http://mrdoob.com/
+ * @author Tommi S.E. Laukkanen / https://github.com/tlaukkan
  */
 abstract class InputDevice(index: Int, type: String) {
-    /**
-     * The controller ID.
-     */
+
     val index = index
-    /**
-     * The controller type.
-     */
     val type = type
-    /**
-     * The standaing matrix.
-     * @type {THREE.Matrix4}
-     */
-    var standingMatrix = Matrix4()
-    /**
-     * The game pad.
-     */
+
     var gamepad: Gamepad? = null
-    /**
-     * The entity
-     */
     val entity: Object3D = Object3D()
+
+    var onSqueezed : ((button: InputButton, value: Double) -> Unit)? = null
+    var onPressed: ((button: InputButton) -> Unit)? = null
+    var onReleased: ((button: InputButton) -> Unit)? = null
+    var onPadTouched: ((x: Double, y: Double) -> Unit)? = null
+
+    var pressedButtons: MutableList<InputButton> = mutableListOf()
+
+    var standingMatrix = Matrix4()
 
     init {
         this.entity.matrixAutoUpdate = false
         this.render()
     }
 
-    abstract fun processInput()
-
     /**
      * Updates object state according controller physical state.
      */
     fun render() : Unit {
-        window.requestAnimationFrame( { this.render()})
 
         var gamepad: Gamepad = navigator.getGamepads()[this.index]
 
@@ -62,15 +53,39 @@ abstract class InputDevice(index: Int, type: String) {
                 this.entity.matrix.compose(this.entity.position, this.entity.quaternion, this.entity.scale)
                 this.entity.matrix.multiplyMatrices(this.standingMatrix, this.entity.matrix)
                 this.entity.matrixWorldNeedsUpdate = true
-
                 this.gamepad = gamepad
-                //this.processInput()
             }
 
             this.entity.visible = true
         }
 
     }
+
+    fun squeezed(button: InputButton, value: Double) {
+        if (onSqueezed != null) {
+            onSqueezed!!(button, value)
+        }
+    }
+
+    fun pressed(button: InputButton) {
+        if (onPressed != null) {
+            onPressed!!(button)
+        }
+    }
+
+    fun released(button: InputButton) {
+        if (onReleased != null) {
+            onReleased!!(button)
+        }
+    }
+
+    fun touchPadTouched(x: Double, y: Double) {
+        if (onPadTouched != null) {
+            onPadTouched!!(x,y)
+        }
+    }
+
+    abstract fun processInput()
 
 }
 

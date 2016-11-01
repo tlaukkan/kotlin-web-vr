@@ -4,13 +4,6 @@ import vr.webvr.InputDeviceController
 
 class OpenVrGamepad(inputDeviceController: InputDeviceController, index: Int, type: String) : InputDevice(index, type) {
 
-    var pressed: MutableList<InputButton> = mutableListOf()
-
-    var onSqueezed : ((button: InputButton, value: Double) -> Unit)? = null
-    var onPressed: ((button: InputButton) -> Unit)? = null
-    var onReleased: ((button: InputButton) -> Unit)? = null
-    var onPadTouched: ((x: Double, y: Double) -> Unit)? = null
-
     override fun processInput() {
 
         var axes = gamepad!!.axes
@@ -68,13 +61,13 @@ class OpenVrGamepad(inputDeviceController: InputDeviceController, index: Int, ty
             }
 
             if (button.pressed) {
-                if (!pressed.contains(inputButton)) {
-                    pressed.add(inputButton)
+                if (!pressedButtons.contains(inputButton)) {
+                    pressedButtons.add(inputButton)
                     pressed(inputButton)
                 }
             } else {
-                if (pressed.contains(inputButton)) {
-                    pressed.remove(inputButton)
+                if (pressedButtons.contains(inputButton)) {
+                    pressedButtons.remove(inputButton)
                     released(inputButton)
                 }
             }
@@ -86,29 +79,6 @@ class OpenVrGamepad(inputDeviceController: InputDeviceController, index: Int, ty
 
     }
 
-    fun squeezed(button: InputButton, value: Double) {
-        if (onSqueezed != null) {
-            onSqueezed!!(button, value)
-        }
-    }
-
-    fun pressed(button: InputButton) {
-        if (onPressed != null) {
-            onPressed!!(button)
-        }
-    }
-
-    fun released(button: InputButton) {
-        if (onReleased != null) {
-            onReleased!!(button)
-        }
-    }
-
-    fun touchPadTouched(x: Double, y: Double) {
-        if (onPadTouched != null) {
-            onPadTouched!!(x,y)
-        }
-    }
 
 
 }

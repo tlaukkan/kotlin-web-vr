@@ -51,6 +51,8 @@ fun main(args: Array<String>) {
         fun render(time: Number): Unit {
             var timeMillis = time.toLong()
             displayDeviceController.display!!.requestAnimationFrame(::render)
+
+            inputDeviceController.render()
             rendererController.render(timeMillis)
             displayController.render(rendererController.scene, rendererController.camera)
         }

@@ -19,6 +19,14 @@ class InputDeviceController(displayController: DisplayController) {
         this.processInput()
     }
 
+    fun render() {
+        for (inputDevice in inputDevices.values) {
+            if (inputDevice.gamepad != null) {
+                inputDevice.render()
+            }
+        }
+    }
+
     fun processInput() {
         window.setTimeout({ processInput() }, 100, null)
 
