@@ -23,6 +23,7 @@ class NodesResourceTest {
 
     @Before fun setUp() {
         server.startup()
+        NETWORK_SERVER.addCell(Cell("Default"))
     }
 
     @After fun tearDown() {
