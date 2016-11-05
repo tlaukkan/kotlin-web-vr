@@ -1,3 +1,9 @@
 package vr.config
 
-class CellConfig(var name: String = "")
+import vr.network.model.LightFieldNode
+import vr.network.model.PrimitiveNode
+import java.util.*
+
+class CellConfig(var name: String = "",
+                 var primitives: List<PrimitiveNode> = ArrayList<PrimitiveNode>(),
+                 var lightFields: List<LightFieldNode> = ArrayList<LightFieldNode>())

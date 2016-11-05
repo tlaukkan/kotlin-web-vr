@@ -35,15 +35,25 @@ fun main(args : Array<String>) {
             log.info("Adding cell ${cellConfig.name} to server ${serverConfig.name}")
             var cell = Cell(cellConfig.name)
             NETWORK_SERVER.addCell(cell)
-            cell.addNode(LightFieldNode(UUID.randomUUID().toString(), 0xffffff, 0.2))
-            cell.addNode(LightFieldNode(UUID.randomUUID().toString(), 0xffffff, 1.0, DataVector3(0.0, 0.8, 0.0)))
+            //cell.addNode(LightFieldNode(UUID.randomUUID().toString(), 0xffffff, 0.2))
+            //cell.addNode(LightFieldNode(UUID.randomUUID().toString(), 0xffffff, 1.0, DataVector3(0.0, 0.8, 0.0)))
 
-            var node = PrimitiveNode(UUID.randomUUID().toString(), "box", "textures/paree_nightmare.jpg")
+            for (node in cellConfig.primitives) {
+                node.url = serverConfig.url + "/nodes/" + node.id
+                cell.addNode(node)
+            }
+
+            for (node in cellConfig.lightFields) {
+                node.url = serverConfig.url + "/nodes/" + node.id
+                cell.addNode(node)
+            }
+
+            /*var node = PrimitiveNode(UUID.randomUUID().toString(), "box", "textures/paree_nightmare.jpg")
             node.position.x = -5.0
             node.scale.x = 0.2
             node.scale.y = 0.2
             node.scale.z = 0.2
-            cell.addNode(node)
+            cell.addNode(node)*/
         }
 
     }

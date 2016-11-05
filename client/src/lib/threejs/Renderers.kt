@@ -3,7 +3,7 @@ package lib.threejs
 import org.w3c.dom.Element
 
 @native("THREE.WebGLRenderer")
-open class WebGLRenderer {
+open class WebGLRenderer(parameters: Any) {
   @native var domElement: Element = noImpl
   @native var autoClear: Boolean = noImpl
   @native var sortObjects: Boolean = noImpl

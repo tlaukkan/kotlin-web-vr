@@ -18,7 +18,7 @@ class RendererController {
     init {
         scene = Scene()
         camera = PerspectiveCamera(75.0, window.innerWidth / window.innerHeight, 0.1, 1000.0)
-        renderer = WebGLRenderer()
+        renderer = WebGLRenderer( object {var antialias = true})
         renderer.setSize(window.innerWidth, window.innerHeight)
         renderer.setPixelRatio(window.devicePixelRatio)
         renderer.sortObjects = false
