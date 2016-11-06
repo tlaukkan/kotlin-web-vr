@@ -104,8 +104,25 @@ class NetworkServer(val server: VrServer) {
                     if (serverCellsFound) {
                         session.serverCellUris = value.serverCellUris.toList()
                         session.clientCellUris = value.clientCellUris.toList()
+
+                        val expandedServerCellUris: MutableList<String> = mutableListOf()
+                        expandedServerCellUris.addAll(value.serverCellUris)
+
+                        val expandedClientCellUris: MutableList<String> = mutableListOf()
+                        expandedClientCellUris.addAll(value.clientCellUris)
+
+                        val neighbours: MutableList<Neighbour> = mutableListOf()
+                        for (serverCellUri in value.serverCellUris) {
+                            var serverCell = cells[serverCellUri]!!
+                            for (neighbourCellUri in serverCell.neighbours.keys) {
+                                val neighbourCell = cells[neighbourCellUri]!!
+                                expandedServerCellUris.add(neighbourCell.cellUri)
+                                neighbours.add(Neighbour(serverCell.cellUri, neighbourCell.cellUri))
+                            }
+                        }
+
                         val responseEnvelope = Envelope()
-                        val cellSelectResponse = LinkResponse(true, value.clientCellUris, value.serverCellUris, "")
+                        val cellSelectResponse = LinkResponse(true, value.clientCellUris, expandedServerCellUris.toTypedArray(),neighbours.toTypedArray())
                         val values: MutableList<Any> = mutableListOf()
                         values.add(cellSelectResponse)
                         for (cellUri in session.serverCellUris) {
@@ -142,7 +159,7 @@ class NetworkServer(val server: VrServer) {
                         log.info("Link accepted : ${session.remoteHost}:${session.remotePort} server cells ${value.serverCellUris.toList()}, client cells: ${value.clientCellUris.toList()}")
                     } else {
                         val responseEnvelope = Envelope()
-                        val cellSelectResponse = LinkResponse(true, arrayOf(), arrayOf(), "No such cell(s): $notFoundServerCellUris")
+                        val cellSelectResponse = LinkResponse(true, arrayOf(), arrayOf(), arrayOf(), "No such cell(s): $notFoundServerCellUris")
                         val values: MutableList<Any> = mutableListOf()
                         values.add(cellSelectResponse)
                         mapper.writeValuesToEnvelope(responseEnvelope, values)
