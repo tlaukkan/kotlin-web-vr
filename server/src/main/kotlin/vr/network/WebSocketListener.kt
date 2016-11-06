@@ -3,6 +3,7 @@ package vr.network
 import logger
 import vr.model.Session
 import org.glassfish.grizzly.websockets.*
+import vr.PORT_NETWORK_SERVER_MAP
 import java.net.URL
 import java.util.*
 import java.util.logging.Level
@@ -13,7 +14,6 @@ import java.util.logging.Level
 class WebSocketListener() : WebSocketApplication() {
 
     private val log = logger()
-    val portServerMap: MutableMap<Int, NetworkServer> = HashMap()
     val socketServerMap: MutableMap<WebSocket, NetworkServer> = HashMap()
 
     init {
@@ -28,7 +28,7 @@ class WebSocketListener() : WebSocketApplication() {
         val remoteHost = defaultWebSocket.upgradeRequest.remoteHost
         val remotePort = socket.upgradeRequest.remotePort
 
-        val networkServer = portServerMap[port]!!
+        val networkServer = PORT_NETWORK_SERVER_MAP[port]!!
         socketServerMap[socket] = networkServer
         networkServer.addSession(Session(remoteHost, remotePort, socket))
     }

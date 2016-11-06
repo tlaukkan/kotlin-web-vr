@@ -15,10 +15,14 @@ import org.glassfish.jersey.server.spi.Container
 import vr.network.NetworkServer
 import vr.network.WebSocketListener
 import java.net.URI
+import java.util.*
 
 import javax.ws.rs.core.UriBuilder
 
 val WEB_SOCKET_LISTENER = WebSocketListener()
+
+val PORT_NETWORK_SERVER_MAP: MutableMap<Int, NetworkServer> = HashMap()
+
 
 class VrServer(val url: String = "http://localhost:8080/") {
     private val log = logger()
@@ -81,7 +85,7 @@ class VrServer(val url: String = "http://localhost:8080/") {
         // Add web socket support.
         server.getListener("grizzly").registerAddOn(WebSocketAddOn())
         //val wsListener = WebSocketListener(networkServer)
-        WEB_SOCKET_LISTENER.portServerMap[uri.port] = networkServer
+        PORT_NETWORK_SERVER_MAP[uri.port] = networkServer
 
         server.getListener("grizzly").getFileCache().setEnabled(false);
 
