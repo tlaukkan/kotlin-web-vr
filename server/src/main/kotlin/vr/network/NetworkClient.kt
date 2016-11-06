@@ -15,11 +15,11 @@ class NetworkClient(val url: String) {
     private val mapper = Mapper()
 
     var connected = false
-    var cellSelected = false
+    var linked = false
     var serverCellUri = ""
 
     var onConnected: ((handshakeResponse: HandshakeResponse) -> Unit)? = null
-    var onCellSelected: ((linkResponse: LinkResponse) -> Unit)? = null
+    var onLinked: ((linkResponse: LinkResponse) -> Unit)? = null
     var onReceive: ((value: Any) -> Unit)? = null
     var onDisconnected: ((reason: String) -> Unit)? = null
 
@@ -69,10 +69,10 @@ class NetworkClient(val url: String) {
             }
         } else if (value is LinkResponse) {
             if (value.success && value.serverCellUris.size == 1) {
-                cellSelected = true
+                linked = true
                 serverCellUri = value.serverCellUris[0]
-                if (onCellSelected != null) {
-                    onCellSelected!!.invoke(value)
+                if (onLinked != null) {
+                    onLinked!!.invoke(value)
                 }
             } else {
                 log.warning("Link failed ${value.errorMessage} with ${value.serverCellUris.size} linked server cells.")

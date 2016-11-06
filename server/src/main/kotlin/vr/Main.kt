@@ -19,10 +19,13 @@ val IDENTITY_STORE = IdentityStore()
 private val log = Logger.getLogger("vr.main")
 
 fun main(args : Array<String>) {
-    val mapper = ObjectMapper(YAMLFactory())
     val string = FileUtils.readFileToString(File("servers.yaml"), Charset.forName("UTF-8"))
-    val serversConfig = mapper.readValue(string, ServersConfig::class.java)
+    var servers = configureServers(string)
+}
 
+fun configureServers(string: String?) : Map<String, VrServer> {
+    val mapper = ObjectMapper(YAMLFactory())
+    val serversConfig = mapper.readValue(string, ServersConfig::class.java)
     val servers: MutableMap<String, VrServer> = mutableMapOf()
     for (serverConfig in serversConfig.servers) {
         log.info("Starting server ${serverConfig.name} at ${serverConfig.uri}")
@@ -62,13 +65,13 @@ fun main(args : Array<String>) {
                 val remoteNeighbour = !neighbourCellUri.startsWith(serverConfig.uri)
 
                 if (!server.networkServer.hasCell(neighbourCellUri)) {
-                   if (remoteNeighbour) {
-                       server.networkServer.addCell(Cell(neighbourCellUri, true))
-                       log.info("Added remote neighbour cell: $neighbourCellUri")
-                   } else {
+                    if (remoteNeighbour) {
+                        server.networkServer.addCell(Cell(neighbourCellUri, true))
+                        log.info("Added remote neighbour cell: $neighbourCellUri")
+                    } else {
                         log.warning("No such local neighbour cell: $neighbourCellUri")
                         continue
-                   }
+                    }
                 }
 
                 val neighbourCell = server.networkServer.getCell(neighbourCellUri)!!
@@ -81,7 +84,11 @@ fun main(args : Array<String>) {
 
                 log.info("Added neighbours: ${cell.cellUri} ${cell.neighbours[neighbourCellUri]} - ${neighbourCell.cellUri} ${neighbourCell.neighbours[cell.cellUri]}")
             }
+
         }
+
     }
+
+    return servers
 
 }

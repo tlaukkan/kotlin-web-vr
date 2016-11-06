@@ -1,6 +1,7 @@
 package vr
 
 import logger
+import org.apache.commons.io.FileUtils
 import vr.network.NetworkClient
 import vr.util.Mapper
 import vr.network.WsClient
@@ -9,26 +10,35 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import vr.network.model.*
+import java.io.File
+import java.nio.charset.Charset
 import java.util.*
 import java.util.logging.Level
 import java.util.logging.LogManager
 
-class WebSocketTest {
+class NetworkTest {
     private val log = logger()
 
-    private var server: VrServer = VrServer()
+    private var servers: Map<String, VrServer> = mapOf()
+    //private var server: VrServer = VrServer()
 
     init {
         LogManager.getLogManager().readConfiguration(this.javaClass.getResourceAsStream("/logging.properties"))
     }
 
     @Before fun setUp() {
-        server.startup()
-        server.networkServer.addCell(Cell("http://localhost:8080/api/cells/default"))
+        val string = FileUtils.readFileToString(File("../servers.yaml"), Charset.forName("UTF-8"))
+        servers = configureServers(string)
+
+        //server.startup()
+        //server.networkServer.addCell(Cell("http://localhost:8080/api/cells/default"))
     }
 
     @After fun tearDown() {
-        server.shutdown()
+        //server.shutdown()
+        for (server in servers.values) {
+            server.shutdown()
+        }
     }
 
     @Test fun testWsClient() {
@@ -92,7 +102,7 @@ class WebSocketTest {
         }
         var cellSelected = false
         var linkedServerCellUri = ""
-        client.onCellSelected = { cellSelectedResponse ->
+        client.onLinked = { cellSelectedResponse ->
             cellSelected = true
             linkedServerCellUri = cellSelectedResponse.serverCellUris[0]
         }
@@ -111,20 +121,20 @@ class WebSocketTest {
         Assert.assertNotNull(handshakeResponse)
 
         val firstServerCellUri = handshakeResponse!!.serverCellUris[0]
-        log.info("Selecting first server cell URI $firstServerCellUri ...")
+        log.info("Linking with first server cell URI $firstServerCellUri ...")
         client.send(listOf(LinkRequest(arrayOf(), arrayOf(firstServerCellUri))))
 
         while (!cellSelected) {
             Thread.sleep(10)
         }
 
-        log.info("Selected cell.")
-        Assert.assertTrue(client.cellSelected)
+        log.info("Linked to cell $linkedServerCellUri")
+        Assert.assertTrue(client.linked)
         Assert.assertEquals(firstServerCellUri, linkedServerCellUri)
 
         log.info("Sending node...")
         val node = Node(UUID.randomUUID().toString())
-        node.url = "http://localhost:8080/api/cells/default/${node.id}"
+        node.url = "$linkedServerCellUri/${node.id}"
         client.send(listOf(node))
 
         log.info("Waiting node broadcast...")
