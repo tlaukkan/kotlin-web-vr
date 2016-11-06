@@ -2,13 +2,10 @@ package vr.network
 
 import logger
 import vr.Cell
-import vr.network.model.HandshakeResponse
 import vr.network.model.LinkRequest
+import vr.network.model.Neighbour
 import vr.network.model.Node
-import java.net.URI
-import java.net.URL
 import java.util.*
-import java.util.logging.Level
 import kotlin.concurrent.fixedRateTimer
 
 class NetworkLinker(val networkServer: NetworkServer) {
@@ -45,9 +42,9 @@ class NetworkLinker(val networkServer: NetworkServer) {
                     client.onConnected = { handshakeResponse_ ->
                         log.info("Linker connected to remote server ${cell.serverUrl}")
 
-                        //TODO make sure that server expands server cell list with neighbours
                         val serverCellUris: MutableList<String> = mutableListOf()
                         val clientCellUris: MutableList<String> = mutableListOf()
+                        val neighbours: MutableList<Neighbour> = mutableListOf()
                         for (candidateCell in networkServer.getCells()) {
                             if (candidateCell.remoteCell && candidateCell.serverUrl.equals(cell.serverUrl)) {
                                 serverCellUris.add(candidateCell.cellUri)
@@ -56,11 +53,13 @@ class NetworkLinker(val networkServer: NetworkServer) {
                                         val candidateNeighbourCell = networkServer.getCell(candidateNeighbourCellUri)
                                         if (!candidateNeighbourCell.remoteCell) {
                                             clientCellUris.add(candidateNeighbourCellUri)
+                                            neighbours.add(Neighbour(candidateCell.cellUri, candidateNeighbourCell.cellUri, candidateCell.neighbours[candidateNeighbourCellUri]!!))
                                             for (candidateNeighbourNeighbourCellUri in candidateNeighbourCell.neighbours.keys) {
                                                 if (networkServer.hasCell(candidateNeighbourNeighbourCellUri)) {
                                                     val candidateNeighbourNeighbourCell = networkServer.getCell(candidateNeighbourNeighbourCellUri)
                                                     if (!candidateNeighbourNeighbourCell.remoteCell) {
                                                         clientCellUris.add(candidateNeighbourNeighbourCellUri)
+                                                        neighbours.add(Neighbour(candidateNeighbourCell.cellUri, candidateNeighbourNeighbourCell.cellUri, candidateNeighbourCell.neighbours[candidateNeighbourNeighbourCellUri]!!))
                                                     }
                                                 }
                                             }
@@ -69,7 +68,7 @@ class NetworkLinker(val networkServer: NetworkServer) {
                                 }
                             }
                         }
-                        client.send(listOf(LinkRequest(clientCellUris.toTypedArray(), serverCellUris.toTypedArray())))
+                        client.send(listOf(LinkRequest(clientCellUris.toTypedArray(), serverCellUris.toTypedArray(), neighbours.toTypedArray())))
 
                     }
                     client.onLinked = { linkResponse ->

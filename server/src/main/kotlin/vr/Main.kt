@@ -52,7 +52,7 @@ fun configureServers(string: String?) : Map<String, VrServer> {
 
         for (cellConfig in serverConfig.cells) {
             for (neighbour in cellConfig.neighbours.keys) {
-                var cell = Cell("${serverConfig.uri}api/cells/${cellConfig.name}")
+                var cell = server.networkServer.getCell("${serverConfig.uri}api/cells/${cellConfig.name}")
 
                 val neighbourCellUri: String
                 if (neighbour.contains('/')) {

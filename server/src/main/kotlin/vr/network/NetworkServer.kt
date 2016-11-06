@@ -121,6 +121,22 @@ class NetworkServer(val server: VrServer) {
                             }
                         }
 
+                        for (neighbour in value.neighbours) {
+                            val cellOne = cells[neighbour.cellUriOne]
+                            val cellTwo = cells[neighbour.cellUriTwo]
+                            val neighbourVector = neighbour.oneTwoDeltaVector
+
+                            if (!cellOne!!.neighbours.containsKey(cellTwo!!.cellUri)) {
+                                cellOne!!.neighbours[cellTwo!!.cellUri] = neighbourVector
+                                cellTwo!!.neighbours[cellOne!!.cellUri] = DataVector3(
+                                        -neighbourVector.x,
+                                        -neighbourVector.y,
+                                        -neighbourVector.z
+                                )
+                                log.info("Added neighbours: ${cellOne.cellUri} ${cellOne.neighbours[neighbour.cellUriTwo]} - ${cellTwo.cellUri} ${cellTwo.neighbours[neighbour.cellUriOne]}")
+                            }
+                        }
+
                         mapper.writeValuesToEnvelope(responseEnvelope, values)
                         socket.send(mapper.writeValue(responseEnvelope))
                         log.info("Link accepted : ${session.remoteHost}:${session.remotePort} server cells ${value.serverCellUris.toList()}, client cells: ${value.clientCellUris.toList()}")
