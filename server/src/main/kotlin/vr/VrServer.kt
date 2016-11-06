@@ -7,21 +7,23 @@ import org.glassfish.grizzly.http.server.HttpServer
 import org.glassfish.grizzly.http.server.NetworkListener
 import org.glassfish.grizzly.ssl.SSLEngineConfigurator
 import org.glassfish.grizzly.websockets.WebSocketAddOn
-import org.glassfish.grizzly.websockets.WebSocketEngine
 import vr.util.grizzly.GrizzlyHttpContainer
 import org.glassfish.grizzly.http.server.StaticHttpHandler
 import org.glassfish.jersey.process.JerseyProcessingUncaughtExceptionHandler
 import org.glassfish.jersey.server.ResourceConfig
 import org.glassfish.jersey.server.spi.Container
+import vr.network.NetworkServer
 import vr.network.WebSocketListener
-import vr.network.model.LightFieldNode
 import java.net.URI
 
 import javax.ws.rs.core.UriBuilder
 
+val WEB_SOCKET_LISTENER = WebSocketListener()
+
 class VrServer(val url: String = "http://localhost:8080/") {
     private val log = logger()
 
+    val networkServer = NetworkServer(this)
     val server: HttpServer = createHttpServer( UriBuilder.fromUri(url).build(), false, null)
 
     init {
@@ -78,8 +80,8 @@ class VrServer(val url: String = "http://localhost:8080/") {
 
         // Add web socket support.
         server.getListener("grizzly").registerAddOn(WebSocketAddOn())
-        val wsListener = WebSocketListener()
-        WebSocketEngine.getEngine().register("", "/ws", wsListener)
+        //val wsListener = WebSocketListener(networkServer)
+        WEB_SOCKET_LISTENER.portServerMap[uri.port] = networkServer
 
         server.getListener("grizzly").getFileCache().setEnabled(false);
 

@@ -3,15 +3,21 @@ servers:
     uri: http://127.0.0.1:8080/
     cells:
       - name: a
+        neighbours:
+          http://127.0.0.1:8081/api/cells/c: { x: 0.0, y: -20.0, z: 0.0 }
         primitives:
-        - { id: d630b472-d717-4dfc-a6e7-d949fe9a90f5, shape: box, texture: textures/paree_nightmare.jpg, position: { x: -5.0 } }
+          - { id: d630b472-d717-4dfc-a6e7-d949fe9a90f5, shape: box, texture: textures/paree_nightmare.jpg, position: { x: -5.0 } }
         lightFields:
-        - { id: bdbb2068-dd0a-4217-9a5f-2104513b6c5e, color: 16777215, intensity: 0.2 }
-        - { id: 3a2b2338-2bf3-439d-9ffd-d6dba191c336, color: 16777215, intensity: 1.0, direction: { x: 0.0, y: 1.0, z: 0.0 } }
+          - { id: bdbb2068-dd0a-4217-9a5f-2104513b6c5e, color: 16777215, intensity: 0.2 }
+          - { id: 3a2b2338-2bf3-439d-9ffd-d6dba191c336, color: 16777215, intensity: 1.0, direction: { x: 0.0, y: 1.0, z: 0.0 } }
       - name: b
+        neighbours:
+          a: { x: 10.0, y: 0.0, z: 0.0 }
   - name: server 2
     uri: http://127.0.0.1:8081/
     cells:
       - name: c
       - name: d
+        neighbours:
+          c: { x: 0.0, y: 0.0, z: 10.0 }
 

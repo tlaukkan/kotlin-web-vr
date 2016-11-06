@@ -14,11 +14,7 @@ import java.nio.charset.Charset
 import java.util.*
 import java.util.logging.Logger
 
-//val CELL = Cell("Default")
-
 val IDENTITY_STORE = IdentityStore()
-
-val NETWORK_SERVER = NetworkServer()
 
 private val log = Logger.getLogger("vr.main")
 
@@ -27,16 +23,17 @@ fun main(args : Array<String>) {
     val string = FileUtils.readFileToString(File("servers.yaml"), Charset.forName("UTF-8"))
     val serversConfig = mapper.readValue(string, ServersConfig::class.java)
 
+    val servers: MutableMap<String, VrServer> = mutableMapOf()
     for (serverConfig in serversConfig.servers) {
         log.info("Starting server ${serverConfig.name} at ${serverConfig.uri}")
-        val serverMain = VrServer(serverConfig.uri)
-        serverMain.startup()
+        val server = VrServer(serverConfig.uri)
+        servers[serverConfig.name] = server
+        server.startup()
         for (cellConfig in serverConfig.cells) {
             var cell = Cell("${serverConfig.uri}api/cells/${cellConfig.name}")
-            NETWORK_SERVER.addCell(cell)
+
+            server.networkServer.addCell(cell)
             log.info("Added cell ${cellConfig.name} to server ${serverConfig.name} with uri ${cell.cellUri}")
-            //cell.addNode(LightFieldNode(UUID.randomUUID().toString(), 0xffffff, 0.2))
-            //cell.addNode(LightFieldNode(UUID.randomUUID().toString(), 0xffffff, 1.0, DataVector3(0.0, 0.8, 0.0)))
 
             for (node in cellConfig.primitives) {
                 node.url = serverConfig.uri + "/nodes/" + node.id
@@ -48,28 +45,43 @@ fun main(args : Array<String>) {
                 cell.addNode(node)
             }
 
-            /*var node = PrimitiveNode(UUID.randomUUID().toString(), "box", "textures/paree_nightmare.jpg")
-            node.position.x = -5.0
-            node.scale.x = 0.2
-            node.scale.y = 0.2
-            node.scale.z = 0.2
-            cell.addNode(node)*/
         }
 
+        for (cellConfig in serverConfig.cells) {
+            for (neighbour in cellConfig.neighbours.keys) {
+                var cell = Cell("${serverConfig.uri}api/cells/${cellConfig.name}")
+
+                val neighbourCellUri: String
+                if (neighbour.contains('/')) {
+                    neighbourCellUri = neighbour
+                } else {
+                    neighbourCellUri = "${serverConfig.uri}api/cells/$neighbour"
+                }
+                val neighbourVector = cellConfig.neighbours[neighbour]!!
+
+                val remoteNeighbour = !neighbourCellUri.startsWith(serverConfig.uri)
+
+                if (!server.networkServer.hasCell(neighbourCellUri)) {
+                   if (remoteNeighbour) {
+                       server.networkServer.addCell(Cell(neighbourCellUri, true))
+                       log.info("Added remote neighbour cell: $neighbourCellUri")
+                   } else {
+                        log.warning("No such local neighbour cell: $neighbourCellUri")
+                        continue
+                   }
+                }
+
+                val neighbourCell = server.networkServer.getCell(neighbourCellUri)!!
+
+                cell.neighbours[neighbourCellUri] = neighbourVector
+                neighbourCell.neighbours[cell.cellUri] = DataVector3(
+                        -neighbourVector.x,
+                        -neighbourVector.y,
+                        -neighbourVector.z)
+
+                log.info("Added neighbours: ${cell.cellUri} ${cell.neighbours[neighbourCellUri]} - ${neighbourCell.cellUri} ${neighbourCell.neighbours[cell.cellUri]}")
+            }
+        }
     }
-
-/*
-    val serverMain = VrServer()
-    serverMain.startup()
-
-    NETWORK_SERVER.getCell("Default").addNode(LightFieldNode(UUID.randomUUID().toString(), 0xffffff, 0.2))
-    NETWORK_SERVER.getCell("Default").addNode(LightFieldNode(UUID.randomUUID().toString(), 0xffffff, 1.0, DataVector3(0.0, 0.8, 0.0)))
-    var node = PrimitiveNode(UUID.randomUUID().toString(), "box", "textures/paree_nightmare.jpg")
-    node.position.x = -5.0
-    node.scale.x = 0.2
-    node.scale.y = 0.2
-    node.scale.z = 0.2
-    NETWORK_SERVER.getCell("Default").addNode(node)
-    */
 
 }

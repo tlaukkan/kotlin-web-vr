@@ -2,9 +2,11 @@ import vr.network.NetworkClient
 import lib.threejs.MeshPhongMaterial
 import lib.threejs.Object3D
 import lib.threejs.Vector3
+import org.w3c.dom.svg.SVGAnimatedInteger
 import vr.network.model.LinkRequest
 import vr.webvr.*
 import java.util.*
+import kotlin.browser.window
 
 fun main(args: Array<String>) {
     println("VR client startup...")
@@ -24,7 +26,13 @@ fun main(args: Array<String>) {
             mediaController = MediaController()
             virtualRealityController = VirtualRealityController(displayController, mediaController)
 
-            val client = NetworkClient("ws://localhost:8080/ws")
+            val location = window.location
+            val client: NetworkClient
+            if (location.port != null && location.port != undefined) {
+                client = NetworkClient("ws://${location.hostname}:${location.port}/ws")
+            } else {
+                client = NetworkClient("ws://${location.hostname}/ws")
+            }
 
             client.onConnected = { handshakeResponse ->
                 println("Connected " + client.url + " (" + handshakeResponse.software + ")")

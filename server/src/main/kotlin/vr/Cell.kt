@@ -1,13 +1,14 @@
 package vr
 
 import logger
+import vr.network.model.DataVector3
 import vr.network.model.Node
 import java.util.*
 
 /**
  * Created by tlaukkan on 7/9/2016.
  */
-class Cell(val cellUri: String, val remoteCell: Boolean = false) {
+class Cell(val cellUri: String, var remoteCell: Boolean = false, var neighbours: MutableMap<String, DataVector3> = TreeMap<String, DataVector3>()) {
     private val log = logger()
 
     private val nodes: MutableMap<String, Node> = HashMap()

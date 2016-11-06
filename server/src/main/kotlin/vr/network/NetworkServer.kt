@@ -8,10 +8,11 @@ import org.glassfish.grizzly.websockets.Broadcaster
 import org.glassfish.grizzly.websockets.OptimizedBroadcaster
 import org.glassfish.grizzly.websockets.WebSocket
 import vr.Cell
+import vr.VrServer
 import java.util.*
 import java.util.logging.Level
 
-class NetworkServer() {
+class NetworkServer(val server: VrServer) {
 
     private val log = logger()
 
@@ -31,9 +32,14 @@ class NetworkServer() {
         return cells.values
     }
 
-    @Synchronized fun getCellNames() : Array<String> {
+    @Synchronized fun getCellUris() : Array<String> {
         return cells.keys.toTypedArray()
     }
+
+    @Synchronized fun hasCell(cellUri: String) : Boolean {
+        return cells.containsKey(cellUri)
+    }
+
 
     @Synchronized fun getCell(cellUri: String) : Cell {
         if (cells.containsKey(cellUri)) {
@@ -67,14 +73,14 @@ class NetworkServer() {
 
             for (value in values) {
                 if (value is HandshakeRequest) {
-                    log.info("Handshake accepted : ${session.remoteHost}:${session.remotePort} (${value.software})")
+                    log.info("${server.url} accepted handshake : ${session.remoteHost}:${session.remotePort} (${value.software}) send server cell URIs: ${cells.keys} ")
 
                     val responseEnvelope = Envelope()
                     val handshakeResponse = HandshakeResponse(
                             "kotlin-web-vr",
                             "vr-state-synchronisation",
                             "1.0",
-                            getCellNames(),
+                            getCellUris(),
                             true)
                     val values : MutableList<Any> = mutableListOf()
                     values.add(handshakeResponse)
@@ -106,7 +112,7 @@ class NetworkServer() {
                         }
                         mapper.writeValuesToEnvelope(responseEnvelope, values)
                         socket.send(mapper.writeValue(responseEnvelope))
-                        log.info("Linked : ${session.remoteHost}:${session.remotePort} server cells ${value.serverCellUris}, client cells: ${value.clientCellUris}")
+                        log.info("Linked : ${session.remoteHost}:${session.remotePort} server cells ${value.serverCellUris.toList()}, client cells: ${value.clientCellUris.toList()}")
                     } else {
                         val responseEnvelope = Envelope()
                         val cellSelectResponse = LinkResponse(true, arrayOf(), arrayOf(), "No such cell(s): $notFoundServerCellUris")
@@ -114,7 +120,7 @@ class NetworkServer() {
                         values.add(cellSelectResponse)
                         mapper.writeValuesToEnvelope(responseEnvelope, values)
                         socket.send(mapper.writeValue(responseEnvelope))
-                        log.info("Link failed : ${session.remoteHost}:${session.remotePort} server cells ${value.serverCellUris}, client cells: ${value.clientCellUris}")
+                        log.info("Link failed : ${session.remoteHost}:${session.remotePort} server cells ${value.serverCellUris.toList()}, client cells: ${value.clientCellUris.toList()}")
                     }
                 }
 
