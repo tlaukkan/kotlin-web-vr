@@ -25,6 +25,11 @@ class NetworkServer(val server: VrServer) {
     private val sessions: MutableMap<WebSocket, Session> = HashMap()
 
     @Synchronized fun addCell(cell: Cell) {
+        if (cell.remoteCell) {
+            log.info("Added remote cell ${cell.cellUri}")
+        } else {
+            log.info("Added local cell ${cell.cellUri}")
+        }
         cells.put(cell.cellUri, cell)
     }
 
@@ -105,10 +110,17 @@ class NetworkServer(val server: VrServer) {
                         values.add(cellSelectResponse)
                         for (cellUri in session.serverCellUris) {
                             var cell = cells[cellUri]
-                            if (cell != null) {
+                            if (cell != null && !cell.remoteCell) {
                                 values.addAll(cell.getNodes())
                             }
                         }
+
+                        for (clientCellUri in value.clientCellUris) {
+                            if (!cells.containsKey(clientCellUri)) {
+                                cells[clientCellUri] = Cell(clientCellUri, true)
+                            }
+                        }
+
                         mapper.writeValuesToEnvelope(responseEnvelope, values)
                         socket.send(mapper.writeValue(responseEnvelope))
                         log.info("Link accepted : ${session.remoteHost}:${session.remotePort} server cells ${value.serverCellUris.toList()}, client cells: ${value.clientCellUris.toList()}")

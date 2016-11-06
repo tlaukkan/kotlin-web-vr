@@ -75,7 +75,7 @@ class NetworkClient(val url: String) {
                 shutdown()
             }
         } else if (value is LinkResponse) {
-            if (value.success && value.serverCellUris.size == 1) {
+            if (value.success && value.serverCellUris.size > 0) {
                 linked = true
                 serverCellUri = value.serverCellUris[0]
                 if (onLinked != null) {

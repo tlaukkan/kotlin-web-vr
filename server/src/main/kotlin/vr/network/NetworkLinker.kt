@@ -56,6 +56,14 @@ class NetworkLinker(val networkServer: NetworkServer) {
                                         val candidateNeighbourCell = networkServer.getCell(candidateNeighbourCellUri)
                                         if (!candidateNeighbourCell.remoteCell) {
                                             clientCellUris.add(candidateNeighbourCellUri)
+                                            for (candidateNeighbourNeighbourCellUri in candidateNeighbourCell.neighbours.keys) {
+                                                if (networkServer.hasCell(candidateNeighbourNeighbourCellUri)) {
+                                                    val candidateNeighbourNeighbourCell = networkServer.getCell(candidateNeighbourNeighbourCellUri)
+                                                    if (!candidateNeighbourNeighbourCell.remoteCell) {
+                                                        clientCellUris.add(candidateNeighbourNeighbourCellUri)
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -65,7 +73,6 @@ class NetworkLinker(val networkServer: NetworkServer) {
 
                     }
                     client.onLinked = { linkResponse ->
-                        clients.put(cell.serverUrl, client)
                         log.info("Linker linked to remote server ${cell.serverUrl}")
                         for (serverCellUri in linkResponse.serverCellUris) {
                             if (!networkServer.hasCell(serverCellUri)) {
@@ -87,6 +94,7 @@ class NetworkLinker(val networkServer: NetworkServer) {
                         receivedNodes.clear()
                     }
 
+                    clients.put(cell.serverUrl, client)
                     client.connect()
                 }
             }
