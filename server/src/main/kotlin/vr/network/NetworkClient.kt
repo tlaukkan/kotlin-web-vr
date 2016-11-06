@@ -60,7 +60,7 @@ class NetworkClient(val url: String) {
             processReceivedValue(value)
         }
         if (onAllReceived != null) {
-            onAllReceived
+            onAllReceived!!.invoke()
         }
     }
 

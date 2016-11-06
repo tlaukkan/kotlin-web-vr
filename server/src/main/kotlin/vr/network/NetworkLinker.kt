@@ -22,7 +22,7 @@ class NetworkLinker(val networkServer: NetworkServer) {
     fun startup() {
         timer = fixedRateTimer( name = "network-linker-timer",
                                 initialDelay = 1000,
-                                period = 5000) {
+                                period = 2000) {
             process()
         }
     }
@@ -84,13 +84,20 @@ class NetworkLinker(val networkServer: NetworkServer) {
                     }
                     client.onReceive = { value ->
                         if (value is Node) {
-                            receivedNodes.add(value)
-                            log.info("Linker received node modification ${value.id} of type ${value.javaClass.simpleName}")
+                            if (value.url.startsWith(networkServer.server.url)) {
+                                log.fine("Linker ignored received node modification ${value.id} of type ${value.javaClass.simpleName}")
+                            } else {
+                                receivedNodes.add(value)
+                                log.info("Linker received node modification ${value.id} of type ${value.javaClass.simpleName}")
+                            }
                         }
                     }
                     client.onAllReceived = {
-                        networkServer.processReceivedNodes(receivedNodes)
-                        receivedNodes.clear()
+                        if (receivedNodes.size > 0) {
+                            networkServer.processReceivedNodes(receivedNodes)
+                            log.info("Linker passed processing of ${receivedNodes.size} to network server.")
+                            receivedNodes.clear()
+                        }
                     }
 
                     clients.put(cell.serverUrl, client)

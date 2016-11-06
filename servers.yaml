@@ -20,7 +20,7 @@ servers:
     cells:
       - name: c
         primitives:
-          - { id: 2248b89c-16d6-41be-bc40-b1e7242e09f0, shape: box, texture: textures/paree_nightmare.jpg, scale: { x: 2.0, y: 0.0, z: 0.2 } }
+          - { id: 2248b89c-16d6-41be-bc40-b1e7242e09f0, shape: box, texture: textures/paree_nightmare.jpg, scale: { x: 2.0, y: 0.2, z: 0.2 } }
       - name: d
         neighbours:
           c: { x: 0.0, y: 0.0, z: 10.0 }

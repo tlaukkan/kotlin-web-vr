@@ -116,8 +116,10 @@ class NetworkServer(val server: VrServer) {
                             var serverCell = cells[serverCellUri]!!
                             for (neighbourCellUri in serverCell.neighbours.keys) {
                                 val neighbourCell = cells[neighbourCellUri]!!
-                                expandedServerCellUris.add(neighbourCell.cellUri)
-                                neighbours.add(Neighbour(serverCell.cellUri, neighbourCell.cellUri))
+                                if (!neighbourCell.remoteCell) {
+                                    expandedServerCellUris.add(neighbourCell.cellUri)
+                                }
+                                neighbours.add(Neighbour(serverCell.cellUri, neighbourCell.cellUri, serverCell.neighbours[neighbourCell.cellUri]!!))
                             }
                         }
 
@@ -125,10 +127,20 @@ class NetworkServer(val server: VrServer) {
                         val cellSelectResponse = LinkResponse(true, value.clientCellUris, expandedServerCellUris.toTypedArray(),neighbours.toTypedArray())
                         val values: MutableList<Any> = mutableListOf()
                         values.add(cellSelectResponse)
+
+                        val handledCellUris: MutableSet<String> = mutableSetOf()
                         for (cellUri in session.serverCellUris) {
-                            var cell = cells[cellUri]
-                            if (cell != null && !cell.remoteCell) {
+                            var cell = cells[cellUri]!!
+                            if (!handledCellUris.contains(cell.cellUri)) {
                                 values.addAll(cell.getNodes())
+                                handledCellUris.add(cell.cellUri)
+                                for (neighbourCellUri in cell.neighbours.keys) {
+                                    val neighbourCell = cells[neighbourCellUri]!!
+                                    if (!handledCellUris.contains(neighbourCell.cellUri)) {
+                                        values.addAll(neighbourCell.getNodes())
+                                        handledCellUris.add(neighbourCell.cellUri)
+                                    }
+                                }
                             }
                         }
 
