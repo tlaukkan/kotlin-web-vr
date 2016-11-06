@@ -6,7 +6,7 @@ import vr.network.model.HandshakeRequest
 import vr.network.model.HandshakeResponse
 import vr.util.Mapper
 import vr.network.WsClient
-import vr.network.model.CellSelectResponse
+import vr.network.model.LinkResponse
 import java.util.logging.Level
 
 class NetworkClient(val url: String) {
@@ -16,10 +16,10 @@ class NetworkClient(val url: String) {
 
     var connected = false
     var cellSelected = false
-    var cellName = ""
+    var serverCellUri = ""
 
     var onConnected: ((handshakeResponse: HandshakeResponse) -> Unit)? = null
-    var onCellSelected: ((cellSelectResponse: CellSelectResponse) -> Unit)? = null
+    var onCellSelected: ((linkResponse: LinkResponse) -> Unit)? = null
     var onReceive: ((value: Any) -> Unit)? = null
     var onDisconnected: ((reason: String) -> Unit)? = null
 
@@ -67,14 +67,15 @@ class NetworkClient(val url: String) {
             } else {
                 shutdown()
             }
-        } else if (value is CellSelectResponse) {
-            if (value.success) {
+        } else if (value is LinkResponse) {
+            if (value.success && value.serverCellUris.size == 1) {
                 cellSelected = true
-                cellName = value.cellName
+                serverCellUri = value.serverCellUris[0]
                 if (onCellSelected != null) {
                     onCellSelected!!.invoke(value)
                 }
             } else {
+                log.warning("Link failed ${value.errorMessage} with ${value.serverCellUris.size} linked server cells.")
                 shutdown()
             }
         } else {

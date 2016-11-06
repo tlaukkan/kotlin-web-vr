@@ -7,7 +7,7 @@ import java.util.*
 /**
  * Created by tlaukkan on 7/9/2016.
  */
-class Cell(val name: String) {
+class Cell(val cellUri: String, val remoteCell: Boolean = false) {
     private val log = logger()
 
     private val nodes: MutableMap<String, Node> = HashMap()
@@ -23,7 +23,9 @@ class Cell(val name: String) {
             return false
         }
 
-        log.info("Added node: ${node.id} of type ${node.javaClass.simpleName}")
+        node.url = "$cellUri/${node.id}"
+
+        log.info("Added node: ${node.url} of type ${node.javaClass.simpleName}")
 
         nodes[node.url] = node
         return true

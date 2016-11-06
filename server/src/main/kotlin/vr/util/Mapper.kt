@@ -18,8 +18,8 @@ class Mapper {
         addValueClass(PrimitiveNode::class.java)
         addValueClass(HandshakeRequest::class.java)
         addValueClass(HandshakeResponse::class.java)
-        addValueClass(CellSelectRequest::class.java)
-        addValueClass(CellSelectResponse::class.java)
+        addValueClass(LinkRequest::class.java)
+        addValueClass(LinkResponse::class.java)
     }
 
     fun addValueClass(valueClass: Any): Unit {

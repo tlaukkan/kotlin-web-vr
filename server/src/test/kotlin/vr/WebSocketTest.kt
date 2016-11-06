@@ -24,7 +24,7 @@ class WebSocketTest {
 
     @Before fun setUp() {
         server.startup()
-        NETWORK_SERVER.addCell(Cell("Default"))
+        NETWORK_SERVER.addCell(Cell("http://localhost:8080/api/cells/default"))
     }
 
     @After fun tearDown() {
@@ -91,10 +91,10 @@ class WebSocketTest {
             handshakeResponse = handshakeResponse_
         }
         var cellSelected = false
-        var cellSelectedName = ""
+        var linkedServerCellUri = ""
         client.onCellSelected = { cellSelectedResponse ->
             cellSelected = true
-            cellSelectedName = cellSelectedResponse.cellName
+            linkedServerCellUri = cellSelectedResponse.serverCellUris[0]
         }
         client.onDisconnected = { reason ->
             log.log(Level.INFO, "WebSocket close: $reason")
@@ -110,9 +110,9 @@ class WebSocketTest {
         Assert.assertTrue(client.connected)
         Assert.assertNotNull(handshakeResponse)
 
-        val defaultCellName = handshakeResponse!!.cellNames[0]
-        log.info("Selecting default cell $defaultCellName ...")
-        client.send(listOf(CellSelectRequest(defaultCellName)))
+        val firstServerCellUri = handshakeResponse!!.serverCellUris[0]
+        log.info("Selecting first server cell URI $firstServerCellUri ...")
+        client.send(listOf(LinkRequest(arrayOf(), arrayOf(firstServerCellUri))))
 
         while (!cellSelected) {
             Thread.sleep(10)
@@ -120,10 +120,11 @@ class WebSocketTest {
 
         log.info("Selected cell.")
         Assert.assertTrue(client.cellSelected)
-        Assert.assertEquals(defaultCellName, cellSelectedName)
+        Assert.assertEquals(firstServerCellUri, linkedServerCellUri)
 
         log.info("Sending node...")
         val node = Node(UUID.randomUUID().toString())
+        node.url = "http://localhost:8080/api/cells/default/${node.id}"
         client.send(listOf(node))
 
         log.info("Waiting node broadcast...")

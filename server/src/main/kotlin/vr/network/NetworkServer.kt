@@ -24,7 +24,7 @@ class NetworkServer() {
     private val sessions: MutableMap<WebSocket, Session> = HashMap()
 
     @Synchronized fun addCell(cell: Cell) {
-        cells.put(cell.name, cell)
+        cells.put(cell.cellUri, cell)
     }
 
     @Synchronized fun getCells() : Collection<Cell> {
@@ -35,11 +35,11 @@ class NetworkServer() {
         return cells.keys.toTypedArray()
     }
 
-    @Synchronized fun getCell(name: String) : Cell {
-        if (cells.containsKey(name)) {
-            return cells[name]!!
+    @Synchronized fun getCell(cellUri: String) : Cell {
+        if (cells.containsKey(cellUri)) {
+            return cells[cellUri]!!
         } else {
-            throw IllegalArgumentException("No such cell: $name")
+            throw IllegalArgumentException("No such cell: $cellUri")
         }
     }
 
@@ -63,7 +63,7 @@ class NetworkServer() {
 
             val values = mapper.readValuesFromEnvelope(envelope)
 
-            val nodes : MutableList<Any> = mutableListOf()
+            val cellNodeUpdates : MutableMap<String, MutableList<Any>> = mutableMapOf()
 
             for (value in values) {
                 if (value is HandshakeRequest) {
@@ -82,46 +82,77 @@ class NetworkServer() {
                     socket.send(mapper.writeValue(responseEnvelope))
                 }
 
-                if (value is CellSelectRequest) {
-                    if (cells.containsKey(value.cellName)) {
-                        session.cell = cells[value.cellName]!!
+                if (value is LinkRequest) {
+                    var serverCellsFound = true
+                    var notFoundServerCellUris: MutableList<String> = mutableListOf()
+                    for (cellUri in value.serverCellUris) {
+                        if (!cells.containsKey(cellUri)) {
+                            serverCellsFound = false
+                            notFoundServerCellUris.add(cellUri)
+                        }
+                    }
+                    if (serverCellsFound) {
+                        session.serverCellUris = value.serverCellUris.toList()
+                        session.clientCellUris = value.clientCellUris.toList()
                         val responseEnvelope = Envelope()
-                        val cellSelectResponse = CellSelectResponse(true, value.cellName, "")
-                        val values : MutableList<Any> = mutableListOf()
+                        val cellSelectResponse = LinkResponse(true, value.clientCellUris, value.serverCellUris, "")
+                        val values: MutableList<Any> = mutableListOf()
                         values.add(cellSelectResponse)
-                        values.addAll(session.cell!!.getNodes())
+                        for (cellUri in session.serverCellUris) {
+                            var cell = cells[cellUri]
+                            if (cell != null) {
+                                values.addAll(cell.getNodes())
+                            }
+                        }
                         mapper.writeValuesToEnvelope(responseEnvelope, values)
                         socket.send(mapper.writeValue(responseEnvelope))
-                        log.info("Cell selected : ${session.remoteHost}:${session.remotePort} ${value.cellName}")
+                        log.info("Linked : ${session.remoteHost}:${session.remotePort} server cells ${value.serverCellUris}, client cells: ${value.clientCellUris}")
                     } else {
                         val responseEnvelope = Envelope()
-                        val cellSelectResponse = CellSelectResponse(true, "", "No such cell: ${value.cellName}")
-                        val values : MutableList<Any> = mutableListOf()
+                        val cellSelectResponse = LinkResponse(true, arrayOf(), arrayOf(), "No such cell(s): $notFoundServerCellUris")
+                        val values: MutableList<Any> = mutableListOf()
                         values.add(cellSelectResponse)
                         mapper.writeValuesToEnvelope(responseEnvelope, values)
                         socket.send(mapper.writeValue(responseEnvelope))
+                        log.info("Link failed : ${session.remoteHost}:${session.remotePort} server cells ${value.serverCellUris}, client cells: ${value.clientCellUris}")
                     }
                 }
 
                 if (value is Node) {
-                    if (session.cell != null) {
+                    val cellUri: String
+                    if (value.url.contains('/')) {
+                        cellUri = value.url.substring(0, value.url.lastIndexOf('/'))
+                    } else {
+                        cellUri = ""
+                    }
+                    val cell = cells[cellUri]
+                    if (cell != null) {
                         if (!value.removed) {
-                            if (session.cell!!.hasNode(value.url)) {
-                                session.cell!!.updateNode(value)
+                            if (cell.hasNode(value.url)) {
+                                cell.updateNode(value)
                             } else {
-                                session.cell!!.addNode(value)
+                                cell.addNode(value)
                             }
                         } else {
-                            session.cell!!.removeNode(value.url)
+                            cell.removeNode(value.url)
                         }
-                        nodes.add(value)
+
+                        if (!cellNodeUpdates.containsKey(cellUri)) {
+                            cellNodeUpdates[cellUri] = mutableListOf()
+                        }
+
+                        cellNodeUpdates[cellUri]!!.add(value)
+                        log.info("Applied received node modification ${value.url} for cell $cellUri")
+                    } else {
+                        log.warning("Failed to apply received node ${value.url} modification. No such cell: $cellUri")
                     }
                 }
             }
 
-            if (nodes.size > 0 && session.cell != null) {
+            for (nodes in cellNodeUpdates.values) {
                 val broadcastEnvelope = Envelope()
                 mapper.writeValuesToEnvelope(broadcastEnvelope, nodes)
+                //TODO limit broadcasting to clients linked to cells in question
                 broadcast(broadcastEnvelope)
             }
 

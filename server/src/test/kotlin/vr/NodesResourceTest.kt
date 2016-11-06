@@ -23,7 +23,7 @@ class NodesResourceTest {
 
     @Before fun setUp() {
         server.startup()
-        NETWORK_SERVER.addCell(Cell("Default"))
+        NETWORK_SERVER.addCell(Cell("http://localhost:8080/api/cells/default"))
     }
 
     @After fun tearDown() {

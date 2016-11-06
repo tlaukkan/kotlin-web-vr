@@ -7,11 +7,11 @@ class NetworkClient(val url: String) {
     private val mapper = Mapper()
 
     var connected = false
-    var cellSelected = false
+    var linked = false
     var cellName = ""
 
     var onConnected: ((handshakeResponse: HandshakeResponse) -> Unit)? = null
-    var onCellSelected: ((cellSelectResponse: CellSelectResponse) -> Unit)? = null
+    var onLinked: ((linkResponse: LinkResponse) -> Unit)? = null
     var onReceive: ((type: String, value: Any) -> Unit)? = null
     var onDisconnected: (() -> Unit)? = null
 
@@ -60,13 +60,13 @@ class NetworkClient(val url: String) {
             } else {
                 shutdown()
             }
-        } else if ("CellSelectResponse".equals(type)) {
-            val cellSelectResponse: CellSelectResponse = value
-            if (cellSelectResponse.success) {
-                cellSelected = true
+        } else if ("LinkResponse".equals(type)) {
+            val linkResponse: LinkResponse = value
+            if (linkResponse.success) {
+                linked = true
                 cellName = value.cellName
-                if (onCellSelected != null) {
-                    onCellSelected!!.invoke(value)
+                if (onLinked != null) {
+                    onLinked!!.invoke(value)
                 }
             } else {
                 shutdown()

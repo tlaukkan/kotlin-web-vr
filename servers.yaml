@@ -1,6 +1,6 @@
 servers:
   - name: server 1
-    url: http://127.0.0.1:8080/
+    uri: http://127.0.0.1:8080/
     cells:
       - name: a
         primitives:
@@ -10,7 +10,7 @@ servers:
         - { id: 3a2b2338-2bf3-439d-9ffd-d6dba191c336, color: 16777215, intensity: 1.0, direction: { x: 0.0, y: 1.0, z: 0.0 } }
       - name: b
   - name: server 2
-    url: http://127.0.0.1:8081/
+    uri: http://127.0.0.1:8081/
     cells:
       - name: c
       - name: d

@@ -2,8 +2,9 @@ import vr.network.NetworkClient
 import lib.threejs.MeshPhongMaterial
 import lib.threejs.Object3D
 import lib.threejs.Vector3
-import vr.network.model.CellSelectRequest
+import vr.network.model.LinkRequest
 import vr.webvr.*
+import java.util.*
 
 fun main(args: Array<String>) {
     println("VR client startup...")
@@ -27,11 +28,11 @@ fun main(args: Array<String>) {
 
             client.onConnected = { handshakeResponse ->
                 println("Connected " + client.url + " (" + handshakeResponse.software + ")")
-                client.send(listOf(CellSelectRequest(handshakeResponse.cellNames[0])))
+                client.send(listOf(LinkRequest(arrayOf(), arrayOf(handshakeResponse.serverCellUris[0]))))
             }
 
-            client.onCellSelected = { cellSelectResponse ->
-                println("Cell selected: " + cellSelectResponse.cellName)
+            client.onLinked = { linkResponse ->
+                println("Linked to server cell: " + linkResponse.serverCellUris[0])
             }
 
             client.onReceive = { type, value ->

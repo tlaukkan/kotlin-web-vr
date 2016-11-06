@@ -20,7 +20,7 @@ class NodeRestService {
         val builder = uriInfo.absolutePathBuilder
         builder.path(nodeId.toString())
         node.id = nodeId
-        node.url = "${uriInfo.baseUri}nodes/$nodeId"
+        node.url = "${uriInfo.baseUri}cells/default/$nodeId"
 
         val cell = NETWORK_SERVER.getCells().iterator().next()
         cell.addNode(node)
@@ -32,7 +32,7 @@ class NodeRestService {
     @Path("{nodeId}")
     @PUT fun updateNode(@PathParam("nodeId") nodeId: String, node: Node, @Context uriInfo: UriInfo): Response {
         node.id = nodeId
-        node.url = "${uriInfo.baseUri}nodes/$nodeId"
+        node.url = "${uriInfo.baseUri}cells/default/$nodeId"
 
         val cell = NETWORK_SERVER.getCells().iterator().next()
         if (cell.updateNode(node)) {
@@ -46,7 +46,7 @@ class NodeRestService {
 
     @Path("{nodeId}")
     @DELETE fun deleteNode(@PathParam("nodeId") nodeId: String, @Context uriInfo: UriInfo): Response {
-        val nodeUrl : String = "${uriInfo.baseUri}nodes/$nodeId"
+        val nodeUrl : String = "${uriInfo.baseUri}cells/default/$nodeId"
         val cell = NETWORK_SERVER.getCells().iterator().next()
         if (cell.removeNode(nodeUrl)) {
             log.fine("Deleted $nodeId.")
@@ -59,7 +59,7 @@ class NodeRestService {
 
     @Path("{nodeId}")
     @GET fun getNode(@PathParam("nodeId") nodeId: UUID, @Context uriInfo: UriInfo): Node? {
-        val nodeUrl : String = "${uriInfo.baseUri}nodes/$nodeId"
+        val nodeUrl : String = "${uriInfo.baseUri}cells/default/$nodeId"
         val cell = NETWORK_SERVER.getCells().iterator().next()
         if (cell.hasNode(nodeUrl)) {
             return cell.getNode(nodeUrl)

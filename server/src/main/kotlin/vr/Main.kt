@@ -28,23 +28,23 @@ fun main(args : Array<String>) {
     val serversConfig = mapper.readValue(string, ServersConfig::class.java)
 
     for (serverConfig in serversConfig.servers) {
-        log.info("Starting server ${serverConfig.name} at ${serverConfig.url}")
-        val serverMain = VrServer(serverConfig.url)
+        log.info("Starting server ${serverConfig.name} at ${serverConfig.uri}")
+        val serverMain = VrServer(serverConfig.uri)
         serverMain.startup()
         for (cellConfig in serverConfig.cells) {
-            log.info("Adding cell ${cellConfig.name} to server ${serverConfig.name}")
-            var cell = Cell(cellConfig.name)
+            var cell = Cell("${serverConfig.uri}api/cells/${cellConfig.name}")
             NETWORK_SERVER.addCell(cell)
+            log.info("Added cell ${cellConfig.name} to server ${serverConfig.name} with uri ${cell.cellUri}")
             //cell.addNode(LightFieldNode(UUID.randomUUID().toString(), 0xffffff, 0.2))
             //cell.addNode(LightFieldNode(UUID.randomUUID().toString(), 0xffffff, 1.0, DataVector3(0.0, 0.8, 0.0)))
 
             for (node in cellConfig.primitives) {
-                node.url = serverConfig.url + "/nodes/" + node.id
+                node.url = serverConfig.uri + "/nodes/" + node.id
                 cell.addNode(node)
             }
 
             for (node in cellConfig.lightFields) {
-                node.url = serverConfig.url + "/nodes/" + node.id
+                node.url = serverConfig.uri + "/nodes/" + node.id
                 cell.addNode(node)
             }
 
