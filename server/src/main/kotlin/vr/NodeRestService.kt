@@ -76,6 +76,6 @@ class NodeRestService() {
     @GET fun getNodes(@Context uriInfo: UriInfo): List<Node> {
         val networkServer: NetworkServer = PORT_NETWORK_SERVER_MAP[uriInfo.baseUri.port]!!
         val cell = networkServer.getCells().iterator().next()
-        return cell.getNodes()
+        return cell.getNodes().toList()
     }
 }

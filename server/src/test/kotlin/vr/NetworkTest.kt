@@ -20,7 +20,6 @@ class NetworkTest {
     private val log = logger()
 
     private var servers: Map<String, VrServer> = mapOf()
-    //private var server: VrServer = VrServer()
 
     init {
         LogManager.getLogManager().readConfiguration(this.javaClass.getResourceAsStream("/logging.properties"))
@@ -29,13 +28,9 @@ class NetworkTest {
     @Before fun setUp() {
         val string = FileUtils.readFileToString(File("../servers.yaml"), Charset.forName("UTF-8"))
         servers = configureServers(string)
-
-        //server.startup()
-        //server.networkServer.addCell(Cell("http://localhost:8080/api/cells/default"))
     }
 
     @After fun tearDown() {
-        //server.shutdown()
         for (server in servers.values) {
             server.shutdown()
         }
@@ -111,6 +106,8 @@ class NetworkTest {
             connected = false
         }
 
+        client.connect()
+
         log.info("Connecting...")
         while (!connected) {
             Thread.sleep(10)
@@ -142,8 +139,6 @@ class NetworkTest {
             Thread.sleep(10)
             var found = false
             for (receivedValue in receivedValues) {
-                //System.out.println(mapper.writeValue(node))
-                //System.out.println(mapper.writeValue(receivedValue))
                 if (mapper.writeValue(receivedValue).equals(mapper.writeValue(node))) {
                     found = true
                     break

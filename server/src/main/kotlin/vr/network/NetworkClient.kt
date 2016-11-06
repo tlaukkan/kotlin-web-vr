@@ -21,6 +21,7 @@ class NetworkClient(val url: String) {
     var onConnected: ((handshakeResponse: HandshakeResponse) -> Unit)? = null
     var onLinked: ((linkResponse: LinkResponse) -> Unit)? = null
     var onReceive: ((value: Any) -> Unit)? = null
+    var onAllReceived: (() -> Unit)? = null
     var onDisconnected: ((reason: String) -> Unit)? = null
 
     init {
@@ -28,6 +29,9 @@ class NetworkClient(val url: String) {
         wsClient.onMessage = { message -> onMessage(message) }
         wsClient.onError = { e -> onError(e) }
         wsClient.onClose = { code, reason, remote -> onClose(code, reason, remote) }
+    }
+
+    fun connect() {
         wsClient.connect()
     }
 
@@ -54,6 +58,9 @@ class NetworkClient(val url: String) {
     fun onReceivedValues(values: List<Any>) {
         for (value in values) {
             processReceivedValue(value)
+        }
+        if (onAllReceived != null) {
+            onAllReceived
         }
     }
 
@@ -94,6 +101,7 @@ class NetworkClient(val url: String) {
     private fun onError(e: Exception) {
         log.log(Level.WARNING, "Network client error: ", e)
         wsClient.close()
+        connected = false
     }
 
     private fun onClose(code: Int, reason: String, remote: Boolean) {

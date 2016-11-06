@@ -28,8 +28,8 @@ class NetworkServer(val server: VrServer) {
         cells.put(cell.cellUri, cell)
     }
 
-    @Synchronized fun getCells() : Collection<Cell> {
-        return cells.values
+    @Synchronized fun getCells() : Array<Cell> {
+        return cells.values.toTypedArray()
     }
 
     @Synchronized fun getCellUris() : Array<String> {
@@ -69,11 +69,10 @@ class NetworkServer(val server: VrServer) {
 
             val values = mapper.readValuesFromEnvelope(envelope)
 
-            val cellNodeUpdates : MutableMap<String, MutableList<Any>> = mutableMapOf()
-
+            val receivedNodes : MutableList<Node> = mutableListOf()
             for (value in values) {
                 if (value is HandshakeRequest) {
-                    log.info("${server.url} accepted handshake : ${session.remoteHost}:${session.remotePort} (${value.software}) send server cell URIs: ${cells.keys} ")
+                    log.info("Handshake accepted : ${session.remoteHost}:${session.remotePort} (${value.software}) send server cell URIs: ${cells.keys} ")
 
                     val responseEnvelope = Envelope()
                     val handshakeResponse = HandshakeResponse(
@@ -112,7 +111,7 @@ class NetworkServer(val server: VrServer) {
                         }
                         mapper.writeValuesToEnvelope(responseEnvelope, values)
                         socket.send(mapper.writeValue(responseEnvelope))
-                        log.info("Linked : ${session.remoteHost}:${session.remotePort} server cells ${value.serverCellUris.toList()}, client cells: ${value.clientCellUris.toList()}")
+                        log.info("Link accepted : ${session.remoteHost}:${session.remotePort} server cells ${value.serverCellUris.toList()}, client cells: ${value.clientCellUris.toList()}")
                     } else {
                         val responseEnvelope = Envelope()
                         val cellSelectResponse = LinkResponse(true, arrayOf(), arrayOf(), "No such cell(s): $notFoundServerCellUris")
@@ -125,45 +124,57 @@ class NetworkServer(val server: VrServer) {
                 }
 
                 if (value is Node) {
-                    val cellUri: String
-                    if (value.url.contains('/')) {
-                        cellUri = value.url.substring(0, value.url.lastIndexOf('/'))
-                    } else {
-                        cellUri = ""
-                    }
-                    val cell = cells[cellUri]
-                    if (cell != null) {
-                        if (!value.removed) {
-                            if (cell.hasNode(value.url)) {
-                                cell.updateNode(value)
-                            } else {
-                                cell.addNode(value)
-                            }
-                        } else {
-                            cell.removeNode(value.url)
-                        }
-
-                        if (!cellNodeUpdates.containsKey(cellUri)) {
-                            cellNodeUpdates[cellUri] = mutableListOf()
-                        }
-
-                        cellNodeUpdates[cellUri]!!.add(value)
-                        log.info("Applied received node modification ${value.url} for cell $cellUri")
-                    } else {
-                        log.warning("Failed to apply received node ${value.url} modification. No such cell: $cellUri")
-                    }
+                    receivedNodes.add(value)
                 }
             }
 
-            for (nodes in cellNodeUpdates.values) {
-                val broadcastEnvelope = Envelope()
-                mapper.writeValuesToEnvelope(broadcastEnvelope, nodes)
-                //TODO limit broadcasting to clients linked to cells in question
-                broadcast(broadcastEnvelope)
-            }
+            processReceivedNodes(receivedNodes)
 
         } catch (ex: Exception) {
             log.log(Level.SEVERE, "Failed to process incoming message.", ex)
+        }
+    }
+
+    fun processReceivedNodes(receivedNodes: MutableList<Node>) {
+        val cellNodeUpdates: MutableMap<String, MutableList<Any>> = mutableMapOf()
+        for (node in receivedNodes) {
+            val cellUri: String
+            if (node.url.contains('/')) {
+                cellUri = node.url.substring(0, node.url.lastIndexOf('/'))
+            } else {
+                cellUri = ""
+            }
+            val cell = cells[cellUri]
+            if (cell != null) {
+                if (!node.removed) {
+                    if (cell.hasNode(node.url)) {
+                        cell.updateNode(node)
+                    } else {
+                        cell.addNode(node)
+                    }
+                } else {
+                    cell.removeNode(node.url)
+                }
+
+                if (!cellNodeUpdates.containsKey(cellUri)) {
+                    cellNodeUpdates[cellUri] = mutableListOf()
+                }
+
+                cellNodeUpdates[cellUri]!!.add(node)
+                log.info("Applied received node modification ${node.url} for cell $cellUri")
+            } else {
+                log.warning("Failed to apply received node ${node.url} modification. No such cell: $cellUri")
+            }
+        }
+
+        for (nodes in cellNodeUpdates.values) {
+            for (value in nodes) {
+
+            }
+            val broadcastEnvelope = Envelope()
+            mapper.writeValuesToEnvelope(broadcastEnvelope, nodes)
+            //TODO limit broadcasting to clients linked to cells in question
+            broadcast(broadcastEnvelope)
         }
     }
 

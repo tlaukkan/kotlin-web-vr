@@ -12,6 +12,7 @@ import org.glassfish.grizzly.http.server.StaticHttpHandler
 import org.glassfish.jersey.process.JerseyProcessingUncaughtExceptionHandler
 import org.glassfish.jersey.server.ResourceConfig
 import org.glassfish.jersey.server.spi.Container
+import vr.network.NetworkLinker
 import vr.network.NetworkServer
 import vr.network.WebSocketListener
 import java.net.URI
@@ -28,6 +29,7 @@ class VrServer(val url: String = "http://localhost:8080/") {
     private val log = logger()
 
     val networkServer = NetworkServer(this)
+    val networkLinker = NetworkLinker(networkServer)
     val server: HttpServer = createHttpServer( UriBuilder.fromUri(url).build(), false, null)
 
     init {
@@ -39,6 +41,7 @@ class VrServer(val url: String = "http://localhost:8080/") {
 
         log.info("VR server startup...")
         server.start()
+        networkLinker.startup()
         log.info("VR server startup.")
     }
 

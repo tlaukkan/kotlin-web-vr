@@ -3,6 +3,7 @@ package vr
 import logger
 import vr.network.model.DataVector3
 import vr.network.model.Node
+import java.net.URL
 import java.util.*
 
 /**
@@ -11,7 +12,22 @@ import java.util.*
 class Cell(val cellUri: String, var remoteCell: Boolean = false, var neighbours: MutableMap<String, DataVector3> = TreeMap<String, DataVector3>()) {
     private val log = logger()
 
+    val serverUrl: String
+
     private val nodes: MutableMap<String, Node> = HashMap()
+
+    init {
+        var url = URL(cellUri)
+        val host = url.host
+        val port = url.port
+        val protocol: String
+        if ("http".equals(url.protocol)) {
+            protocol = "ws"
+        } else {
+            protocol = "wss"
+        }
+        serverUrl = "$protocol://$host:$port/"
+    }
 
     @Synchronized fun addNode(node: Node) : Boolean {
 
@@ -71,7 +87,7 @@ class Cell(val cellUri: String, var remoteCell: Boolean = false, var neighbours:
         return nodes[url]!!
     }
 
-    @Synchronized fun getNodes() : List<Node>  {
-        return ArrayList<Node>(nodes.values)
+    @Synchronized fun getNodes() : Array<Node>  {
+        return ArrayList<Node>(nodes.values).toTypedArray()
     }
 }
