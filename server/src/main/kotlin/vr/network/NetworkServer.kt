@@ -77,7 +77,12 @@ class NetworkServer(val server: VrServer) {
             val receivedNodes : MutableList<Node> = mutableListOf()
             for (value in values) {
                 if (value is HandshakeRequest) {
-                    log.info("Handshake accepted : ${session.remoteHost}:${session.remotePort} (${value.software}) send server cell URIs: ${cells.keys} ")
+                    session.remoteServerUrl = value.clientServerUrl
+                    if (session.remoteServerUrl == null) {
+                        log.info("Client handshake accepted : ${session.remoteHost}:${session.remotePort} (${value.software}) send server cell URIs: ${cells.keys} ")
+                    } else {
+                        log.info("Server handshake accepted : ${session.remoteHost}:${session.remotePort} (${session.remoteServerUrl}, ${value.software}) send server cell URIs: ${cells.keys} ")
+                    }
 
                     val responseEnvelope = Envelope()
                     val handshakeResponse = HandshakeResponse(
@@ -116,7 +121,7 @@ class NetworkServer(val server: VrServer) {
                             var serverCell = cells[serverCellUri]!!
                             for (neighbourCellUri in serverCell.neighbours.keys) {
                                 val neighbourCell = cells[neighbourCellUri]!!
-                                if (!neighbourCell.remoteCell) {
+                                if (session.remoteServerUrl == null || !neighbourCell.cellUri.startsWith(session.remoteServerUrl!!)) {
                                     expandedServerCellUris.add(neighbourCell.cellUri)
                                 }
                                 neighbours.add(Neighbour(serverCell.cellUri, neighbourCell.cellUri, serverCell.neighbours[neighbourCell.cellUri]!!))
@@ -136,9 +141,11 @@ class NetworkServer(val server: VrServer) {
                                 handledCellUris.add(cell.cellUri)
                                 for (neighbourCellUri in cell.neighbours.keys) {
                                     val neighbourCell = cells[neighbourCellUri]!!
-                                    if (!handledCellUris.contains(neighbourCell.cellUri)) {
-                                        values.addAll(neighbourCell.getNodes())
-                                        handledCellUris.add(neighbourCell.cellUri)
+                                    if (session.remoteServerUrl == null || !neighbourCell.cellUri.startsWith(session.remoteServerUrl!!)) {
+                                        if (!handledCellUris.contains(neighbourCell.cellUri)) {
+                                            values.addAll(neighbourCell.getNodes())
+                                            handledCellUris.add(neighbourCell.cellUri)
+                                        }
                                     }
                                 }
                             }

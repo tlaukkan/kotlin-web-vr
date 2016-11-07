@@ -38,7 +38,7 @@ class NetworkLinker(val networkServer: NetworkServer) {
                     log.info("Linker connecting to remote server ${cell.serverUrl}")
 
                     val receivedNodes: MutableList<Node> = mutableListOf()
-                    val client = NetworkClient("${cell.serverUrl}ws")
+                    val client = NetworkClient("${cell.serverUrl}ws", networkServer.server.url)
                     client.onConnected = { handshakeResponse_ ->
                         log.info("Linker connected to remote server ${cell.serverUrl}")
 
@@ -95,7 +95,7 @@ class NetworkLinker(val networkServer: NetworkServer) {
                     client.onAllReceived = {
                         if (receivedNodes.size > 0) {
                             networkServer.processReceivedNodes(receivedNodes)
-                            log.info("Linker passed processing of ${receivedNodes.size} to network server.")
+                            log.info("Linker handed processing of ${receivedNodes.size} to network server.")
                             receivedNodes.clear()
                         }
                     }

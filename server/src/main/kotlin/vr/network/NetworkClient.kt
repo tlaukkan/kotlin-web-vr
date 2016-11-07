@@ -9,7 +9,7 @@ import vr.network.WsClient
 import vr.network.model.LinkResponse
 import java.util.logging.Level
 
-class NetworkClient(val url: String) {
+class NetworkClient(val url: String, val clientServerUrl: String? = null) {
     private val log = logger()
     private val wsClient = WsClient(url)
     private val mapper = Mapper()
@@ -36,7 +36,7 @@ class NetworkClient(val url: String) {
     }
 
     private fun startup() {
-        val handshakeRequest = HandshakeRequest("kotlin-web-vr", "vr-state-synchronisation", arrayOf("0.9", "1.0"))
+        val handshakeRequest = HandshakeRequest("kotlin-web-vr", "vr-state-synchronisation", arrayOf("0.9", "1.0"), clientServerUrl)
 
         val envelope = Envelope()
         val values: MutableList<Any> = mutableListOf()

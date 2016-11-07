@@ -8,4 +8,5 @@ data class Session(val remoteHost: String,
                    val remotePort: Int,
                    val socket: WebSocket,
                    var clientCellUris:List<String> = ArrayList<String>(),
-                   var serverCellUris:List<String> = ArrayList<String>())
+                   var serverCellUris:List<String> = ArrayList<String>(),
+                   var remoteServerUrl: String? = null)
