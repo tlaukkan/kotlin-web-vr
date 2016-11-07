@@ -19,11 +19,11 @@ val IDENTITY_STORE = IdentityStore()
 private val log = Logger.getLogger("vr.main")
 
 fun main(args : Array<String>) {
-    val string = FileUtils.readFileToString(File("servers.yaml"), Charset.forName("UTF-8"))
-    var servers = configureServers(string)
+    var servers = configureServers(".")
 }
 
-fun configureServers(string: String?) : Map<String, VrServer> {
+fun configureServers(path: String) : Map<String, VrServer> {
+    val string = FileUtils.readFileToString(File("$path/servers.yaml"), Charset.forName("UTF-8"))
     val mapper = ObjectMapper(YAMLFactory())
     val serversConfig = mapper.readValue(string, ServersConfig::class.java)
     val servers: MutableMap<String, VrServer> = mutableMapOf()
@@ -31,23 +31,12 @@ fun configureServers(string: String?) : Map<String, VrServer> {
         log.info("Starting server ${serverConfig.name} at ${serverConfig.uri}")
         val server = VrServer(serverConfig.uri)
         servers[serverConfig.name] = server
-        server.startup()
+
         for (cellConfig in serverConfig.cells) {
             var cell = Cell("${serverConfig.uri}api/cells/${cellConfig.name}")
 
             server.networkServer.addCell(cell)
             log.info("Added cell ${cellConfig.name} to server ${serverConfig.name} with uri ${cell.cellUri}")
-
-            for (node in cellConfig.primitives) {
-                node.url = serverConfig.uri + "/nodes/" + node.id
-                cell.addNode(node)
-            }
-
-            for (node in cellConfig.lightFields) {
-                node.url = serverConfig.uri + "/nodes/" + node.id
-                cell.addNode(node)
-            }
-
         }
 
         for (cellConfig in serverConfig.cells) {
@@ -84,11 +73,13 @@ fun configureServers(string: String?) : Map<String, VrServer> {
 
                 log.info("Added neighbours: ${cell.cellUri} ${cell.neighbours[neighbourCellUri]} - ${neighbourCell.cellUri} ${neighbourCell.neighbours[cell.cellUri]}")
             }
-
         }
+
+        server.load(path)
+
+        server.startup()
 
     }
 
     return servers
-
 }

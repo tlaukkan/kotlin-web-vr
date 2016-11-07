@@ -1,0 +1,24 @@
+{
+  "id" : "7d92f4e3-78ed-4e7e-82c4-5ffc53ea7f17",
+  "url" : "http://127.0.0.1:8080/api/cells/b/7d92f4e3-78ed-4e7e-82c4-5ffc53ea7f17",
+  "parentUrl" : null,
+  "removed" : false,
+  "position" : {
+    "x" : 0.0,
+    "y" : 0.0,
+    "z" : 0.0
+  },
+  "orientation" : {
+    "x" : 1.0,
+    "y" : 0.0,
+    "z" : 0.0,
+    "w" : 0.0
+  },
+  "scale" : {
+    "x" : 0.2,
+    "y" : 2.0,
+    "z" : 0.2
+  },
+  "shape" : "box",
+  "texture" : "textures/paree_nightmare.jpg"
+}

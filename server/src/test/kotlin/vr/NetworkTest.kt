@@ -26,8 +26,7 @@ class NetworkTest {
     }
 
     @Before fun setUp() {
-        val string = FileUtils.readFileToString(File("../servers.yaml"), Charset.forName("UTF-8"))
-        servers = configureServers(string)
+        servers = configureServers("..")
     }
 
     @After fun tearDown() {

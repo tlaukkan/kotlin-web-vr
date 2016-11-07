@@ -2,6 +2,7 @@ package vr
 
 import jersey.repackaged.com.google.common.util.concurrent.ThreadFactoryBuilder
 import logger
+import org.apache.commons.io.FileUtils
 import org.glassfish.grizzly.http.server.HttpHandlerRegistration
 import org.glassfish.grizzly.http.server.HttpServer
 import org.glassfish.grizzly.http.server.NetworkListener
@@ -15,7 +16,14 @@ import org.glassfish.jersey.server.spi.Container
 import vr.network.NetworkLinker
 import vr.network.NetworkServer
 import vr.network.WebSocketListener
+import vr.network.model.Envelope
+import vr.network.model.HandshakeResponse
+import vr.network.model.Node
+import vr.util.Mapper
+import java.io.File
 import java.net.URI
+import java.net.URL
+import java.nio.charset.Charset
 import java.util.*
 
 import javax.ws.rs.core.UriBuilder
@@ -96,6 +104,61 @@ class VrServer(val url: String = "http://localhost:8080/") {
         config.defaultQueryEncoding = org.glassfish.grizzly.utils.Charsets.UTF8_CHARSET
 
         return server
+    }
+
+    fun save() {
+        val serverUrl: URL = URL(url)
+        val dataDirectory = File("data/${serverUrl.host.replace('.','_')}_${serverUrl.port}")
+        if (!dataDirectory.exists()) {
+            dataDirectory.mkdirs()
+        }
+
+        val mapper = Mapper()
+        for (cell in networkServer.getCells()) {
+            if (cell.remoteCell) {
+                continue
+            }
+            val cellName = cell.cellUri.substring(cell.cellUri.lastIndexOf('/') + 1)
+            val cellDirectory = File("${dataDirectory.absolutePath}/${cellName}")
+            cellDirectory.mkdirs()
+
+            for (node in cell.getNodes()) {
+                val nodeId = node.url.substring(node.url.lastIndexOf('/') + 1)
+                val nodeType = mapper.getValueType(node)
+                val nodeString = mapper.writeValue(node, true)
+                val nodeFile = File("${cellDirectory.absolutePath}/${nodeType}_${nodeId}.json")
+                FileUtils.writeStringToFile(nodeFile, nodeString, Charset.forName("UTF-8"))
+            }
+        }
+    }
+
+    fun load(path: String) {
+        val serverUrl: URL = URL(url)
+        val dataDirectory = File("$path/data/${serverUrl.host.replace('.','_')}_${serverUrl.port}")
+        if (!dataDirectory.exists()) {
+            dataDirectory.mkdirs()
+        }
+
+        val mapper = Mapper()
+        for (cell in networkServer.getCells()) {
+            if (cell.remoteCell) {
+                continue
+            }
+            val cellName = cell.cellUri.substring(cell.cellUri.lastIndexOf('/') + 1)
+            val cellDirectory = File("${dataDirectory.absolutePath}/${cellName}")
+            cellDirectory.mkdirs()
+
+            val nodeFiles = cellDirectory.listFiles()
+
+            for (nodeFile in nodeFiles) {
+                val nodeType = nodeFile.name.split('_')[0]
+                val nodeString = FileUtils.readFileToString(nodeFile, Charset.forName("UTF-8"))
+                val node = mapper.readValue(nodeString, nodeType) as Node
+                cell.addNode(node)
+                log.info("Cell ${cellName} loaded ${node.id} of type ${node.javaClass.simpleName}")
+            }
+
+        }
     }
 
 }

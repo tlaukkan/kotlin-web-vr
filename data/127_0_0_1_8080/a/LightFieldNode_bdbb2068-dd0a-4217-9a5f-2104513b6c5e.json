@@ -1,0 +1,25 @@
+{
+  "id" : "bdbb2068-dd0a-4217-9a5f-2104513b6c5e",
+  "url" : "http://127.0.0.1:8080/api/cells/a/bdbb2068-dd0a-4217-9a5f-2104513b6c5e",
+  "parentUrl" : null,
+  "removed" : false,
+  "position" : {
+    "x" : 0.0,
+    "y" : 0.0,
+    "z" : 0.0
+  },
+  "orientation" : {
+    "x" : 1.0,
+    "y" : 0.0,
+    "z" : 0.0,
+    "w" : 0.0
+  },
+  "scale" : {
+    "x" : 1.0,
+    "y" : 1.0,
+    "z" : 1.0
+  },
+  "color" : 16777215,
+  "intensity" : 0.2,
+  "direction" : null
+}

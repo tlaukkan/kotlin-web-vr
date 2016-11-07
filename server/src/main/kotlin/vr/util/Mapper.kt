@@ -1,6 +1,7 @@
 package vr.util
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.ObjectWriter
 import logger
 import vr.network.model.*
 import java.util.logging.Level
@@ -10,6 +11,7 @@ class Mapper {
     private val log = logger()
     val valueClasses = mutableMapOf<String, Any>()
     val mapper = ObjectMapper()
+    val prettyWriter = mapper.writerWithDefaultPrettyPrinter<ObjectWriter>()
 
     init {
         addValueClass(Node::class.java)
@@ -29,11 +31,11 @@ class Mapper {
     fun readValuesFromEnvelope(envelope: Envelope): List<Any> {
         val values: MutableList<Any> = mutableListOf()
         for (typedValue in envelope.values) {
-            if (valueClasses.containsKey(typedValue.type)) {
-                val valueClass = valueClasses[typedValue.type]
-                values.add(mapper.readValue(typedValue.json, valueClass as Class<Any>))
-            } else {
-                log.log(Level.WARNING, "Unknown value type in envelope: ${typedValue.type}")
+            val json = typedValue.json
+            val type = typedValue.type
+            val value: Any? = readValue(json, type)
+            if (value != null) {
+                values.add(value)
             }
         }
         return values
@@ -52,7 +54,25 @@ class Mapper {
         return mapper.readValue(content, valueType)
     }
 
-    fun writeValue(value: Any): String {
-        return mapper.writeValueAsString(value)
+    fun writeValue(value: Any, pretty: Boolean = false): String {
+        if (pretty) {
+            return prettyWriter.writeValueAsString(value)
+        } else {
+            return mapper.writeValueAsString(value)
+        }
+    }
+
+    fun getValueType(value: Any): String {
+        return value.javaClass.simpleName
+    }
+
+    fun readValue(json: String, type: String): Any? {
+        if (valueClasses.containsKey(type)) {
+            val valueClass = valueClasses[type]
+            return mapper.readValue(json, valueClass as Class<Any>)
+        } else {
+            log.log(Level.WARNING, "Read value from JSON failed. Unknown value type: ${type}")
+            return null
+        }
     }
 }

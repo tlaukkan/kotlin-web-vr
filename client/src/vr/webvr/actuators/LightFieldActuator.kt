@@ -21,12 +21,12 @@ class LightFieldActuator(controller: VirtualRealityController) : NodeActuator(co
             obj.position.y = typedNode.direction!!.y
             obj.position.z = typedNode.direction!!.z
         }
-        obj.name = node.id
+        obj.name = node.url
         obj.updateMatrix()
         obj.updateMatrixWorld()
 //        add(node, obj)
-        controller.scene.add(obj)
-
+        //controller.scene.add(obj)
+        add(node.parentUrl, obj)
     }
 
 }

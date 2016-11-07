@@ -5,25 +5,14 @@ servers:
       - name: a
         neighbours:
           http://127.0.0.1:8081/api/cells/c: { x: 0.0, y: -20.0, z: 0.0 }
-        primitives:
-          - { id: d630b472-d717-4dfc-a6e7-d949fe9a90f5, shape: box, texture: textures/paree_nightmare.jpg, position: { x: -5.0 } }
-        lightFields:
-          - { id: bdbb2068-dd0a-4217-9a5f-2104513b6c5e, color: 16777215, intensity: 0.2 }
-          - { id: 3a2b2338-2bf3-439d-9ffd-d6dba191c336, color: 16777215, intensity: 1.0, direction: { x: 0.0, y: 1.0, z: 0.0 } }
       - name: b
         neighbours:
           a: { x: 10.0, y: 0.0, z: 0.0 }
-        primitives:
-          - { id: 7d92f4e3-78ed-4e7e-82c4-5ffc53ea7f17, shape: box, texture: textures/paree_nightmare.jpg, scale: { x: 0.2, y: 2.0, z: 0.2 } }
   - name: server 2
     uri: http://127.0.0.1:8081/
     cells:
       - name: c
-        primitives:
-          - { id: 2248b89c-16d6-41be-bc40-b1e7242e09f0, shape: box, texture: textures/paree_nightmare.jpg, scale: { x: 2.0, y: 0.2, z: 0.2 } }
       - name: d
         neighbours:
           c: { x: 0.0, y: 0.0, z: 10.0 }
-        primitives:
-          - { id: 253f9663-bfe8-438f-a94c-4e98bea4433a, shape: box, texture: textures/paree_nightmare.jpg, scale: { x: 0.2, y: 0.2, z: 2.0 } }
 
