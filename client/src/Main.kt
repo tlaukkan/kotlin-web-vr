@@ -40,6 +40,14 @@ fun main(args: Array<String>) {
             }
 
             client.onLinked = { linkResponse ->
+                virtualRealityController.neighbours.clear()
+                for (neighbour in linkResponse.neighbours) {
+                    virtualRealityController.neighbours[neighbour.cellUriTwo] = Vector3(
+                            neighbour.oneTwoDeltaVector.x,
+                            neighbour.oneTwoDeltaVector.y,
+                            neighbour.oneTwoDeltaVector.z)
+                }
+
                 println("Linked to server cell: " + linkResponse.serverCellUris[0])
             }
 

@@ -1,5 +1,6 @@
 package vr.network
 
+import lib.threejs.Vector3
 import vr.network.model.*
 
 class NetworkClient(val url: String) {
@@ -8,7 +9,6 @@ class NetworkClient(val url: String) {
 
     var connected = false
     var linked = false
-    var cellName = ""
 
     var onConnected: ((handshakeResponse: HandshakeResponse) -> Unit)? = null
     var onLinked: ((linkResponse: LinkResponse) -> Unit)? = null
@@ -64,7 +64,6 @@ class NetworkClient(val url: String) {
             val linkResponse: LinkResponse = value
             if (linkResponse.success) {
                 linked = true
-                cellName = value.cellName
                 if (onLinked != null) {
                     onLinked!!.invoke(value)
                 }

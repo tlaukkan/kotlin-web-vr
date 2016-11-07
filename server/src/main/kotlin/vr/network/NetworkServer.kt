@@ -206,7 +206,7 @@ class NetworkServer(val server: VrServer) {
             if (node.url.contains('/')) {
                 cellUri = node.url.substring(0, node.url.lastIndexOf('/'))
             } else {
-                cellUri = ""
+                return
             }
             val cell = cells[cellUri]
             if (cell != null) {

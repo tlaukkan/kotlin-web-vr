@@ -1,5 +1,6 @@
 package vr.webvr
 
+import lib.threejs.Vector3
 import vr.network.model.Node
 import vr.util.dynamicCast
 import vr.webvr.actuators.NodeActuator
@@ -11,6 +12,8 @@ class VirtualRealityController(var displayController: DisplayController, var med
     var scene = displayController.scene
     val nodeActuators: MutableMap<String, NodeActuator> = mutableMapOf()
     val nodes: MutableMap<String, Node> = mutableMapOf()
+    var neighbours: MutableMap<String, Vector3> = mutableMapOf()
+
 
     fun addNodeActuator(nodeActuator: NodeActuator) {
         nodeActuators[nodeActuator.type] = nodeActuator
@@ -25,6 +28,21 @@ class VirtualRealityController(var displayController: DisplayController, var med
         if (nodeActuators.containsKey(type)) {
             val nodeActuator = nodeActuators[type]!!
             val node : Node = dynamicCast(value)
+
+            val cellUri: String
+            if (node.url.contains('/')) {
+                cellUri = node.url.substring(0, node.url.lastIndexOf('/'))
+            } else {
+                return
+            }
+
+            if (neighbours.containsKey(cellUri)) {
+                val neighbourVector = neighbours[cellUri]!!
+                node.position.x += neighbourVector.x
+                node.position.y += neighbourVector.y
+                node.position.z += neighbourVector.z
+            }
+
             if (node.removed) {
                 if (nodes.containsKey(node.id)) {
                     nodeActuator.remove(node)
