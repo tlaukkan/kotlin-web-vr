@@ -25,12 +25,12 @@ class NetworkServer(val server: VrServer) {
     private val sessions: MutableMap<WebSocket, Session> = HashMap()
 
     @Synchronized fun addCell(cell: Cell) {
-        if (cell.remoteCell) {
-            log.info("Added remote cell ${cell.cellUri}")
+        if (cell.remote) {
+            log.info("Added remote cell ${cell.url}")
         } else {
-            log.info("Added local cell ${cell.cellUri}")
+            log.info("Added local cell ${cell.url}")
         }
-        cells.put(cell.cellUri, cell)
+        cells.put(cell.url, cell)
     }
 
     @Synchronized fun getCells() : Array<Cell> {
@@ -121,10 +121,10 @@ class NetworkServer(val server: VrServer) {
                             var serverCell = cells[serverCellUri]!!
                             for (neighbourCellUri in serverCell.neighbours.keys) {
                                 val neighbourCell = cells[neighbourCellUri]!!
-                                if (session.remoteServerUrl == null || !neighbourCell.cellUri.startsWith(session.remoteServerUrl!!)) {
-                                    expandedServerCellUris.add(neighbourCell.cellUri)
+                                if (session.remoteServerUrl == null || !neighbourCell.url.startsWith(session.remoteServerUrl!!)) {
+                                    expandedServerCellUris.add(neighbourCell.url)
                                 }
-                                neighbours.add(Neighbour(serverCell.cellUri, neighbourCell.cellUri, serverCell.neighbours[neighbourCell.cellUri]!!))
+                                neighbours.add(Neighbour(serverCell.url, neighbourCell.url, serverCell.neighbours[neighbourCell.url]!!))
                             }
                         }
 
@@ -136,15 +136,15 @@ class NetworkServer(val server: VrServer) {
                         val handledCellUris: MutableSet<String> = mutableSetOf()
                         for (cellUri in session.serverCellUris) {
                             var cell = cells[cellUri]!!
-                            if (!handledCellUris.contains(cell.cellUri)) {
+                            if (!handledCellUris.contains(cell.url)) {
                                 values.addAll(cell.getNodes())
-                                handledCellUris.add(cell.cellUri)
+                                handledCellUris.add(cell.url)
                                 for (neighbourCellUri in cell.neighbours.keys) {
                                     val neighbourCell = cells[neighbourCellUri]!!
-                                    if (session.remoteServerUrl == null || !neighbourCell.cellUri.startsWith(session.remoteServerUrl!!)) {
-                                        if (!handledCellUris.contains(neighbourCell.cellUri)) {
+                                    if (session.remoteServerUrl == null || !neighbourCell.url.startsWith(session.remoteServerUrl!!)) {
+                                        if (!handledCellUris.contains(neighbourCell.url)) {
                                             values.addAll(neighbourCell.getNodes())
-                                            handledCellUris.add(neighbourCell.cellUri)
+                                            handledCellUris.add(neighbourCell.url)
                                         }
                                     }
                                 }
@@ -162,14 +162,14 @@ class NetworkServer(val server: VrServer) {
                             val cellTwo = cells[neighbour.cellUriTwo]
                             val neighbourVector = neighbour.oneTwoDeltaVector
 
-                            if (!cellOne!!.neighbours.containsKey(cellTwo!!.cellUri)) {
-                                cellOne!!.neighbours[cellTwo!!.cellUri] = neighbourVector
-                                cellTwo!!.neighbours[cellOne!!.cellUri] = DataVector3(
+                            if (!cellOne!!.neighbours.containsKey(cellTwo!!.url)) {
+                                cellOne!!.neighbours[cellTwo!!.url] = neighbourVector
+                                cellTwo!!.neighbours[cellOne!!.url] = DataVector3(
                                         -neighbourVector.x,
                                         -neighbourVector.y,
                                         -neighbourVector.z
                                 )
-                                log.info("Added neighbours: ${cellOne.cellUri} ${cellOne.neighbours[neighbour.cellUriTwo]} - ${cellTwo.cellUri} ${cellTwo.neighbours[neighbour.cellUriOne]}")
+                                log.info("Added neighbours: ${cellOne.url} ${cellOne.neighbours[neighbour.cellUriTwo]} - ${cellTwo.url} ${cellTwo.neighbours[neighbour.cellUriOne]}")
                             }
                         }
 

@@ -44,19 +44,19 @@ class VirtualRealityController(var displayController: DisplayController, var med
             }
 
             if (node.removed) {
-                if (nodes.containsKey(node.id)) {
+                if (nodes.containsKey(node.url)) {
                     nodeActuator.remove(node)
-                    nodes.remove(node.id)
-                    println("Removed ${node.id} $type")
+                    nodes.remove(node.url)
+                    println("Removed ${node.url} $type")
                 }
             } else {
-                if (nodes.containsKey(node.id)) {
-                    nodes[node.id] = node
+                if (nodes.containsKey(node.url)) {
+                    nodes[node.url] = node
                     nodeActuator.update(node)
                 } else {
-                    nodes[node.id] = node
+                    nodes[node.url] = node
                     nodeActuator.add(node)
-                    println("Added ${node.id} $type")
+                    println("Added ${node.url} $type")
                 }
             }
         } else {

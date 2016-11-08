@@ -1,7 +1,6 @@
 package vr.network.model
 
-open class Node(var id: String = "00000000-0000-0000-0000-000000000000",
-                var url: String = "",
+open class Node(var url: String = "",
                 var parentUrl: String? = null,
                 var removed: Boolean = false,
                 var position: DataVector3 = DataVector3(),

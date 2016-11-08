@@ -129,8 +129,8 @@ class NetworkTest {
         Assert.assertEquals(firstServerCellUri, linkedServerCellUri)
 
         log.info("Sending node...")
-        val node = Node(UUID.randomUUID().toString())
-        node.url = "$linkedServerCellUri/${node.id}"
+        val node = Node()
+        node.url = "$linkedServerCellUri/${UUID.randomUUID()}"
         client.send(listOf(node))
 
         log.info("Waiting node broadcast...")

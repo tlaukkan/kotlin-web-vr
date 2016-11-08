@@ -115,10 +115,10 @@ class VrServer(val url: String = "http://localhost:8080/") {
 
         val mapper = Mapper()
         for (cell in networkServer.getCells()) {
-            if (cell.remoteCell) {
+            if (cell.remote) {
                 continue
             }
-            val cellName = cell.cellUri.substring(cell.cellUri.lastIndexOf('/') + 1)
+            val cellName = cell.url.substring(cell.url.lastIndexOf('/') + 1)
             val cellDirectory = File("${dataDirectory.absolutePath}/${cellName}")
             cellDirectory.mkdirs()
 
@@ -141,10 +141,10 @@ class VrServer(val url: String = "http://localhost:8080/") {
 
         val mapper = Mapper()
         for (cell in networkServer.getCells()) {
-            if (cell.remoteCell) {
+            if (cell.remote) {
                 continue
             }
-            val cellName = cell.cellUri.substring(cell.cellUri.lastIndexOf('/') + 1)
+            val cellName = cell.url.substring(cell.url.lastIndexOf('/') + 1)
             val cellDirectory = File("${dataDirectory.absolutePath}/${cellName}")
             cellDirectory.mkdirs()
 
@@ -155,7 +155,7 @@ class VrServer(val url: String = "http://localhost:8080/") {
                 val nodeString = FileUtils.readFileToString(nodeFile, Charset.forName("UTF-8"))
                 val node = mapper.readValue(nodeString, nodeType) as Node
                 cell.addNode(node)
-                log.info("Cell ${cellName} loaded ${node.id} of type ${node.javaClass.simpleName}")
+                log.info("Cell ${cellName} loaded ${node.url} of type ${node.javaClass.simpleName}")
             }
 
         }

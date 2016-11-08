@@ -9,7 +9,7 @@ import java.util.*
 /**
  * Created by tlaukkan on 7/9/2016.
  */
-class Cell(val cellUri: String, var remoteCell: Boolean = false, var neighbours: MutableMap<String, DataVector3> = TreeMap<String, DataVector3>()) {
+class Cell(val url: String, var remote: Boolean = false, var neighbours: MutableMap<String, DataVector3> = TreeMap<String, DataVector3>()) {
     private val log = logger()
 
     val serverUrl: String
@@ -17,7 +17,7 @@ class Cell(val cellUri: String, var remoteCell: Boolean = false, var neighbours:
     private val nodes: MutableMap<String, Node> = HashMap()
 
     init {
-        var url = URL(cellUri)
+        var url = URL(url)
         val host = url.host
         val port = url.port
         val protocol: String
@@ -31,16 +31,13 @@ class Cell(val cellUri: String, var remoteCell: Boolean = false, var neighbours:
 
     @Synchronized fun addNode(node: Node) : Boolean {
 
-        if ("00000000-0000-0000-0000-000000000000".equals(node.id)) {
-            log.warning("Node add failed. Node with empty ID of type ${node.javaClass.simpleName}")
-            return false
+        if (node.url.endsWith("00000000-0000-0000-0000-000000000000") || node.url.length == 0) {
+            node.url = "$url/${UUID.randomUUID()}"
         }
         if (nodes.containsKey(node.url)) {
-            log.warning("Node add failed. Node already exists ${node.id}")
+            log.warning("Node add failed. Node already exists ${node.url}")
             return false
         }
-
-        node.url = "$cellUri/${node.id}"
 
         log.info("Added node: ${node.url} of type ${node.javaClass.simpleName}")
 
@@ -50,12 +47,12 @@ class Cell(val cellUri: String, var remoteCell: Boolean = false, var neighbours:
 
     @Synchronized fun updateNode(node: Node) : Boolean {
         if (!nodes.containsKey(node.url)) {
-            log.warning("Node update failed. Node does not exist ${node.id}")
+            log.warning("Node update failed. Node does not exist ${node.url}")
             return false
         }
         nodes[node.url] = node
 
-        log.info("Updated node: ${node.id} of type ${node.javaClass.simpleName}")
+        log.info("Updated node: ${node.url} of type ${node.javaClass.simpleName}")
 
         return true
     }
@@ -68,7 +65,7 @@ class Cell(val cellUri: String, var remoteCell: Boolean = false, var neighbours:
 
         if (node != null) {
             nodes.remove(url)
-            log.info("Removed node: ${node.id} of type ${node.javaClass.simpleName}")
+            log.info("Removed node: ${node.url} of type ${node.javaClass.simpleName}")
         } else {
             log.warning("Remove failed. Node does not exist $url")
         }

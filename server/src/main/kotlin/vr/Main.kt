@@ -36,7 +36,7 @@ fun configureServers(path: String) : Map<String, VrServer> {
             var cell = Cell("${serverConfig.uri}api/cells/${cellConfig.name}")
 
             server.networkServer.addCell(cell)
-            log.info("Added cell ${cellConfig.name} to server ${serverConfig.name} with uri ${cell.cellUri}")
+            log.info("Added cell ${cellConfig.name} to server ${serverConfig.name} with uri ${cell.url}")
         }
 
         for (cellConfig in serverConfig.cells) {
@@ -66,12 +66,12 @@ fun configureServers(path: String) : Map<String, VrServer> {
                 val neighbourCell = server.networkServer.getCell(neighbourCellUri)!!
 
                 cell.neighbours[neighbourCellUri] = neighbourVector
-                neighbourCell.neighbours[cell.cellUri] = DataVector3(
+                neighbourCell.neighbours[cell.url] = DataVector3(
                         -neighbourVector.x,
                         -neighbourVector.y,
                         -neighbourVector.z)
 
-                log.info("Added neighbours: ${cell.cellUri} ${cell.neighbours[neighbourCellUri]} - ${neighbourCell.cellUri} ${neighbourCell.neighbours[cell.cellUri]}")
+                log.info("Added neighbours: ${cell.url} ${cell.neighbours[neighbourCellUri]} - ${neighbourCell.url} ${neighbourCell.neighbours[cell.url]}")
             }
         }
 

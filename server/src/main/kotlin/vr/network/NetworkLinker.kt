@@ -33,7 +33,7 @@ class NetworkLinker(val networkServer: NetworkServer) {
 
     private fun process() {
         for (cell in networkServer.getCells()) {
-            if (cell.remoteCell) {
+            if (cell.remote) {
                 if (!clients.containsKey(cell.serverUrl)) {
                     log.info("Linker connecting to remote server ${cell.serverUrl}")
 
@@ -46,20 +46,20 @@ class NetworkLinker(val networkServer: NetworkServer) {
                         val clientCellUris: MutableList<String> = mutableListOf()
                         val neighbours: MutableList<Neighbour> = mutableListOf()
                         for (candidateCell in networkServer.getCells()) {
-                            if (candidateCell.remoteCell && candidateCell.serverUrl.equals(cell.serverUrl)) {
-                                serverCellUris.add(candidateCell.cellUri)
+                            if (candidateCell.remote && candidateCell.serverUrl.equals(cell.serverUrl)) {
+                                serverCellUris.add(candidateCell.url)
                                 for (candidateNeighbourCellUri in candidateCell.neighbours.keys) {
                                     if (networkServer.hasCell(candidateNeighbourCellUri)) {
                                         val candidateNeighbourCell = networkServer.getCell(candidateNeighbourCellUri)
-                                        if (!candidateNeighbourCell.remoteCell) {
+                                        if (!candidateNeighbourCell.remote) {
                                             clientCellUris.add(candidateNeighbourCellUri)
-                                            neighbours.add(Neighbour(candidateCell.cellUri, candidateNeighbourCell.cellUri, candidateCell.neighbours[candidateNeighbourCellUri]!!))
+                                            neighbours.add(Neighbour(candidateCell.url, candidateNeighbourCell.url, candidateCell.neighbours[candidateNeighbourCellUri]!!))
                                             for (candidateNeighbourNeighbourCellUri in candidateNeighbourCell.neighbours.keys) {
                                                 if (networkServer.hasCell(candidateNeighbourNeighbourCellUri)) {
                                                     val candidateNeighbourNeighbourCell = networkServer.getCell(candidateNeighbourNeighbourCellUri)
-                                                    if (!candidateNeighbourNeighbourCell.remoteCell) {
+                                                    if (!candidateNeighbourNeighbourCell.remote) {
                                                         clientCellUris.add(candidateNeighbourNeighbourCellUri)
-                                                        neighbours.add(Neighbour(candidateNeighbourCell.cellUri, candidateNeighbourNeighbourCell.cellUri, candidateNeighbourCell.neighbours[candidateNeighbourNeighbourCellUri]!!))
+                                                        neighbours.add(Neighbour(candidateNeighbourCell.url, candidateNeighbourNeighbourCell.url, candidateNeighbourCell.neighbours[candidateNeighbourNeighbourCellUri]!!))
                                                     }
                                                 }
                                             }
@@ -85,10 +85,10 @@ class NetworkLinker(val networkServer: NetworkServer) {
                     client.onReceive = { value ->
                         if (value is Node) {
                             if (value.url.startsWith(networkServer.server.url)) {
-                                log.fine("Linker ignored received node modification ${value.id} of type ${value.javaClass.simpleName}")
+                                log.fine("Linker ignored received node modification ${value.url} of type ${value.javaClass.simpleName}")
                             } else {
                                 receivedNodes.add(value)
-                                log.info("Linker received node modification ${value.id} of type ${value.javaClass.simpleName}")
+                                log.info("Linker received node modification ${value.url} of type ${value.javaClass.simpleName}")
                             }
                         }
                     }

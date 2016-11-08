@@ -16,28 +16,26 @@ import javax.ws.rs.core.UriInfo
 class NodeRestService() {
     val log = logger()
 
+    //TODO fix node reset service to use full api/cells/cellname/nodeid path
+
     @POST fun addNode(node: Node, @Context uriInfo: UriInfo): Response {
         val networkServer: NetworkServer = PORT_NETWORK_SERVER_MAP[uriInfo.baseUri.port]!!
-        val nodeId = UUID.randomUUID().toString()
         val builder = uriInfo.absolutePathBuilder
-        builder.path(nodeId.toString())
-        node.id = nodeId
-        node.url = "${uriInfo.baseUri}cells/default/$nodeId"
+        builder.path(UUID.randomUUID().toString())
 
-        val cell = networkServer.getCells().iterator().next()
+        val uri = builder.build()
+        val cell = networkServer.getCells()[0]
         cell.addNode(node)
 
-        log.fine("Created $nodeId.")
-        return Response.created(builder.build()).entity(nodeId).build()
+        log.fine("Created $uri.")
+        return Response.created(uri).entity(uri).build()
     }
 
     @Path("{nodeId}")
     @PUT fun updateNode(@PathParam("nodeId") nodeId: String, node: Node, @Context uriInfo: UriInfo): Response {
         val networkServer: NetworkServer = PORT_NETWORK_SERVER_MAP[uriInfo.baseUri.port]!!
-        node.id = nodeId
-        node.url = "${uriInfo.baseUri}cells/default/$nodeId"
 
-        val cell = networkServer.getCells().iterator().next()
+        val cell = networkServer.getCells()[0]
         if (cell.updateNode(node)) {
             log.fine("Updated $nodeId.")
             return Response.ok().build()
