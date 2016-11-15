@@ -142,41 +142,29 @@ class DisplayController(displayDeviceController: DisplayDeviceController, render
 
         if (pose.position !== null) {
             this.camera.position.fromArray(floatsToDoubles(pose.position).toTypedArray())
+            this.camera.position.multiplyScalar(this.scale)
             this.camera.quaternion.fromArray(floatsToDoubles(pose.orientation).toTypedArray())
             this.camera.updateMatrix()
-
             this.standingMatrix.fromArray(floatsToDoubles(this.display.stageParameters.sittingToStandingTransform).toTypedArray())
             this.camera.applyMatrix(this.standingMatrix)
-
+        } else {
+            this.camera.position.x = 0.0
+            this.camera.position.y = 0.0
+            this.camera.position.z = 0.0
+            this.camera.quaternion.x = 0.0
+            this.camera.quaternion.y = 0.0
+            this.camera.quaternion.z = 0.0
+            this.camera.quaternion.w = 1.0
+            this.camera.rotation.y = 90 * Math.PI / 180
+            this.camera.updateMatrix()
+            this.camera.applyMatrix(this.standingMatrix)
             this.camera.position.multiplyScalar(this.scale)
         }
 
-
-
-        /*if (this.standing) {
-
-            if (this.display.stageParameters) {
-
-                this.camera.updateMatrix();
-
-                this.standingMatrix.fromArray(Array.prototype.slice.call(
-                        this.display.stageParameters.sittingToStandingTransform));
-                this.camera.applyMatrix(this.standingMatrix);
-
-            } else {
-
-                this.camera.position.setY(this.camera.position.y + this.userHeight);
-
-            }
-
-        }*/
-
-
-
-
-
-        if (isPresenting) {
-
+        if (!isPresenting) {
+            // Regular render mode if not HMD
+            this.renderer.render(scene, camera)
+        } else {
             var autoUpdate = scene.autoUpdate;
 
             if (autoUpdate) {
@@ -243,11 +231,7 @@ class DisplayController(displayDeviceController: DisplayDeviceController, render
 
             this.display.submitFrame(display.getPose())
 
-        } else {
-            // Regular render mode if not HMD
-            this.renderer.render(scene, camera)
         }
-
     }
 
     fun fovToProjection(fov: VRFieldOfView, rightHanded: Boolean, zNear_: Double, zFar_: Double): Matrix4 {
