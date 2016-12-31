@@ -9,22 +9,6 @@ import kotlin.browser.window
  */
 abstract class Tool(var name: String, var inputDevice: InputDevice) {
 
-    fun activate() {
-        inputDevice.onPressed = { button ->
-            onPressed(button)
-        }
-        inputDevice.onReleased = { button ->
-            onReleased(button)
-        }
-        inputDevice.onSqueezed = { button, value ->
-            onSqueezed(button, value)
-        }
-        inputDevice.onPadTouched = { x, y ->
-            onPadTouched(x, y)
-        }
-        inputDevice.display(name)
-    }
-
     abstract fun onPressed(button: InputButton)
 
     abstract fun onReleased(button: InputButton)

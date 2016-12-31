@@ -5,6 +5,8 @@ import vr.util.floatsToDoubles
 import lib.webvrapi.Gamepad
 import lib.webvrapi.getGamepads
 import lib.webvrapi.navigator
+import vr.webvr.tools.VoidTool
+import vr.webvr.tools.MoveTool
 import vr.webvr.tools.Tool
 import kotlin.browser.document
 import kotlin.browser.window
@@ -20,6 +22,7 @@ abstract class InputDevice(index: Int, type: String) {
     val index = index
     val type = type
 
+    var activeTool: Tool = MoveTool(this)
     val tools: MutableList<Tool> = mutableListOf()
     var gamepad: Gamepad? = null
 
@@ -29,8 +32,9 @@ abstract class InputDevice(index: Int, type: String) {
     var standingMatrix = Matrix4()
 
     private var displayCanvasWidth = 1024
-    private var Canvas = 1024
+    private var displayCanvasHeight = 1024
     private val displayBitmap: dynamic
+    private val displayTexture: dynamic
 
     var onSqueezed : ((button: InputButton, value: Double) -> Unit)? = null
     var onPressed: ((button: InputButton) -> Unit)? = null
@@ -43,16 +47,14 @@ abstract class InputDevice(index: Int, type: String) {
         this.entity.matrixAutoUpdate = false
         this.render()
 
-
         var displayCanvas : dynamic = document.createElement("canvas")
-        displayCanvas.w
         displayCanvas.width = displayCanvasWidth
-        displayCanvas.height = Canvas
+        displayCanvas.height = displayCanvasHeight
 
         displayBitmap = displayCanvas.getContext("2d")
         displayBitmap.font = "Normal 80px Arial"
 
-        var displayTexture : dynamic = Texture(displayCanvas)
+        displayTexture = Texture(displayCanvas)
         displayTexture.needsUpdate = true
         var material = MeshBasicMaterial( object {var map = displayTexture} )
         material.transparent = true
@@ -63,17 +65,38 @@ abstract class InputDevice(index: Int, type: String) {
         display.position.y = 0.15
         display.rotateX(-45 * 2 * Math.PI / 360)
 
-        display("Hello")
-
         entity.add(display)
+
+        tools.add(MoveTool(this))
+        tools.add(VoidTool(this))
+
+        activateTool(tools[0])
+    }
+
+    fun activateTool(tool: Tool) {
+        activeTool = tool
+        onPressed = { button ->
+            tool.onPressed(button)
+        }
+        onReleased = { button ->
+            tool.onReleased(button)
+        }
+        onSqueezed = { button, value ->
+            tool.onSqueezed(button, value)
+        }
+        onPadTouched = { x, y ->
+            tool.onPadTouched(x, y)
+        }
+        display(activeTool.name)
     }
 
     fun display(text: String) {
-        displayBitmap.clearRect(0,0, displayCanvasWidth, Canvas)
+        displayBitmap.clearRect(0,0, displayCanvasWidth, displayCanvasHeight)
         displayBitmap.fillStyle = "rgba(0,0,0,0.2)"
-        displayBitmap.fillRect(0,0, displayCanvasWidth, Canvas)
+        displayBitmap.fillRect(0,0, displayCanvasWidth, displayCanvasHeight)
         displayBitmap.fillStyle = "rgba(0,0,0,0.4)"
         displayBitmap.fillText(text, 10, 80)
+        displayTexture.needsUpdate = true
     }
 
     /**
@@ -114,7 +137,16 @@ abstract class InputDevice(index: Int, type: String) {
     }
 
     fun released(button: InputButton) {
-        if (onReleased != null) {
+        if (button == InputButton.MENU) {
+            println("Changing active tool from ${activeTool.name}")
+            var toolIndex = tools.indexOf(activeTool)
+            toolIndex++
+            if (toolIndex == tools.size) {
+                toolIndex = 0
+            }
+            activateTool(tools[toolIndex])
+            println("Changed active tool to ${activeTool.name}")
+        } else if (onReleased != null) {
             onReleased!!(button)
         }
     }
