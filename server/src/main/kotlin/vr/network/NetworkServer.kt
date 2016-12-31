@@ -225,7 +225,7 @@ class NetworkServer(val server: VrServer) {
                 }
 
                 cellNodeUpdates[cellUri]!!.add(node)
-                log.info("Applied received node modification ${node.url} for cell $cellUri")
+                //log.info("Applied received node modification ${node.url} for cell $cellUri")
             } else {
                 log.warning("Failed to apply received node ${node.url} modification. No such cell: $cellUri")
             }

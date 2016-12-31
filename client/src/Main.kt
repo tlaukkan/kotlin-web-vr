@@ -8,6 +8,9 @@ import vr.webvr.*
 import java.util.*
 import kotlin.browser.window
 
+var renderTime: Double = 0.0
+var renderTimeDelta: Double = 0.001
+
 fun main(args: Array<String>) {
     println("VR client startup...")
 
@@ -67,10 +70,17 @@ fun main(args: Array<String>) {
 
         fun render(time: Number): Unit {
             var timeMillis = time.toLong()
+
+            if (renderTime != 0.0) {
+                renderTimeDelta = timeMillis / 1000.0 - renderTime
+            }
+            renderTime = timeMillis / 1000.0
+
             displayDeviceController.display!!.requestAnimationFrame(::render)
 
             inputDeviceController.render()
-            rendererController.render(timeMillis)
+            virtualRealityController.update()
+            rendererController.render()
             displayController.render(rendererController.scene, rendererController.camera)
         }
 

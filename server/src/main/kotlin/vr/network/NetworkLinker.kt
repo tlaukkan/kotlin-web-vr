@@ -88,14 +88,14 @@ class NetworkLinker(val networkServer: NetworkServer) {
                                 log.fine("Linker ignored received node modification ${value.url} of type ${value.javaClass.simpleName}")
                             } else {
                                 receivedNodes.add(value)
-                                log.info("Linker received node modification ${value.url} of type ${value.javaClass.simpleName}")
+                               // log.info("Linker received node modification ${value.url} of type ${value.javaClass.simpleName}")
                             }
                         }
                     }
                     client.onAllReceived = {
                         if (receivedNodes.size > 0) {
                             networkServer.processReceivedNodes(receivedNodes)
-                            log.info("Linker handed processing of ${receivedNodes.size} to network server.")
+                            //log.info("Linker handed processing of ${receivedNodes.size} to network server.")
                             receivedNodes.clear()
                         }
                     }

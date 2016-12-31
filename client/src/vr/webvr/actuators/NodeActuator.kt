@@ -1,6 +1,8 @@
 package vr.webvr.actuators
 
 import lib.threejs.Object3D
+import renderTime
+import renderTimeDelta
 import vr.network.model.Node
 import vr.webvr.VirtualRealityController
 
@@ -8,23 +10,24 @@ abstract class NodeActuator(var controller: VirtualRealityController, var type: 
 
     abstract fun add(node: Node): Unit
 
-    private val orphans: MutableMap<String, MutableList<Object3D>> = mutableMapOf()
-
     protected fun add(node: Node, obj: Object3D) {
         obj.name = node.url
         updateObjectFromNode(obj, node)
+
+        interpolate(node)
+
         add(node.parentUrl, obj)
         //controller.scene.add(obj)
     }
 
     protected fun add(parentUrl: String?, obj: Object3D) {
-        if (orphans.containsKey(obj.name)) {
-            val orphanList = orphans[obj.name]!!
+        if (controller.orphans.containsKey(obj.name)) {
+            val orphanList = controller.orphans[obj.name]!!
             for (orphan in orphanList) {
                 obj.add(orphan)
             }
             orphanList.clear()
-            orphans.remove(obj.name)
+            controller.orphans.remove(obj.name)
         }
 
         if (parentUrl != null && parentUrl!!.size != 0) {
@@ -33,10 +36,10 @@ abstract class NodeActuator(var controller: VirtualRealityController, var type: 
                 parentObject.add(obj)
                 println("Added ${obj.name} to parent $parentUrl.")
             } else {
-                if (!orphans.containsKey(parentUrl)) {
-                    orphans[parentUrl] = mutableListOf()
+                if (!controller.orphans.containsKey(parentUrl)) {
+                    controller.orphans[parentUrl] = mutableListOf()
                 }
-                orphans[parentUrl]!!.add(obj)
+                controller.orphans[parentUrl]!!.add(obj)
                 println("Added orphan ${obj.name} as parent $parentUrl was not found.")
             }
         } else {
@@ -45,10 +48,22 @@ abstract class NodeActuator(var controller: VirtualRealityController, var type: 
     }
 
     open fun update(node: Node) {
+        interpolate(node)
+
+        /*
         val obj = controller.scene.getObjectByName(node.url)
         if (obj != null) {
             updateObjectFromNode(obj, node)
         }
+        */
+    }
+
+    private fun interpolate(node: Node) {
+        if (!controller.nodeInterpolators.containsKey(node.url)) {
+            controller.nodeInterpolators.put(node.url, NodeInterpolator(node.url))
+            println("Added node interpolator for node: " + node.url)
+        }
+        controller.nodeInterpolators[node.url]!!.updateTarget(renderTime, renderTimeDelta, node)
     }
 
     open fun remove(node: Node) {
@@ -57,6 +72,7 @@ abstract class NodeActuator(var controller: VirtualRealityController, var type: 
             controller.scene.remove(obj)
         }
     }
+
 
     fun updateObjectFromNode(obj: Object3D, node: Node) {
         obj.position.x = node.position.x
@@ -70,4 +86,5 @@ abstract class NodeActuator(var controller: VirtualRealityController, var type: 
         obj.scale.y = node.scale.y
         obj.scale.z = node.scale.z
     }
+
 }

@@ -1,17 +1,26 @@
 package vr.webvr
 
+import lib.threejs.Object3D
 import lib.threejs.Vector3
+import renderTime
+import renderTimeDelta
 import vr.network.model.Node
 import vr.util.dynamicCast
 import vr.webvr.actuators.NodeActuator
 import vr.webvr.actuators.LightFieldActuator
+import vr.webvr.actuators.NodeInterpolator
 import vr.webvr.actuators.PrimitiveActuator
 
 class VirtualRealityController(var displayController: DisplayController, var mediaController: MediaController) {
 
     var scene = displayController.scene
     val nodeActuators: MutableMap<String, NodeActuator> = mutableMapOf()
+    val nodeInterpolators: MutableMap<String, NodeInterpolator> = mutableMapOf()
     val nodes: MutableMap<String, Node> = mutableMapOf()
+
+    // Orphaned3D objects
+    val orphans: MutableMap<String, MutableList<Object3D>> = mutableMapOf()
+
     var neighbours: MutableMap<String, Vector3> = mutableMapOf()
 
 
@@ -61,6 +70,24 @@ class VirtualRealityController(var displayController: DisplayController, var med
             }
         } else {
             println("No activator defined for $type")
+        }
+    }
+
+    fun update() {
+        val nodeUrlsToRemoveFromInterpolators: MutableList<String> = mutableListOf()
+        for (interpolator in nodeInterpolators.values) {
+            val obj = scene.getObjectByName(interpolator.nodeUrl)
+            if (obj == null) {
+                nodeUrlsToRemoveFromInterpolators.add(interpolator.nodeUrl)
+                continue
+            }
+            if (!interpolator.interpolate(renderTime, renderTimeDelta, obj)) {
+                nodeUrlsToRemoveFromInterpolators.add(interpolator.nodeUrl)
+            }
+        }
+        for (interpolatorKeyToRemove in nodeUrlsToRemoveFromInterpolators) {
+            nodeInterpolators.remove(interpolatorKeyToRemove)
+            println("Removed interpolator for node: " + interpolatorKeyToRemove)
         }
     }
 

@@ -42,7 +42,7 @@ fun main(args : Array<String>) {
 
         }
 
-        log.info("Updated cell prime nodes, time since start in milliseconds: " + timeMillis)
+        //log.info("Updated cell prime nodes, time since start in milliseconds: " + timeMillis)
 
         Thread.sleep(refreshTimeMillis)
     }

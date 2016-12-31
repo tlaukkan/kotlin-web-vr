@@ -55,7 +55,7 @@ class Cell(val url: String, var remote: Boolean = false, var neighbours: Mutable
         }
         nodes[node.url] = node
 
-        log.info("Updated node: ${node.url} of type ${node.javaClass.simpleName}")
+        //log.info("Updated node: ${node.url} of type ${node.javaClass.simpleName}")
 
         return true
     }
