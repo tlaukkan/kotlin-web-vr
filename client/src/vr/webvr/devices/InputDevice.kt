@@ -125,12 +125,18 @@ abstract class InputDevice(index: Int, type: String) {
     }
 
     fun squeezed(button: InputButton, value: Double) {
+        if (button == InputButton.MENU) {
+            return
+        }
         if (onSqueezed != null) {
             onSqueezed!!(button, value)
         }
     }
 
     fun pressed(button: InputButton) {
+        if (button == InputButton.MENU) {
+            return
+        }
         if (onPressed != null) {
             onPressed!!(button)
         }
@@ -146,7 +152,9 @@ abstract class InputDevice(index: Int, type: String) {
             }
             activateTool(tools[toolIndex])
             println("Changed active tool to ${activeTool.name}")
-        } else if (onReleased != null) {
+            return
+        }
+        if (onReleased != null) {
             onReleased!!(button)
         }
     }
