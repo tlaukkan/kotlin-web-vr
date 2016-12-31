@@ -2,6 +2,7 @@ package vr.webvr.tools
 
 import vr.webvr.devices.InputButton
 import vr.webvr.devices.InputDevice
+import kotlin.browser.window
 
 /**
  * Created by tlaukkan on 11/1/2016.
@@ -21,6 +22,7 @@ abstract class Tool(var name: String, var inputDevice: InputDevice) {
         inputDevice.onPadTouched = { x, y ->
             onPadTouched(x, y)
         }
+        inputDevice.display(name)
     }
 
     abstract fun onPressed(button: InputButton)

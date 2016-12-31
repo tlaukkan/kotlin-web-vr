@@ -6,7 +6,7 @@ import vr.webvr.devices.InputDevice
 /**
  * Created by tlaukkan on 11/1/2016.
  */
-class DefaultTool(inputDevice: InputDevice) : Tool("Default Tool", inputDevice) {
+class MoveTool(inputDevice: InputDevice) : Tool("Move Tool", inputDevice) {
 
     override fun onPressed(button: InputButton) {
         println("Pressed: $button")

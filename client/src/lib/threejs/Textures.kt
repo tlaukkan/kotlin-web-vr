@@ -1,8 +1,8 @@
 package lib.threejs
 
 @native("THREE.Texture")
-open class Texture {
-
+open class Texture() {
+  @native constructor(obj: Any) : this()
 }
 
 @native("THREE.TextureLoader")

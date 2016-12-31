@@ -6,7 +6,7 @@ import lib.webvrapi.Gamepad
 import lib.webvrapi.getGamepads
 import lib.webvrapi.navigator
 import vr.webvr.devices.OpenVrGamepad
-import vr.webvr.tools.DefaultTool
+import vr.webvr.tools.MoveTool
 import kotlin.browser.window
 
 class InputDeviceController(displayController: DisplayController) {
@@ -56,7 +56,7 @@ class InputDeviceController(displayController: DisplayController) {
                     continue
                 }
 
-                controller.tools.add(DefaultTool(controller))
+                controller.tools.add(MoveTool(controller))
                 controller.tools[0].activate()
 
                 controller.standingMatrix = displayController.standingMatrix
@@ -80,7 +80,7 @@ class InputDeviceController(displayController: DisplayController) {
             }
 
             // If model has not been set then attempt to set it.
-            if (controller.entity.children.size == 0) {
+            if (controller.entity.children.size == 1) {
                 // Detect gamepad type and apply appropriate model.
                 if (inputDeviceModels[gamepad.id] != null) {
                     controller.entity.add(this.inputDeviceModels[gamepad.id]!!.clone(true))

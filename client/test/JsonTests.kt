@@ -73,7 +73,7 @@ fun jsonTests() {
         assert.equal(test2.obj!!.key, "kd")
         assert.equal(test2.obj!!.value, "vd")
 
-        //println(test.print())
+        //println(test.display())
 
         /*val testCopy: Test = Test()
         deepCopy(test, testCopy)
@@ -87,7 +87,7 @@ fun jsonTests() {
 
         assert.equal(JSON.stringify(test), JSON.stringify(testCopy))
 
-        testCopy.print()*/
+        testCopy.display()*/
 
         /*val testCopy: Test = Test(arrayOf())
         val map = PrimitiveHashMap<Any>(test)

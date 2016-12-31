@@ -63,6 +63,11 @@ open class Geometry {
   fun computeLineDistances(m: Matrix4): Unit = noImpl
 }
 
+@native("THREE.PlaneGeometry")
+open class PlaneGeometry(width: Double, height: Double) : Geometry() {
+
+}
+
 @native("THREE.Object3D")
 open class Object3D(
   @native var parent: Object3D = noImpl,
