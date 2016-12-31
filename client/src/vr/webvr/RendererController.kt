@@ -22,10 +22,12 @@ class RendererController {
         renderer.setSize(window.innerWidth, window.innerHeight)
         renderer.setPixelRatio(window.devicePixelRatio)
         renderer.sortObjects = false
-        renderer.setClearColor(0x838eb9)
+        renderer.setClearColor(0xefd1b5)
 
 
         document.body!!.appendChild(renderer.domElement)
+
+        scene.fog = FogExp2(Color("0xefd1b5"), 0.05)
 
         //val sky = Sky()
         //scene.add(sky.mesh)
