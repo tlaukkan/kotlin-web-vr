@@ -3,6 +3,7 @@ package vr
 import logger
 import vr.network.model.DataVector3
 import vr.network.model.Node
+import vr.network.model.PrimitiveNode
 import java.net.URL
 import java.util.*
 
@@ -13,6 +14,7 @@ class Cell(val url: String, var remote: Boolean = false, var neighbours: Mutable
     private val log = logger()
 
     val serverUrl: String
+    val primeNode: PrimitiveNode = PrimitiveNode("00000000-0000-0000-0000-000000000000", "box", "textures/alien.jpg")
 
     private val nodes: MutableMap<String, Node> = HashMap()
 
@@ -27,6 +29,7 @@ class Cell(val url: String, var remote: Boolean = false, var neighbours: Mutable
             protocol = "wss"
         }
         serverUrl = "$protocol://$host:$port/"
+        addNode(primeNode)
     }
 
     @Synchronized fun addNode(node: Node) : Boolean {

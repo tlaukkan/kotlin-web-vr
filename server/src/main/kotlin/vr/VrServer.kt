@@ -123,6 +123,10 @@ class VrServer(val url: String = "http://localhost:8080/") {
             cellDirectory.mkdirs()
 
             for (node in cell.getNodes()) {
+                // Do not save cell node
+                if (node == cell.primeNode) {
+                    continue
+                }
                 val nodeId = node.url.substring(node.url.lastIndexOf('/') + 1)
                 val nodeType = mapper.getValueType(node)
                 val nodeString = mapper.writeValue(node, true)

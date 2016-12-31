@@ -20,6 +20,32 @@ private val log = Logger.getLogger("vr.main")
 
 fun main(args : Array<String>) {
     var servers = configureServers(".")
+
+    val refreshTimeMillis = 1000L
+    var startTimeMillis = System.currentTimeMillis()
+
+    while (true) {
+        val timeMillis = System.currentTimeMillis() - startTimeMillis
+
+        for (server in servers.values) {
+
+            for (cell in server.networkServer.getCells()) {
+                if (cell.remote) {
+                    continue
+                }
+
+                val y = Math.sin((timeMillis / 20000.0) * 2 * Math.PI) * 3
+                cell.primeNode.position.y = y
+                server.networkServer.processReceivedNodes(mutableListOf(cell.primeNode))
+
+            }
+
+        }
+
+        log.info("Updated cell prime nodes, time since start in milliseconds: " + timeMillis)
+
+        Thread.sleep(refreshTimeMillis)
+    }
 }
 
 fun configureServers(path: String) : Map<String, VrServer> {
@@ -32,6 +58,7 @@ fun configureServers(path: String) : Map<String, VrServer> {
         val server = VrServer(serverConfig.uri)
         servers[serverConfig.name] = server
 
+        // Configuring cells according to server configuration.
         for (cellConfig in serverConfig.cells) {
             var cell = Cell("${serverConfig.uri}api/cells/${cellConfig.name}")
 
@@ -39,6 +66,7 @@ fun configureServers(path: String) : Map<String, VrServer> {
             log.info("Added cell ${cellConfig.name} to server ${serverConfig.name} with uri ${cell.url}")
         }
 
+        // Setting up cell neighbours according to server configuration.
         for (cellConfig in serverConfig.cells) {
             for (neighbour in cellConfig.neighbours.keys) {
                 var cell = server.networkServer.getCell("${serverConfig.uri}api/cells/${cellConfig.name}")
@@ -75,6 +103,7 @@ fun configureServers(path: String) : Map<String, VrServer> {
             }
         }
 
+        // Loading cell contents
         server.load(path)
 
         server.startup()
