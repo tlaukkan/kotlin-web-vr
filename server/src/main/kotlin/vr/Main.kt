@@ -21,7 +21,7 @@ private val log = Logger.getLogger("vr.main")
 fun main(args : Array<String>) {
     var servers = configureServers(".")
 
-    val refreshTimeMillis = 1000L
+    val refreshTimeMillis = 300L
     var startTimeMillis = System.currentTimeMillis()
 
     while (true) {

@@ -19,9 +19,11 @@ class NodeInterpolator(val nodeUrl: String) {
     val targetScale: Vector3 = Vector3(1.0, 1.0, 1.0)
 
     val position: Vector3 = Vector3(0.0, 0.0, 0.0)
+    val intermediatePosition: Vector3 = Vector3(0.0, 0.0, 0.0)
     val orientation: Quaternion = Quaternion(0.0, 0.0, 0.0, 1.0)
     val scale: Vector3 = Vector3(1.0, 1.0, 1.0)
     var lastUpdateTime = 0.0
+    var timeWindow = 0.3
 
     fun updateTarget(time: Double, timeDelta: Double, node: Node) {
         println("Updated node: $nodeUrl($time / $timeDelta)")
@@ -42,6 +44,9 @@ class NodeInterpolator(val nodeUrl: String) {
             position.x = node.position.x
             position.y = node.position.y
             position.z = node.position.z
+            intermediatePosition.x = node.position.x
+            intermediatePosition.y = node.position.y
+            intermediatePosition.z = node.position.z
             orientation.x = node.orientation.x
             orientation.y = node.orientation.y
             orientation.z = node.orientation.z
@@ -49,6 +54,10 @@ class NodeInterpolator(val nodeUrl: String) {
             scale.x = node.scale.x
             scale.y = node.scale.y
             scale.z = node.scale.z
+        }
+
+        if (lastUpdateTime != 0.0) {
+            timeWindow = (9 * timeWindow + (time - lastUpdateTime)) / 10
         }
         lastUpdateTime = time
     }
@@ -60,17 +69,9 @@ class NodeInterpolator(val nodeUrl: String) {
 
         //println("Interpolated node: $nodeUrl($time / $timeDelta)")
 
-        val timeWindow = 2
+        position.add(getStep(position, intermediatePosition, timeDelta, timeWindow * 2.0))
 
-        val positionDelta = Vector3()
-        positionDelta.subVectors(targetPosition, position)
-
-        val positionDeltaLength = positionDelta.length()
-        val translationVelocity = positionDeltaLength / timeWindow
-
-        positionDelta.multiplyScalar(translationVelocity * timeDelta / positionDeltaLength)
-
-        position.add(positionDelta)
+        intermediatePosition.add(getStep(intermediatePosition, targetPosition, timeDelta, timeWindow))
 
         //val newPosition = targetPosition
 
@@ -90,6 +91,16 @@ class NodeInterpolator(val nodeUrl: String) {
         obj.scale.z = targetScale.z
 
         return time - lastUpdateTime < 1000
+    }
+
+    private fun getStep(source: Vector3, target: Vector3, timeDelta: Double, timeWindow: Double): Vector3 {
+        val positionDelta = Vector3()
+        positionDelta.subVectors(target, source)
+
+        val positionDeltaLength = positionDelta.length()
+        val translationVelocity = positionDeltaLength / timeWindow
+        positionDelta.multiplyScalar(translationVelocity * timeDelta / positionDeltaLength)
+        return positionDelta
     }
 
 
