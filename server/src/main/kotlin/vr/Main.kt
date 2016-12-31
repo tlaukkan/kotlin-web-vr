@@ -26,8 +26,16 @@ fun main(args : Array<String>) {
     val refreshTimeMillis = 300L
     var startTimeMillis = System.currentTimeMillis()
 
+
     while (true) {
         val timeMillis = System.currentTimeMillis() - startTimeMillis
+
+        val angle = (timeMillis / 20000.0) * 2 * Math.PI
+        val y = Math.sin(angle) * 3
+        val axisAngle = AxisAngle4d(0.0, 1.0, 0.0, angle)
+        val orientation = Quat4d()
+        orientation.set(axisAngle)
+        val scale = (Math.sin(angle) + 2) / 2
 
         for (server in servers.values) {
 
@@ -36,19 +44,12 @@ fun main(args : Array<String>) {
                     continue
                 }
 
-                val angle = (timeMillis / 20000.0) * 2 * Math.PI
-                val axisAngle = AxisAngle4d(0.0, 1.0, 0.0, angle)
-                val orientation = Quat4d()
-                orientation.set(axisAngle)
-
-                val y = Math.sin(angle) * 3
                 cell.primeNode.position.y = y
                 cell.primeNode.orientation.x = orientation.x
                 cell.primeNode.orientation.y = orientation.y
                 cell.primeNode.orientation.z = orientation.z
                 cell.primeNode.orientation.w = orientation.w
 
-                val scale = (Math.sin(angle) + 2) / 2
                 cell.primeNode.scale.x = scale
                 cell.primeNode.scale.y = scale
                 cell.primeNode.scale.z = scale
@@ -58,10 +59,9 @@ fun main(args : Array<String>) {
 
         }
 
-        //log.info("Updated cell prime nodes, time since start in milliseconds: " + timeMillis)
-
         Thread.sleep(refreshTimeMillis)
     }
+
 }
 
 fun configureServers(path: String) : Map<String, VrServer> {

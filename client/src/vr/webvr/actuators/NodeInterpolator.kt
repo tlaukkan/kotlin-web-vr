@@ -100,7 +100,8 @@ class NodeInterpolator(val nodeUrl: String) {
         obj.scale.y = scale.y
         obj.scale.z = scale.z
 
-        return time - lastUpdateTime < 1000
+        //println(time - lastUpdateTime)
+        return time - lastUpdateTime < 1.0
     }
 
     private fun getStep(source: Vector3, target: Vector3, timeDelta: Double, timeWindow: Double): Vector3 {
