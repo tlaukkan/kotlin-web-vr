@@ -13,6 +13,8 @@ import java.io.File
 import java.nio.charset.Charset
 import java.util.*
 import java.util.logging.Logger
+import javax.vecmath.AxisAngle4d
+import javax.vecmath.Quat4d
 
 val IDENTITY_STORE = IdentityStore()
 
@@ -34,10 +36,24 @@ fun main(args : Array<String>) {
                     continue
                 }
 
-                val y = Math.sin((timeMillis / 20000.0) * 2 * Math.PI) * 3
-                cell.primeNode.position.y = y
-                server.networkServer.processReceivedNodes(mutableListOf(cell.primeNode))
+                val angle = (timeMillis / 20000.0) * 2 * Math.PI
+                val axisAngle = AxisAngle4d(0.0, 1.0, 0.0, angle)
+                val orientation = Quat4d()
+                orientation.set(axisAngle)
 
+                val y = Math.sin(angle) * 3
+                cell.primeNode.position.y = y
+                cell.primeNode.orientation.x = orientation.x
+                cell.primeNode.orientation.y = orientation.y
+                cell.primeNode.orientation.z = orientation.z
+                cell.primeNode.orientation.w = orientation.w
+
+                val scale = (Math.sin(angle) + 2) / 2
+                cell.primeNode.scale.x = scale
+                cell.primeNode.scale.y = scale
+                cell.primeNode.scale.z = scale
+
+                server.networkServer.processReceivedNodes(mutableListOf(cell.primeNode))
             }
 
         }

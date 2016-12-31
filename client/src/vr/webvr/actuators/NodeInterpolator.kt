@@ -18,15 +18,19 @@ class NodeInterpolator(val nodeUrl: String) {
     val targetOrientation: Quaternion = Quaternion(0.0, 0.0, 0.0, 1.0)
     val targetScale: Vector3 = Vector3(1.0, 1.0, 1.0)
 
-    val position: Vector3 = Vector3(0.0, 0.0, 0.0)
     val intermediatePosition: Vector3 = Vector3(0.0, 0.0, 0.0)
+    val intermediateOrientation: Quaternion = Quaternion(0.0, 0.0, 0.0, 1.0)
+    val intermediateScale: Vector3 = Vector3(1.0, 1.0, 1.0)
+
+    val position: Vector3 = Vector3(0.0, 0.0, 0.0)
     val orientation: Quaternion = Quaternion(0.0, 0.0, 0.0, 1.0)
     val scale: Vector3 = Vector3(1.0, 1.0, 1.0)
+
     var lastUpdateTime = 0.0
     var timeWindow = 0.3
 
     fun updateTarget(time: Double, timeDelta: Double, node: Node) {
-        println("Updated node: $nodeUrl($time / $timeDelta)")
+        //println("Updated node: $nodeUrl($time / $timeDelta)")
 
         targetPosition.x = node.position.x
         targetPosition.y = node.position.y
@@ -51,9 +55,16 @@ class NodeInterpolator(val nodeUrl: String) {
             orientation.y = node.orientation.y
             orientation.z = node.orientation.z
             orientation.w = node.orientation.w
+            intermediateOrientation.x = node.orientation.x
+            intermediateOrientation.y = node.orientation.y
+            intermediateOrientation.z = node.orientation.z
+            intermediateOrientation.w = node.orientation.w
             scale.x = node.scale.x
             scale.y = node.scale.y
             scale.z = node.scale.z
+            intermediateScale.x = node.scale.x
+            intermediateScale.y = node.scale.y
+            intermediateScale.z = node.scale.z
         }
 
         if (lastUpdateTime != 0.0) {
@@ -70,25 +81,24 @@ class NodeInterpolator(val nodeUrl: String) {
         //println("Interpolated node: $nodeUrl($time / $timeDelta)")
 
         position.add(getStep(position, intermediatePosition, timeDelta, timeWindow * 2.0))
-
         intermediatePosition.add(getStep(intermediatePosition, targetPosition, timeDelta, timeWindow))
 
-        //val newPosition = targetPosition
+        orientation.slerp(intermediateOrientation, timeDelta / (2 * timeWindow))
+        intermediateOrientation.slerp(targetOrientation, timeDelta / timeWindow)
 
-        //position.x = newPosition.x
-        //position.y = newPosition.y
-        //position.z = newPosition.z
+        scale.add(getStep(scale, intermediateScale, timeDelta, timeWindow * 2.0))
+        intermediateScale.add(getStep(intermediateScale, targetScale, timeDelta, timeWindow))
 
         obj.position.x = position.x
         obj.position.y = position.y
         obj.position.z = position.z
-        obj.quaternion.x = targetOrientation.x
-        obj.quaternion.y = targetOrientation.y
-        obj.quaternion.z = targetOrientation.z
-        obj.quaternion.w = targetOrientation.w
-        obj.scale.x = targetScale.x
-        obj.scale.y = targetScale.y
-        obj.scale.z = targetScale.z
+        obj.quaternion.x = orientation.x
+        obj.quaternion.y = orientation.y
+        obj.quaternion.z = orientation.z
+        obj.quaternion.w = orientation.w
+        obj.scale.x = scale.x
+        obj.scale.y = scale.y
+        obj.scale.z = scale.z
 
         return time - lastUpdateTime < 1000
     }

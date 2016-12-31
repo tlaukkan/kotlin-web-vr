@@ -27,6 +27,8 @@ class Quaternion(x: Double, y: Double, z: Double, w: Double) {
   @native
   var w: Double = noImpl
 
+  fun slerp(qb: Quaternion, t: Double): Unit = noImpl
+
   fun fromArray(array: Array<Any>): Quaternion = noImpl
 }
 
