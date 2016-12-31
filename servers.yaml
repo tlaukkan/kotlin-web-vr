@@ -4,7 +4,7 @@ servers:
     cells:
       - name: a
         neighbours:
-          http://127.0.0.1:8081/api/cells/c: { x: 0.0, y: -20.0, z: 0.0 }
+          http://127.0.0.1:8081/api/cells/c: { x: 0.0, y: 0.0, z: -10.0 }
       - name: b
         neighbours:
           a: { x: 10.0, y: 0.0, z: 0.0 }
