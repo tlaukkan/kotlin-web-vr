@@ -7,6 +7,10 @@ open class WebGLRenderer(parameters: Any) {
   @native var domElement: Element = noImpl
   @native var autoClear: Boolean = noImpl
   @native var sortObjects: Boolean = noImpl
+  @native var physicallyCorrectLights: Boolean = noImpl
+  @native var gammaInput: Boolean = noImpl
+  @native var gammaOutput: Boolean = noImpl
+  @native var shadowMapEnabled: Boolean = noImpl
 
   //Functions
   fun setSize(innerWidth: Double, innerHeight: Double): Unit = noImpl

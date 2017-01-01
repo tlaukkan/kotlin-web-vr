@@ -23,25 +23,10 @@ class RendererController {
         renderer.setPixelRatio(window.devicePixelRatio)
         renderer.sortObjects = false
         renderer.setClearColor(0xefd1b5)
-
-        val renderer2: dynamic = renderer
-        renderer2.physicallyCorrectLights = true
-        renderer2.gammaInput = true
-        renderer2.gammaOutput = true
-        renderer2.shadowMap.enabled = true
-        renderer2.shadowMapEnabled = true
-        renderer2.shadowMapSoft = true
-
-
-        renderer2.shadowCameraNear = 3
-        renderer2.shadowCameraFar = camera.far
-        renderer2.shadowCameraFov = 40
-
-        renderer2.shadowMapBias = 0.0
-        renderer2.shadowMapDarkness = 0.5
-        renderer2.shadowMapWidth = 2048
-        renderer2.shadowMapHeight = 2048
-
+        renderer.physicallyCorrectLights = true
+        renderer.gammaInput = true
+        renderer.gammaOutput = true
+        renderer.shadowMapEnabled = true
 
         //renderer2.toneMapping = THREE.ReinhardToneMapping;
 
