@@ -18,3 +18,8 @@ class Points(
   material: Material = noImpl
 ) : Object3D() {
 }
+
+@native("THREE.Line")
+class Line(geometry: Geometry, material: Material) : Object3D() {
+
+}

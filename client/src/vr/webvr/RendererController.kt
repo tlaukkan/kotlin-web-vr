@@ -27,7 +27,7 @@ class RendererController {
 
         document.body!!.appendChild(renderer.domElement)
 
-        scene.fog = FogExp2(Color("0xefd1b5"), 0.05)
+        scene.fog = FogExp2(Color(0xefd1b5), 0.05)
 
         //val sky = Sky()
         //scene.add(sky.mesh)

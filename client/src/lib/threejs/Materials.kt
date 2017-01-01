@@ -31,6 +31,7 @@ open class Material {
 
   @native var overdraw: Int = noImpl // Overdrawn pixels (typically between 0 and 1) for fixing antialiasing gaps in CanvasRenderer
 
+  @native var fog: Boolean = noImpl
   @native var visible: Boolean = true
 }
 
@@ -38,6 +39,9 @@ open class Material {
 class MeshBasicMaterial(parameters: Any) : Material() {
   @native var map: Texture = noImpl
   @native var specularMap: Texture = noImpl
+  @native var wireframe: Boolean = noImpl
+  @native var lights: Boolean = noImpl
+  @native var color: Color = noImpl
 }
 
 @native("THREE.MeshPhongMaterial")
@@ -62,8 +66,6 @@ class PointCloudMaterial(parameters: Any) : Material() {
   var sizeAttenuation: Boolean = noImpl
   @native
   var vertexColors: Boolean = noImpl
-  @native
-  var fog: Boolean = noImpl
 }
 
 @native("THREE.PointsMaterial")
@@ -76,7 +78,6 @@ class PointsMaterialParameters : Material() {
   @native var size: Double = noImpl
   @native var sizeAttenuation: Boolean = noImpl
   @native var vertexColors: Int = noImpl
-  @native var fog: Boolean = noImpl
   @native var map: Texture? = noImpl
 }
 

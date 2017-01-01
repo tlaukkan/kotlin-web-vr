@@ -1,7 +1,11 @@
 package lib.threejs
 
 @native("THREE.Color")
-class Color(hexString: String) {
+class Color() {
+
+  constructor(value: Int) : this()
+  constructor(str: String) : this()
+
   //Properties
   @native
   var r: Double = 0.0

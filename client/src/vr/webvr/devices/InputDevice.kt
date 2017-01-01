@@ -5,9 +5,10 @@ import vr.util.floatsToDoubles
 import lib.webvrapi.Gamepad
 import lib.webvrapi.getGamepads
 import lib.webvrapi.navigator
+import virtualRealityController
 import vr.webvr.tools.AddTool
-import vr.webvr.tools.NoTool
 import vr.webvr.tools.MoveTool
+import vr.webvr.tools.NoTool
 import vr.webvr.tools.Tool
 import kotlin.browser.document
 import kotlin.browser.window
@@ -23,7 +24,9 @@ abstract class InputDevice(index: Int, type: String) {
     val index = index
     val type = type
 
-    var activeTool: Tool = MoveTool(this)
+    var addedToScene = false
+
+    var activeTool: Tool = NoTool(this)
     val tools: MutableList<Tool> = mutableListOf()
     var gamepad: Gamepad? = null
 
@@ -43,6 +46,8 @@ abstract class InputDevice(index: Int, type: String) {
     var onPadTouched: ((x: Double, y: Double) -> Unit)? = null
     var pressedButtons: MutableList<InputButton> = mutableListOf()
 
+    var selectLine: Line
+    val selectedNodeUrls: MutableList<String> = mutableListOf()
 
     init {
         this.entity.matrixAutoUpdate = false
@@ -68,9 +73,17 @@ abstract class InputDevice(index: Int, type: String) {
 
         entity.add(display)
 
-        tools.add(NoTool(this))
-        tools.add(AddTool(this))
+        val geometry = Geometry()
+        geometry.vertices = arrayOf(
+                Vector3(0.0, 0.0, 0.0),
+                Vector3(0.0, 0.0, -100.0))
+
+
+        selectLine = Line(geometry, MeshBasicMaterial(object { var color: Int = 0xedeeb3 }))
+
         tools.add(MoveTool(this))
+        tools.add(AddTool(this))
+        tools.add(NoTool(this))
 
         activateTool(tools[0])
     }
@@ -106,6 +119,50 @@ abstract class InputDevice(index: Int, type: String) {
             displayBitmap.fillText(line, 10, 80 * lineNumber)
             displayTexture.needsUpdate = true
             lineNumber ++
+        }
+    }
+
+    fun showSelectLine() {
+        entity.add(selectLine!!)
+    }
+
+    fun hideSelectLine() {
+        entity.remove(selectLine!!)
+    }
+
+    fun unselectNodes() {
+        for (selectedNodeUrl in selectedNodeUrls) {
+            val obj = virtualRealityController!!.scene.getObjectByName(selectedNodeUrl)
+            if (obj != null) {
+                val material = obj.material
+                material.transparent = false
+                material.opacity = 1.0
+            }
+        }
+    }
+
+    fun selectNodes() {
+        val origin = Vector3()
+        entity.getWorldPosition(origin)
+        val orientation = Quaternion(0.0, 0.0, 0.0, 1.0)
+        entity.getWorldQuaternion(orientation)
+
+        val direction = Vector3(0.0, 0.0, -1.0)
+        direction.applyQuaternion(orientation)
+
+        val raycaster = Raycaster()
+        raycaster.set(origin, direction)
+
+        val results = raycaster.intersectObjects(virtualRealityController!!.scene.children, false)
+
+        for (result in results) {
+            val obj: Object3D = result["object"]
+            val material = obj.material
+            material.transparent = true
+            material.opacity = 0.5
+            selectedNodeUrls.add(obj.name)
+            println("Selected object: ${obj.uuid} ${obj.name} ${obj.parent}")
+            break
         }
     }
 

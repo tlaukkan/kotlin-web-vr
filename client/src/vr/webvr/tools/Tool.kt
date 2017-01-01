@@ -1,5 +1,9 @@
 package vr.webvr.tools
 
+import lib.threejs.Geometry
+import lib.threejs.Line
+import lib.threejs.MeshBasicMaterial
+import lib.threejs.Vector3
 import vr.webvr.devices.InputButton
 import vr.webvr.devices.InputDevice
 import kotlin.browser.window
@@ -8,6 +12,8 @@ import kotlin.browser.window
  * Created by tlaukkan on 11/1/2016.
  */
 abstract class Tool(var name: String, var inputDevice: InputDevice) {
+
+    protected var gripped = false
 
     abstract fun active()
 

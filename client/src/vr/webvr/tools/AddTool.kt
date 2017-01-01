@@ -30,8 +30,6 @@ class AddTool(inputDevice: InputDevice) : Tool("Add Tool", inputDevice) {
 
     private var scale = 0.25
 
-    private var gripped = false
-
     fun updateDisplay() {
         var text =
                     "$name\n" +
