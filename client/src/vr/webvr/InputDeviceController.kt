@@ -6,7 +6,7 @@ import lib.webvrapi.Gamepad
 import lib.webvrapi.getGamepads
 import lib.webvrapi.navigator
 import vr.webvr.devices.OpenVrGamepad
-import vr.webvr.tools.MoveTool
+import vr.webvr.tools.SelectTool
 import vr.webvr.tools.NoTool
 import kotlin.browser.window
 

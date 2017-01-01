@@ -8,9 +8,9 @@ import vr.webvr.devices.InputDevice
 /**
  * Created by tlaukkan on 11/1/2016.
  */
-class MoveTool(inputDevice: InputDevice) : Tool("No Tool", inputDevice) {
+class SelectTool(inputDevice: InputDevice) : Tool("No Tool", inputDevice) {
     override fun active() {
-        inputDevice.display("No tool selected.\nUse menu key.")
+        inputDevice.display("Select tool.\nUse menu key to change tool.")
 
         inputDevice.showSelectLine()
     }

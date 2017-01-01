@@ -7,7 +7,7 @@ import lib.webvrapi.getGamepads
 import lib.webvrapi.navigator
 import virtualRealityController
 import vr.webvr.tools.AddTool
-import vr.webvr.tools.MoveTool
+import vr.webvr.tools.SelectTool
 import vr.webvr.tools.NoTool
 import vr.webvr.tools.Tool
 import kotlin.browser.document
@@ -81,7 +81,7 @@ abstract class InputDevice(index: Int, type: String) {
 
         selectLine = Line(geometry, MeshBasicMaterial(object { var color: Int = 0xedeeb3 }))
 
-        tools.add(MoveTool(this))
+        tools.add(SelectTool(this))
         tools.add(AddTool(this))
         tools.add(NoTool(this))
 
@@ -157,13 +157,19 @@ abstract class InputDevice(index: Int, type: String) {
 
         for (result in results) {
             val obj: Object3D = result["object"]
-            val material = obj.material
-            material.transparent = true
-            material.opacity = 0.5
-            selectedNodeUrls.add(obj.name)
-            println("Selected object: ${obj.uuid} ${obj.name} ${obj.parent}")
+            select(obj.name)
             break
         }
+    }
+
+    private fun select(selectedNodeUrl: String) {
+        val selectedNode = virtualRealityController!!.nodes[selectedNodeUrl] ?: return
+        val selectedObject = virtualRealityController!!.scene.getObjectByName(selectedNode.url) ?: return
+        val material = selectedObject.material
+        material.transparent = true
+        material.opacity = 0.5
+        selectedNodeUrls.add(selectedObject.name)
+        println("Selected object: ${selectedObject.uuid} ${selectedObject.name} ${selectedObject.parent}")
     }
 
     /**

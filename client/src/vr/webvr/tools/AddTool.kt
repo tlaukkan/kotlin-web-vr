@@ -98,6 +98,8 @@ class AddTool(inputDevice: InputDevice) : Tool("Add Tool", inputDevice) {
 
         println("Adding node.")
 
+        inputDevice.unselectNodes()
+
         virtualRealityController!!.networkClient!!.send(listOf(protoNode!!))
     }
 
