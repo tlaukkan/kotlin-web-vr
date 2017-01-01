@@ -8,6 +8,12 @@ import vr.webvr.devices.InputDevice
  */
 class VoidTool(inputDevice: InputDevice) : Tool("No Tool", inputDevice) {
 
+    override fun active() {
+    }
+
+    override fun deactive() {
+    }
+
     override fun onPressed(button: InputButton) {
         println("Pressed: $button")
     }

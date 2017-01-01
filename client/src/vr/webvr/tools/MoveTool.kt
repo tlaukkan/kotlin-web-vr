@@ -8,6 +8,12 @@ import vr.webvr.devices.InputDevice
  */
 class MoveTool(inputDevice: InputDevice) : Tool("Move Tool", inputDevice) {
 
+    override fun active() {
+    }
+
+    override fun deactive() {
+    }
+
     override fun onPressed(button: InputButton) {
         println("Pressed: $button")
     }

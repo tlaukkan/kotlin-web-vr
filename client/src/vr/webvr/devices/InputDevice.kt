@@ -5,6 +5,7 @@ import vr.util.floatsToDoubles
 import lib.webvrapi.Gamepad
 import lib.webvrapi.getGamepads
 import lib.webvrapi.navigator
+import vr.webvr.tools.AddTool
 import vr.webvr.tools.VoidTool
 import vr.webvr.tools.MoveTool
 import vr.webvr.tools.Tool
@@ -67,14 +68,17 @@ abstract class InputDevice(index: Int, type: String) {
 
         entity.add(display)
 
+        tools.add(AddTool(this))
         tools.add(MoveTool(this))
-        tools.add(VoidTool(this))
 
         activateTool(tools[0])
     }
 
     fun activateTool(tool: Tool) {
+        activeTool.deactive()
         activeTool = tool
+        display(activeTool.name)
+        activeTool.active()
         onPressed = { button ->
             tool.onPressed(button)
         }
@@ -87,16 +91,21 @@ abstract class InputDevice(index: Int, type: String) {
         onPadTouched = { x, y ->
             tool.onPadTouched(x, y)
         }
-        display(activeTool.name)
     }
 
     fun display(text: String) {
-        displayBitmap.clearRect(0,0, displayCanvasWidth, displayCanvasHeight)
+        displayBitmap.clearRect(0, 0, displayCanvasWidth, displayCanvasHeight)
         displayBitmap.fillStyle = "rgba(0,0,0,0.2)"
-        displayBitmap.fillRect(0,0, displayCanvasWidth, displayCanvasHeight)
+        displayBitmap.fillRect(0, 0, displayCanvasWidth, displayCanvasHeight)
         displayBitmap.fillStyle = "rgba(0,0,0,0.4)"
-        displayBitmap.fillText(text, 10, 80)
-        displayTexture.needsUpdate = true
+
+        val lines = text.split('\n')
+        var lineNumber = 1
+        for (line in lines) {
+            displayBitmap.fillText(line, 10, 80 * lineNumber)
+            displayTexture.needsUpdate = true
+            lineNumber ++
+        }
     }
 
     /**
