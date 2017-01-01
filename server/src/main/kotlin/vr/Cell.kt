@@ -29,6 +29,7 @@ class Cell(val url: String, var remote: Boolean = false, var neighbours: Mutable
             protocol = "wss"
         }
         serverUrl = "$protocol://$host:$port/"
+        primeNode.volatile = true
         addNode(primeNode)
     }
 

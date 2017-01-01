@@ -107,6 +107,7 @@ class VrServer(val url: String = "http://localhost:8080/") {
     }
 
     fun save() {
+        log.info("Saving cell nodes.")
         val serverUrl: URL = URL(url)
         val dataDirectory = File("data/${serverUrl.host.replace('.','_')}_${serverUrl.port}")
         if (!dataDirectory.exists()) {
@@ -123,8 +124,8 @@ class VrServer(val url: String = "http://localhost:8080/") {
             cellDirectory.mkdirs()
 
             for (node in cell.getNodes()) {
-                // Do not save cell node
-                if (node == cell.primeNode) {
+                // Do not save volatile nodes
+                if (node.volatile) {
                     continue
                 }
                 val nodeId = node.url.substring(node.url.lastIndexOf('/') + 1)

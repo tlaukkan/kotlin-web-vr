@@ -18,6 +18,7 @@
     "y" : 2.0,
     "z" : 0.2
   },
+  "volatile" : false,
   "shape" : "box",
   "texture" : "textures/alien.jpg"
 }

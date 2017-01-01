@@ -18,6 +18,7 @@
     "y" : 1.0,
     "z" : 1.0
   },
+  "volatile" : false,
   "color" : 16777215,
   "intensity" : 0.2,
   "direction" : null

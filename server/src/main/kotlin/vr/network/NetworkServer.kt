@@ -201,6 +201,8 @@ class NetworkServer(val server: VrServer) {
 
     fun processReceivedNodes(receivedNodes: MutableList<Node>) {
         val cellNodeUpdates: MutableMap<String, MutableList<Any>> = mutableMapOf()
+
+        var saveRequired = false
         for (node in receivedNodes) {
             val cellUri: String
             var nodeId: String
@@ -232,6 +234,11 @@ class NetworkServer(val server: VrServer) {
                 }
 
                 cellNodeUpdates[cellUri]!!.add(node)
+
+                if (!cell.remote && !node.volatile) {
+                    saveRequired = true
+                }
+
                 //log.info("Applied received node modification ${node.url} for cell $cellUri")
             } else {
                 log.warning("Failed to apply received node ${node.url} modification. No such cell: $cellUri")
@@ -246,6 +253,10 @@ class NetworkServer(val server: VrServer) {
             mapper.writeValuesToEnvelope(broadcastEnvelope, nodes)
             //TODO limit broadcasting to clients linked to cells in question
             broadcast(broadcastEnvelope)
+        }
+
+        if (saveRequired) {
+            server.save()
         }
     }
 

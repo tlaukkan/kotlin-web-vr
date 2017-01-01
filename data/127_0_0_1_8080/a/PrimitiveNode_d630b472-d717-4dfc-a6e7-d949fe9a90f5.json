@@ -18,6 +18,7 @@
     "y" : 1.0,
     "z" : 1.0
   },
+  "volatile" : false,
   "shape" : "box",
   "texture" : "textures/gold.jpg"
 }
