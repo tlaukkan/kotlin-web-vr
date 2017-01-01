@@ -18,6 +18,7 @@ class VirtualRealityController(var displayController: DisplayController, var med
     val nodeActuators: MutableMap<String, NodeActuator> = mutableMapOf()
     val nodeInterpolators: MutableMap<String, NodeInterpolator> = mutableMapOf()
     val nodes: MutableMap<String, Node> = mutableMapOf()
+    val nodeTypes: MutableMap<String, String> = mutableMapOf()
 
     // Orphaned3D objects
     val orphans: MutableMap<String, MutableList<Object3D>> = mutableMapOf()
@@ -58,9 +59,11 @@ class VirtualRealityController(var displayController: DisplayController, var med
                 if (nodes.containsKey(node.url)) {
                     nodeActuator.remove(node)
                     nodes.remove(node.url)
+                    nodeTypes.remove(node.url)
                     println("Removed ${node.url} $type")
                 }
             } else {
+                nodeTypes.put(node.url, type)
                 if (nodes.containsKey(node.url)) {
                     nodes[node.url] = node
                     nodeActuator.update(node)

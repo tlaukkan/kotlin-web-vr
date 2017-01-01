@@ -116,6 +116,8 @@ class MoveTool(inputDevice: InputDevice) : Tool("Move tool", inputDevice) {
         orientationChange.multiply(objectOrientation)
 
         val node = virtualRealityController!!.nodes[nodeUrl] ?: return
+        val nodeType = virtualRealityController!!.nodeTypes[nodeUrl]!! ?: return
+
         node.position.x = objectPosition.x
         node.position.y = objectPosition.y
         node.position.z = objectPosition.z
@@ -125,8 +127,7 @@ class MoveTool(inputDevice: InputDevice) : Tool("Move tool", inputDevice) {
         node.orientation.z = orientationChange.z
         node.orientation.w = orientationChange.w
 
-        //TODO save node types for incoming nodes and apply here
-        virtualRealityController!!.networkClient!!.send(node, "PrimitiveNode")
+        virtualRealityController!!.networkClient!!.send(node, nodeType)
     }
 
 }

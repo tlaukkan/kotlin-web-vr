@@ -31,10 +31,9 @@ class RemoveTool(inputDevice: InputDevice) : Tool("RemoveTool Tool", inputDevice
             if (inputDevice.selectedNodeUrls.size > 0) {
                 val nodeUrl = inputDevice.selectedNodeUrls[0]
                 val node = virtualRealityController!!.nodes[nodeUrl] ?: return
+                val nodeType = virtualRealityController!!.nodeTypes[nodeUrl]!! ?: return
                 node.removed = true
-
-                //TODO save node types for incoming nodes and apply here
-                virtualRealityController!!.networkClient!!.send(node, "PrimitiveNode")
+                virtualRealityController!!.networkClient!!.send(node, nodeType)
             }
         }
     }
