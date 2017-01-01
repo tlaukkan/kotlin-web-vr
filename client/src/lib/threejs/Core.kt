@@ -76,7 +76,8 @@ open class Object3D(
   @native var rotation: Euler = noImpl,
   @native var scale: Vector3 = noImpl
 ) {
-
+  @native var castShadow: Boolean = noImpl
+  @native var receiveShadow: Boolean = noImpl
   @native var int: Int = noImpl
   @native var uuid: String = noImpl
   @native var name: String = noImpl

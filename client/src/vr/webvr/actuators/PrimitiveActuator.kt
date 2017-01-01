@@ -15,10 +15,16 @@ class PrimitiveActuator(controller: VirtualRealityController) : NodeActuator(con
             controller.mediaController.loadTexture(typedNode.texture , { path, texture ->
                 var geometry = BoxGeometry(1, 1, 1)
 
-                var material = MeshBasicMaterial(object {})
+                var material = MeshStandardMaterial(object {})
                 material.map = texture
+                material.color = Color(0xffffff)
+                material.lights = true
 
                 val obj = Mesh(geometry, material)
+
+                obj.castShadow = true
+                obj.receiveShadow = true
+
                 onConstructed(obj)
             })
         } else {

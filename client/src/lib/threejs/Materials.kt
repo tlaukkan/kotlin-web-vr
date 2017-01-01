@@ -44,10 +44,31 @@ class MeshBasicMaterial(parameters: Any) : Material() {
   @native var color: Color = noImpl
 }
 
+@native("THREE.MeshStandardMaterial")
+class MeshStandardMaterial(parameters: Any) : Material() {
+  @native var map: Texture = noImpl
+  @native var specularMap: Texture = noImpl
+  @native var wireframe: Boolean = noImpl
+  @native var lights: Boolean = noImpl
+  @native var color: Color = noImpl
+}
+
 @native("THREE.MeshPhongMaterial")
 class MeshPhongMaterial(parameters: Any) : Material() {
   @native var map: Texture = noImpl
   @native var specularMap: Texture = noImpl
+  @native var wireframe: Boolean = noImpl
+  @native var lights: Boolean = noImpl
+  @native var color: Color = noImpl
+}
+
+@native("THREE.MeshPhysicalMaterial")
+class MeshPhysicalMaterial(parameters: Any) : Material() {
+  @native var map: Texture = noImpl
+  @native var specularMap: Texture = noImpl
+  @native var wireframe: Boolean = noImpl
+  @native var lights: Boolean = noImpl
+  @native var color: Color = noImpl
 }
 
 @native("THREE.MeshLambertMaterial")

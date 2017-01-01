@@ -17,9 +17,17 @@ class LightFieldActuator(controller: VirtualRealityController) : NodeActuator(co
             obj = AmbientLight(typedNode.color, typedNode.intensity)
         } else {
             obj = DirectionalLight(typedNode.color, typedNode.intensity)
+            obj.castShadow = true
             obj.position.x = typedNode.direction!!.x
             obj.position.y = typedNode.direction!!.y
             obj.position.z = typedNode.direction!!.z
+            val d = 10
+            obj.shadowCameraLeft = -d
+            obj.shadowCameraRight = d
+            obj.shadowCameraTop = d
+            obj.shadowCameraBottom = -d
+            obj.shadowMapWidth = 8192
+            obj.shadowMapHeight = 8192
         }
         obj.name = node.url
         obj.updateMatrix()

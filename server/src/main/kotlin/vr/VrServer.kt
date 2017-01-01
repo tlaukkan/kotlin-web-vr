@@ -123,6 +123,8 @@ class VrServer(val url: String = "http://localhost:8080/") {
             val cellDirectory = File("${dataDirectory.absolutePath}/${cellName}")
             cellDirectory.mkdirs()
 
+            deleteDirectoryContent(cellDirectory)
+
             for (node in cell.getNodes()) {
                 // Do not save volatile nodes
                 if (node.volatile) {
@@ -133,6 +135,19 @@ class VrServer(val url: String = "http://localhost:8080/") {
                 val nodeString = mapper.writeValue(node, true)
                 val nodeFile = File("${cellDirectory.absolutePath}/${nodeType}_${nodeId}.json")
                 FileUtils.writeStringToFile(nodeFile, nodeString, Charset.forName("UTF-8"))
+            }
+        }
+    }
+
+    fun deleteDirectoryContent(folder: File) {
+        val files = folder.listFiles()
+        if (files != null) { //some JVMs return null for empty dirs
+            for (f in files) {
+                if (f.isDirectory) {
+                    deleteDirectoryContent(f)
+                } else {
+                    f.delete()
+                }
             }
         }
     }

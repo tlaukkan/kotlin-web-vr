@@ -4,7 +4,7 @@
   "removed" : false,
   "position" : {
     "x" : 0.0,
-    "y" : 0.0,
+    "y" : 20.0,
     "z" : 0.0
   },
   "orientation" : {
@@ -22,8 +22,8 @@
   "color" : 16777215,
   "intensity" : 1.0,
   "direction" : {
-    "x" : 0.0,
+    "x" : 0.25,
     "y" : 1.0,
-    "z" : 0.0
+    "z" : 0.25
   }
 }
