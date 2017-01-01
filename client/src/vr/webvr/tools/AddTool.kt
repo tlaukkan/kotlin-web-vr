@@ -23,6 +23,9 @@ class AddTool(inputDevice: InputDevice) : Tool("Add Tool", inputDevice) {
 
     private var protoObject: Object3D? = null
 
+    private var scale = 0.25
+
+    private var gripped = false
 
     fun updateDisplay() {
         var text =
@@ -53,10 +56,10 @@ class AddTool(inputDevice: InputDevice) : Tool("Add Tool", inputDevice) {
             virtualRealityController!!.nodeActuators["PrimitiveNode"]!!.construct(node, { obj: Object3D? ->
                 if (obj != null) {
                     protoObject = obj
-                    obj.position.z = -0.25
-                    obj.scale.x = 0.25
-                    obj.scale.y = 0.25
-                    obj.scale.z = 0.25
+                    obj.position.z = -scale
+                    obj.scale.x = scale
+                    obj.scale.y = scale
+                    obj.scale.z = scale
                     inputDevice.entity.add(protoObject!!)
                 }
             })
@@ -76,10 +79,34 @@ class AddTool(inputDevice: InputDevice) : Tool("Add Tool", inputDevice) {
     }
 
     override fun onPressed(button: InputButton) {
+        if (button == InputButton.GRIP) {
+            gripped = true
+        }
         //println("Pressed: $button")
     }
 
     override fun onReleased(button: InputButton) {
+        if (button == InputButton.GRIP) {
+            gripped = true
+        }
+
+        if (gripped) {
+            if (button == InputButton.UP) {
+                scale *= 2
+                updateDisplay()
+                updateObject()
+            }
+            if (button == InputButton.DOWN) {
+                scale /= 2
+                if (scale <= 0.125) {
+                    scale = 0.125
+                }
+                updateDisplay()
+                updateObject()
+            }
+            return
+        }
+
         //println("Released: $button")
         if (button == InputButton.RIGHT) {
             var newMode = selectedMode.ordinal + 1
