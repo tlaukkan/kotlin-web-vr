@@ -9,10 +9,9 @@ import vr.webvr.VirtualRealityController
 
 class PrimitiveActuator(controller: VirtualRealityController) : NodeActuator(controller, "PrimitiveNode") {
 
-    override fun add(node: Node) {
+    override fun construct(node: Node, onConstructed: (Object3D?) -> Unit) {
         val typedNode: PrimitiveNode = dynamicCast(node)
         if ("box".equals(typedNode.shape)) {
-
             controller.mediaController.loadTexture(typedNode.texture , { path, texture ->
                 var geometry = BoxGeometry(1, 1, 1)
 
@@ -20,13 +19,20 @@ class PrimitiveActuator(controller: VirtualRealityController) : NodeActuator(con
                 material.map = texture
 
                 val obj = Mesh(geometry, material)
-                add(node, obj)
+                onConstructed(obj)
             })
-
         } else {
             println("Unknown primitive shape: ${typedNode.shape}")
-            return
+            onConstructed(null)
         }
+    }
+
+    override fun add(node: Node) {
+        construct(node, { obj ->
+            if (obj != null) {
+                add(node, obj!!)
+            }
+        })
     }
 
 }

@@ -1,12 +1,15 @@
 package vr.webvr.actuators
 
 import lib.threejs.Object3D
+import lib.threejs.Texture
 import renderTime
 import renderTimeDelta
 import vr.network.model.Node
 import vr.webvr.VirtualRealityController
 
 abstract class NodeActuator(var controller: VirtualRealityController, var type: String) {
+
+    abstract fun construct(node: Node, onConstructed:(obj: Object3D?) -> Unit): Unit
 
     abstract fun add(node: Node): Unit
 

@@ -6,7 +6,7 @@ import lib.webvrapi.Gamepad
 import lib.webvrapi.getGamepads
 import lib.webvrapi.navigator
 import vr.webvr.tools.AddTool
-import vr.webvr.tools.VoidTool
+import vr.webvr.tools.NoTool
 import vr.webvr.tools.MoveTool
 import vr.webvr.tools.Tool
 import kotlin.browser.document
@@ -68,6 +68,7 @@ abstract class InputDevice(index: Int, type: String) {
 
         entity.add(display)
 
+        tools.add(NoTool(this))
         tools.add(AddTool(this))
         tools.add(MoveTool(this))
 

@@ -1,16 +1,16 @@
 package vr.webvr.actuators
 
-import lib.threejs.AmbientLight
-import lib.threejs.DirectionalLight
-import lib.threejs.Object3D
+import lib.threejs.*
+import lib.threejs.Extra.BoxGeometry
 import vr.network.model.LightFieldNode
 import vr.network.model.Node
+import vr.network.model.PrimitiveNode
 import vr.util.dynamicCast
 import vr.webvr.VirtualRealityController
 
 class LightFieldActuator(controller: VirtualRealityController) : NodeActuator(controller, "LightFieldNode") {
 
-    override fun add(node: Node) {
+    override fun construct(node: Node, onConstructed: (Object3D?) -> Unit) {
         val typedNode: LightFieldNode = dynamicCast(node)
         val obj: Object3D
         if (typedNode.direction == null) {
@@ -24,9 +24,16 @@ class LightFieldActuator(controller: VirtualRealityController) : NodeActuator(co
         obj.name = node.url
         obj.updateMatrix()
         obj.updateMatrixWorld()
-//        add(node, obj)
-        //controller.scene.add(obj)
-        add(node.parentUrl, obj)
+
+        onConstructed(obj)
+    }
+
+    override fun add(node: Node) {
+        construct(node, { obj ->
+            if (obj != null) {
+                add(node.parentUrl, obj!!)
+            }
+        })
     }
 
 }

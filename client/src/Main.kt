@@ -10,6 +10,7 @@ import kotlin.browser.window
 
 var renderTime: Double = 0.0
 var renderTimeDelta: Double = 0.001
+var virtualRealityController: VirtualRealityController? = null
 
 fun main(args: Array<String>) {
     println("VR client startup...")
@@ -21,7 +22,6 @@ fun main(args: Array<String>) {
         val displayController: DisplayController
         val inputDeviceController: InputDeviceController
         val mediaController: MediaController
-        val virtualRealityController: VirtualRealityController
         try {
             rendererController = RendererController()
             displayController = DisplayController(displayDeviceController, rendererController)
@@ -43,9 +43,9 @@ fun main(args: Array<String>) {
             }
 
             client.onLinked = { linkResponse ->
-                virtualRealityController.neighbours.clear()
+                virtualRealityController!!.neighbours.clear()
                 for (neighbour in linkResponse.neighbours) {
-                    virtualRealityController.neighbours[neighbour.cellUriTwo] = Vector3(
+                    virtualRealityController!!.neighbours[neighbour.cellUriTwo] = Vector3(
                             neighbour.oneTwoDeltaVector.x,
                             neighbour.oneTwoDeltaVector.y,
                             neighbour.oneTwoDeltaVector.z)
@@ -55,7 +55,7 @@ fun main(args: Array<String>) {
             }
 
             client.onReceive = { type, value ->
-                virtualRealityController.onReceive(type, value)
+                virtualRealityController!!.onReceive(type, value)
             }
 
             client.onDisconnected = {
@@ -79,7 +79,7 @@ fun main(args: Array<String>) {
             displayDeviceController.display!!.requestAnimationFrame(::render)
 
             inputDeviceController.render()
-            virtualRealityController.update()
+            virtualRealityController!!.update()
             rendererController.render()
             displayController.render(rendererController.scene, rendererController.camera)
         }

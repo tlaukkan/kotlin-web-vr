@@ -6,9 +6,10 @@ import vr.webvr.devices.InputDevice
 /**
  * Created by tlaukkan on 11/1/2016.
  */
-class VoidTool(inputDevice: InputDevice) : Tool("No Tool", inputDevice) {
+class NoTool(inputDevice: InputDevice) : Tool("No Tool", inputDevice) {
 
     override fun active() {
+        inputDevice.display("No tool selected.\nUse menu key.")
     }
 
     override fun deactive() {
