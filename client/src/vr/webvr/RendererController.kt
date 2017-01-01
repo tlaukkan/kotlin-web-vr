@@ -22,7 +22,8 @@ class RendererController {
         renderer.setSize(window.innerWidth, window.innerHeight)
         renderer.setPixelRatio(window.devicePixelRatio)
         renderer.sortObjects = false
-        renderer.setClearColor(0xefd1b5)
+//        renderer.setClearColor(0xefd1b5)
+        renderer.setClearColor(0x000000)
         renderer.physicallyCorrectLights = true
         renderer.gammaInput = true
         renderer.gammaOutput = true
@@ -33,7 +34,8 @@ class RendererController {
 
         document.body!!.appendChild(renderer.domElement)
 
-        scene.fog = FogExp2(Color(0xefd1b5), 0.05)
+//        scene.fog = FogExp2(Color(0xefd1b5), 0.05)
+        scene.fog = FogExp2(Color(0x000000), 0.05)
 
         //val sky = Sky()
         //scene.add(sky.mesh)
