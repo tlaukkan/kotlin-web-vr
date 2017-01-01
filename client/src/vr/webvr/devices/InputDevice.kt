@@ -43,7 +43,7 @@ abstract class InputDevice(index: Int, type: String) {
     var onPadTouched: ((x: Double, y: Double) -> Unit)? = null
     var pressedButtons: MutableList<InputButton> = mutableListOf()
 
-    var selectLine: Line
+    var selectLine: Line? = null
     val selectedNodeUrls: MutableList<String> = mutableListOf()
 
     init {
@@ -64,24 +64,19 @@ abstract class InputDevice(index: Int, type: String) {
 
         val planeGeometry = PlaneGeometry(0.3, 0.3)
         display = Mesh(planeGeometry, material)
-        display.position.z = -0.15
-        display.position.y = 0.15
-        display.rotateX(-45 * 2 * Math.PI / 360)
+        display.rotateX(-90 * 2 * Math.PI / 360)
+        display.rotateZ(-90 * 2 * Math.PI / 360)
+        display.position.x = 0.3
+        display.position.z = 0.15
+        //display.position.y = 0.15
 
         entity.add(display)
 
-        val geometry = Geometry()
-        geometry.vertices = arrayOf(
-                Vector3(0.0, 0.0, 0.0),
-                Vector3(0.0, 0.0, -100.0))
-
-
-        selectLine = Line(geometry, MeshBasicMaterial(object { var color: Int = 0xedeeb3 }))
-
         tools.add(MoveTool(this))
-        tools.add(SelectTool(this))
         tools.add(AddTool(this))
-        tools.add(NoTool(this))
+        tools.add(RemoveTool(this))
+//        tools.add(SelectTool(this))
+//        tools.add(NoTool(this))
 
         activateTool(tools[0])
     }
@@ -120,7 +115,16 @@ abstract class InputDevice(index: Int, type: String) {
         }
     }
 
-    fun showSelectLine() {
+    fun showSelectLine(lineColor : Int) {
+        val geometry = Geometry()
+        geometry.vertices = arrayOf(
+                Vector3(0.0, 0.0, 0.0),
+                Vector3(0.0, 0.0, -100.0))
+
+        val material = MeshBasicMaterial(object { var color: Int = lineColor })
+        material.opacity = 0.3
+        material.transparent = true
+        selectLine = Line(geometry, material)
         entity.add(selectLine!!)
     }
 

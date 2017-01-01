@@ -22,7 +22,7 @@ class MoveTool(inputDevice: InputDevice) : Tool("Move tool", inputDevice) {
     var objectStartOrientation: Quaternion? = null
 
     override fun active() {
-        inputDevice.showSelectLine()
+        inputDevice.showSelectLine(0x0000ff)
     }
 
     override fun deactive() {
