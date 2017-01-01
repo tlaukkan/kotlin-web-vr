@@ -140,7 +140,7 @@ abstract class InputDevice(index: Int, type: String) {
         selectedNodeUrls.clear()
     }
 
-    fun selectNodes() {
+    fun selectNodes() : Double? {
         val origin = Vector3()
         entity.getWorldPosition(origin)
         val orientation = Quaternion(0.0, 0.0, 0.0, 1.0)
@@ -155,10 +155,13 @@ abstract class InputDevice(index: Int, type: String) {
         val results = raycaster.intersectObjects(virtualRealityController!!.scene.children, false)
 
         for (result in results) {
+            val distance: Double = result["distance"]
             val obj: Object3D = result["object"]
             select(obj.name)
-            break
+            return distance
         }
+
+        return null
     }
 
     private fun select(selectedNodeUrl: String) {

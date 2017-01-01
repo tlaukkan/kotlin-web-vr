@@ -12,6 +12,8 @@ import vr.webvr.devices.InputDevice
  */
 class MoveTool(inputDevice: InputDevice) : Tool("Move tool", inputDevice) {
 
+    var selectDistance: Double? = null
+
     var startPosition: Vector3? = null
     var startOrientation: Quaternion? = null
 
@@ -29,13 +31,19 @@ class MoveTool(inputDevice: InputDevice) : Tool("Move tool", inputDevice) {
     override fun onPressed(button: InputButton) {
         if (button == InputButton.TRIGGER) {
             inputDevice.unselectNodes()
-            inputDevice.selectNodes()
+            selectDistance = inputDevice.selectNodes()
             if (inputDevice.selectedNodeUrls.size > 0) {
                 val nodeUrl = inputDevice.selectedNodeUrls[0]
 
                 startPosition = Vector3()
                 inputDevice.entity.getWorldPosition(startPosition!!)
                 startOrientation = Quaternion(0.0, 0.0, 0.0, 1.0)
+
+                // Move position to intersection point of select rate
+                /*val direction = Vector3(0.0, 0.0, -selectDistance!!)
+                direction.applyQuaternion(startOrientation!!)
+                startPosition!!.add(direction)*/
+
                 inputDevice.entity.getWorldQuaternion(startOrientation!!)
 
                 val obj = virtualRealityController!!.scene.getObjectByName(nodeUrl) ?: return
@@ -76,6 +84,11 @@ class MoveTool(inputDevice: InputDevice) : Tool("Move tool", inputDevice) {
         inputDevice.entity.getWorldPosition(currentPosition!!)
         val currentOrientation = Quaternion(0.0, 0.0, 0.0, 1.0)
         inputDevice.entity.getWorldQuaternion(currentOrientation!!)
+
+        // Move position to intersection point of select rate
+        /*val direction = Vector3(0.0, 0.0, -selectDistance!!)
+        direction.applyQuaternion(currentOrientation!!)
+        currentPosition!!.add(direction)*/
 
         //val obj = virtualRealityController!!.scene.getObjectByName(nodeUrl) ?: return
 
