@@ -1,6 +1,7 @@
 package vr.webvr.tools
 
 import lib.threejs.*
+import renderTime
 import virtualRealityController
 import vr.network.model.PrimitiveNode
 import vr.util.dynamicCast
@@ -57,10 +58,16 @@ class MoveTool(inputDevice: InputDevice) : Tool("Move tool", inputDevice) {
         }
     }
 
+    var lastSqueezeMoveTime: Double = 0.0
+
     override fun onSqueezed(button: InputButton, value: Double) {
         if (button == InputButton.TRIGGER) {
             if (inputDevice.selectedNodeUrls.size > 0) {
-                moveNodeTo()
+
+                if (renderTime - lastSqueezeMoveTime > 0.15) {
+                    moveNodeTo()
+                    lastSqueezeMoveTime = renderTime
+                }
             }
         }
     }

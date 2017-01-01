@@ -27,7 +27,7 @@ class NodeInterpolator(val nodeUrl: String) {
     val scale: Vector3 = Vector3(1.0, 1.0, 1.0)
 
     var lastUpdateTime = 0.0
-    var timeWindow = 0.3
+    var timeWindow = 0.15
 
     fun updateTarget(time: Double, timeDelta: Double, node: Node) {
         //println("Updated node: $nodeUrl($time / $timeDelta)")
@@ -80,7 +80,7 @@ class NodeInterpolator(val nodeUrl: String) {
 
         //println("Interpolated node: $nodeUrl($time / $timeDelta)")
 
-        position.add(getStep(position, intermediatePosition, timeDelta, timeWindow * 2.0))
+        position.add(getStep(position, intermediatePosition, timeDelta, timeWindow * 1.5))
         intermediatePosition.add(getStep(intermediatePosition, targetPosition, timeDelta, timeWindow))
 
         orientation.slerp(intermediateOrientation, timeDelta / (2 * timeWindow))
