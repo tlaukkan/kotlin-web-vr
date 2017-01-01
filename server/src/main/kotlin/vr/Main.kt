@@ -44,15 +44,20 @@ fun main(args : Array<String>) {
                     continue
                 }
 
-                cell.primeNode.position.y = y
+                //cell.primeNode.position.y = y
+
                 cell.primeNode.orientation.x = orientation.x
                 cell.primeNode.orientation.y = orientation.y
                 cell.primeNode.orientation.z = orientation.z
                 cell.primeNode.orientation.w = orientation.w
 
-                cell.primeNode.scale.x = scale
-                cell.primeNode.scale.y = scale
-                cell.primeNode.scale.z = scale
+                cell.primeNode.scale.x = 0.1
+                cell.primeNode.scale.y = 0.1
+                cell.primeNode.scale.z = 0.1
+
+                //cell.primeNode.scale.x = scale
+                //cell.primeNode.scale.y = scale
+                //cell.primeNode.scale.z = scale
 
                 server.networkServer.processReceivedNodes(mutableListOf(cell.primeNode))
             }
