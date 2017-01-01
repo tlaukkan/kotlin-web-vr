@@ -137,6 +137,7 @@ abstract class InputDevice(index: Int, type: String) {
                 material.opacity = 1.0
             }
         }
+        selectedNodeUrls.clear()
     }
 
     fun selectNodes() {

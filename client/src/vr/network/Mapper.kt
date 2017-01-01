@@ -23,6 +23,12 @@ class Mapper {
         envelope.values = typedValues.toTypedArray()
     }
 
+    fun <T : Any> writeValueToEnvelope(envelope: Envelope, value: T, type: String): Unit {
+        val typedValues: MutableList<TypedValue> = mutableListOf()
+        typedValues.add(TypedValue(type, 1, toJson(value)))
+        envelope.values = typedValues.toTypedArray()
+    }
+
     fun <T : Any> readValue(content: String): T {
         return fromJson(content)
     }

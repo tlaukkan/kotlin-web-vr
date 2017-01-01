@@ -15,6 +15,9 @@ class MoveTool(inputDevice: InputDevice) : Tool("Move tool", inputDevice) {
     var startPosition: Vector3? = null
     var startOrientation: Quaternion? = null
 
+    var objectStartPosition: Vector3? = null
+    var objectStartOrientation: Quaternion? = null
+
     override fun active() {
         inputDevice.showSelectLine()
     }
@@ -27,63 +30,83 @@ class MoveTool(inputDevice: InputDevice) : Tool("Move tool", inputDevice) {
         if (button == InputButton.TRIGGER) {
             inputDevice.unselectNodes()
             inputDevice.selectNodes()
-        }
-        if (inputDevice.selectedNodeUrls.size > 0) {
-            val nodeUrl = inputDevice.selectedNodeUrls[0]
+            if (inputDevice.selectedNodeUrls.size > 0) {
+                val nodeUrl = inputDevice.selectedNodeUrls[0]
 
-            startPosition = Vector3()
-            inputDevice.entity.getWorldPosition(startPosition!!)
-            startOrientation = Quaternion(0.0, 0.0, 0.0, 1.0)
-            inputDevice.entity.getWorldQuaternion(startOrientation!!)
+                startPosition = Vector3()
+                inputDevice.entity.getWorldPosition(startPosition!!)
+                startOrientation = Quaternion(0.0, 0.0, 0.0, 1.0)
+                inputDevice.entity.getWorldQuaternion(startOrientation!!)
+
+                val obj = virtualRealityController!!.scene.getObjectByName(nodeUrl) ?: return
+
+                objectStartPosition = Vector3()
+                obj.getWorldPosition(objectStartPosition!!)
+                objectStartOrientation = Quaternion(0.0, 0.0, 0.0, 1.0)
+                obj.getWorldQuaternion(objectStartOrientation!!)
+
+            }
+        }
+    }
+
+    override fun onSqueezed(button: InputButton, value: Double) {
+        if (button == InputButton.TRIGGER) {
+            if (inputDevice.selectedNodeUrls.size > 0) {
+                moveNodeTo()
+            }
         }
     }
 
     override fun onReleased(button: InputButton) {
-        if (inputDevice.selectedNodeUrls.size > 0) {
-            val nodeUrl = inputDevice.selectedNodeUrls[0]
-
-            val currentPosition = Vector3()
-            inputDevice.entity.getWorldPosition(currentPosition!!)
-            val currentOrientation = Quaternion(0.0, 0.0, 0.0, 1.0)
-            inputDevice.entity.getWorldQuaternion(currentOrientation!!)
-
-            val positionChange = currentPosition!!.clone()
-            positionChange.sub(startPosition!!)
-
-            val originalOrientation = startOrientation!!.clone()
-            val originalOrientationConjugate = originalOrientation.conjugate()
-            val orientationChange = currentOrientation.clone()
-            orientationChange.multiply(originalOrientationConjugate)
-
-            val obj = virtualRealityController!!.scene.getObjectByName(nodeUrl) ?: return
-
-            val objectPosition  = Vector3()
-            obj.getWorldPosition(objectPosition!!)
-            val objectOrientation = Quaternion(0.0, 0.0, 0.0, 1.0)
-            inputDevice.entity.getWorldQuaternion(objectOrientation!!)
-
-            objectPosition.add(positionChange)
-            objectOrientation.multiply(orientationChange)
-
-            val node : PrimitiveNode = dynamicCast(virtualRealityController!!.nodes[nodeUrl] ?: return)
-            node.position.x = objectPosition.x
-            node.position.y = objectPosition.y
-            node.position.z = objectPosition.z
-
-            node.orientation.x = objectOrientation.x
-            node.orientation.y = objectOrientation.y
-            node.orientation.z = objectOrientation.z
-            node.orientation.w = objectOrientation.w
-
-            virtualRealityController!!.networkClient!!.send(listOf(node))
+        if (button == InputButton.TRIGGER) {
+            if (inputDevice.selectedNodeUrls.size > 0) {
+                moveNodeTo()
+                inputDevice.unselectNodes()
+            }
         }
-
-    }
-
-    override fun onSqueezed(button: InputButton, value: Double) {
     }
 
     override fun onPadTouched(x: Double, y: Double) {
+    }
+
+    private fun moveNodeTo() {
+        val nodeUrl = inputDevice.selectedNodeUrls[0]
+
+        val currentPosition = Vector3()
+        inputDevice.entity.getWorldPosition(currentPosition!!)
+        val currentOrientation = Quaternion(0.0, 0.0, 0.0, 1.0)
+        inputDevice.entity.getWorldQuaternion(currentOrientation!!)
+
+        //val obj = virtualRealityController!!.scene.getObjectByName(nodeUrl) ?: return
+
+        val positionChange = currentPosition!!.clone()
+        positionChange.sub(startPosition!!)
+
+        val objectPosition = objectStartPosition!!.clone()
+        objectPosition.add(positionChange)
+
+        val originalOrientation = startOrientation!!.clone()
+        val originalOrientationConjugate = originalOrientation.conjugate()
+
+        val orientationChange = currentOrientation.clone()
+        orientationChange.multiply(originalOrientationConjugate)
+
+        val objectOrientation = objectStartOrientation!!.clone()
+        //inputDevice.entity.getWorldQuaternion(objectOrientation!!)
+        orientationChange.multiply(objectOrientation)
+
+        val node = virtualRealityController!!.nodes[nodeUrl] ?: return
+        node.position.x = objectPosition.x
+        node.position.y = objectPosition.y
+        node.position.z = objectPosition.z
+
+        node.orientation.x = orientationChange.x
+        node.orientation.y = orientationChange.y
+        node.orientation.z = orientationChange.z
+        node.orientation.w = orientationChange.w
+
+        //TODO save node types for incoming nodes and apply here
+        virtualRealityController!!.networkClient!!.send(node, "PrimitiveNode")
     }
 
 }

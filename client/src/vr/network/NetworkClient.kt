@@ -41,6 +41,12 @@ class NetworkClient(val url: String) {
         wsClient.send(mapper.writeValue(envelope))
     }
 
+    fun send(value: Any, type: String) {
+        val envelope = Envelope()
+        mapper.writeValueToEnvelope(envelope, value, type)
+        wsClient.send(mapper.writeValue(envelope))
+    }
+
     private fun onReceivedValues(values: List<Pair<String, Any>>) {
         for (value in values) {
             processReceivedValue(value)
