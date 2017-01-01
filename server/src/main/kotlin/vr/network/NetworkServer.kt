@@ -203,8 +203,15 @@ class NetworkServer(val server: VrServer) {
         val cellNodeUpdates: MutableMap<String, MutableList<Any>> = mutableMapOf()
         for (node in receivedNodes) {
             val cellUri: String
+            var nodeId: String
             if (node.url.contains('/')) {
                 cellUri = node.url.substring(0, node.url.lastIndexOf('/'))
+                nodeId = node.url.substring(node.url.lastIndexOf('/') + 1)
+                if (nodeId.equals("00000000-0000-0000-0000-000000000000")) {
+                    nodeId = UUID.randomUUID().toString()
+                    node.url = cellUri + "/" + nodeId
+                    log.info("Generated URL for new node of type ${node.javaClass.simpleName}: ${node.url}")
+                }
             } else {
                 return
             }

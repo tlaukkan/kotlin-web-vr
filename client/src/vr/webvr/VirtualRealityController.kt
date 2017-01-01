@@ -4,6 +4,7 @@ import lib.threejs.Object3D
 import lib.threejs.Vector3
 import renderTime
 import renderTimeDelta
+import vr.network.NetworkClient
 import vr.network.model.Node
 import vr.util.dynamicCast
 import vr.webvr.actuators.NodeActuator
@@ -21,8 +22,9 @@ class VirtualRealityController(var displayController: DisplayController, var med
     // Orphaned3D objects
     val orphans: MutableMap<String, MutableList<Object3D>> = mutableMapOf()
 
+    var networkClient: NetworkClient? = null
+    var linkedServerCellUrl: String? = null
     var neighbours: MutableMap<String, Vector3> = mutableMapOf()
-
 
     fun addNodeActuator(nodeActuator: NodeActuator) {
         nodeActuators[nodeActuator.type] = nodeActuator

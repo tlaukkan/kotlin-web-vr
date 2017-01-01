@@ -1,7 +1,10 @@
 package vr.webvr.tools
 
 import lib.threejs.Object3D
+import lib.threejs.Quaternion
+import lib.threejs.Vector3
 import virtualRealityController
+import vr.network.model.Node
 import vr.network.model.PrimitiveNode
 import vr.webvr.devices.InputButton
 import vr.webvr.devices.InputDevice
@@ -22,6 +25,8 @@ class AddTool(inputDevice: InputDevice) : Tool("Add Tool", inputDevice) {
     private var selectedPrimitive = primitives[0]
 
     private var protoObject: Object3D? = null
+
+    private var protoNode: Node? = null
 
     private var scale = 0.25
 
@@ -51,9 +56,13 @@ class AddTool(inputDevice: InputDevice) : Tool("Add Tool", inputDevice) {
             inputDevice.entity.remove(protoObject!!)
         }
         if (selectedMode == AddMode.PRIMITIVE) {
-            val node = PrimitiveNode("00000000-0000-0000-0000-000000000000", "box", "textures/alien.jpg")
+            val linkedServerUrl = virtualRealityController!!.linkedServerCellUrl
+            println(linkedServerUrl)
+            val nodeUrl = "${virtualRealityController!!.linkedServerCellUrl}/00000000-0000-0000-0000-000000000000"
+            println(nodeUrl)
+            protoNode = PrimitiveNode(nodeUrl, "box", "textures/alien.jpg")
 
-            virtualRealityController!!.nodeActuators["PrimitiveNode"]!!.construct(node, { obj: Object3D? ->
+            virtualRealityController!!.nodeActuators["PrimitiveNode"]!!.construct(protoNode!!, { obj: Object3D? ->
                 if (obj != null) {
                     protoObject = obj
                     obj.position.z = -scale
@@ -66,6 +75,33 @@ class AddTool(inputDevice: InputDevice) : Tool("Add Tool", inputDevice) {
         }
     }
 
+    fun addObject() {
+        if (protoNode == null) {
+            return
+        }
+
+        val position = Vector3()
+        protoObject!!.getWorldPosition(position)
+        val orientation = Quaternion(0.0, 0.0, 0.0, 1.0)
+        protoObject!!.getWorldQuaternion(orientation)
+
+        protoNode!!.position.x = position.x
+        protoNode!!.position.y = position.y
+        protoNode!!.position.z = position.z
+
+        protoNode!!.orientation.x = orientation.x
+        protoNode!!.orientation.y = orientation.y
+        protoNode!!.orientation.z = orientation.z
+        protoNode!!.orientation.w = orientation.w
+
+        protoNode!!.scale.x = scale
+        protoNode!!.scale.y = scale
+        protoNode!!.scale.z = scale
+
+        println("Adding node.")
+
+        virtualRealityController!!.networkClient!!.send(listOf(protoNode!!))
+    }
 
     override fun active() {
         updateDisplay()
@@ -87,7 +123,7 @@ class AddTool(inputDevice: InputDevice) : Tool("Add Tool", inputDevice) {
 
     override fun onReleased(button: InputButton) {
         if (button == InputButton.GRIP) {
-            gripped = true
+            gripped = false
         }
 
         if (gripped) {
@@ -143,6 +179,10 @@ class AddTool(inputDevice: InputDevice) : Tool("Add Tool", inputDevice) {
             selectedPrimitive = primitives[newPrimitive]
             updateDisplay()
             updateObject()
+        }
+
+        if (button == InputButton.TRIGGER) {
+            addObject()
         }
     }
 

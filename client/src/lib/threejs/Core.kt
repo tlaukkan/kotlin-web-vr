@@ -103,5 +103,11 @@ open class Object3D(
 
   @native fun applyMatrix(matrix: Matrix4): Unit = noImpl
 
+  @native fun getWorldPosition(optionalTarget: Vector3): Vector3 = noImpl
+
+  @native fun getWorldQuaternion(optionalTarget: Quaternion): Quaternion = noImpl
+
+  @native fun getWorldRotation(optionalTarget: Quaternion): Quaternion = noImpl
+
   @native open fun clone(recursive: Boolean): Object3D = noImpl
 }

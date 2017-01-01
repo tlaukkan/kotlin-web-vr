@@ -37,6 +37,8 @@ fun main(args: Array<String>) {
                 client = NetworkClient("ws://${location.hostname}/ws")
             }
 
+            virtualRealityController!!.networkClient = client
+
             client.onConnected = { handshakeResponse ->
                 println("Connected " + client.url + " (" + handshakeResponse.software + ")")
                 client.send(listOf(LinkRequest(arrayOf(), arrayOf(handshakeResponse.serverCellUris[0]))))
@@ -50,7 +52,7 @@ fun main(args: Array<String>) {
                             neighbour.oneTwoDeltaVector.y,
                             neighbour.oneTwoDeltaVector.z)
                 }
-
+                virtualRealityController!!.linkedServerCellUrl = linkResponse.serverCellUris[0]
                 println("Linked to server cell: " + linkResponse.serverCellUris[0])
             }
 
