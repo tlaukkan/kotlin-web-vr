@@ -14,7 +14,7 @@ class Cell(val url: String, var remote: Boolean = false, var neighbours: Mutable
     private val log = logger()
 
     val serverUrl: String
-    val primeNode: PrimitiveNode = PrimitiveNode("00000000-0000-0000-0000-000000000000", "box", "textures/alien.jpg")
+    val primeNode: PrimitiveNode = PrimitiveNode("box", "textures/alien.jpg")
 
     private val nodes: MutableMap<String, Node> = HashMap()
 

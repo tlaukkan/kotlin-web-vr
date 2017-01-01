@@ -33,6 +33,12 @@ class Quaternion(x: Double, y: Double, z: Double, w: Double) {
 
   fun slerp(qb: Quaternion, t: Double): Unit = noImpl
 
+  fun multiply(qb: Quaternion): Unit = noImpl
+
+  fun conjugate(): Quaternion = noImpl
+
+  fun clone(): Quaternion = noImpl
+
   fun fromArray(array: Array<Any>): Quaternion = noImpl
 }
 

@@ -17,6 +17,7 @@ class SelectTool(inputDevice: InputDevice) : Tool("No Tool", inputDevice) {
 
     override fun deactive() {
         inputDevice.hideSelectLine()
+        gripped = false
     }
 
     override fun onPressed(button: InputButton) {

@@ -6,10 +6,7 @@ import lib.webvrapi.Gamepad
 import lib.webvrapi.getGamepads
 import lib.webvrapi.navigator
 import virtualRealityController
-import vr.webvr.tools.AddTool
-import vr.webvr.tools.SelectTool
-import vr.webvr.tools.NoTool
-import vr.webvr.tools.Tool
+import vr.webvr.tools.*
 import kotlin.browser.document
 import kotlin.browser.window
 
@@ -81,6 +78,7 @@ abstract class InputDevice(index: Int, type: String) {
 
         selectLine = Line(geometry, MeshBasicMaterial(object { var color: Int = 0xedeeb3 }))
 
+        tools.add(MoveTool(this))
         tools.add(SelectTool(this))
         tools.add(AddTool(this))
         tools.add(NoTool(this))

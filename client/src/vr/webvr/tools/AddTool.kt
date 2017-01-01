@@ -58,7 +58,8 @@ class AddTool(inputDevice: InputDevice) : Tool("Add Tool", inputDevice) {
             println(linkedServerUrl)
             val nodeUrl = "${virtualRealityController!!.linkedServerCellUrl}/00000000-0000-0000-0000-000000000000"
             println(nodeUrl)
-            protoNode = PrimitiveNode(nodeUrl, "box", "textures/alien.jpg")
+            protoNode = PrimitiveNode("box", "textures/alien.jpg")
+            protoNode!!.url = nodeUrl
 
             virtualRealityController!!.nodeActuators["PrimitiveNode"]!!.construct(protoNode!!, { obj: Object3D? ->
                 if (obj != null) {
@@ -112,6 +113,7 @@ class AddTool(inputDevice: InputDevice) : Tool("Add Tool", inputDevice) {
         if (protoObject != null) {
             inputDevice.entity.remove(protoObject!!)
         }
+        gripped = false
     }
 
     override fun onPressed(button: InputButton) {
