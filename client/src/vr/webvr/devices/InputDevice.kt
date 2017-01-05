@@ -62,23 +62,35 @@ abstract class InputDevice(index: Int, type: String) {
         var material = MeshBasicMaterial( object {var map = displayTexture} )
         material.transparent = true
 
+        val rightController = index % 2 == 1
+
         val planeGeometry = PlaneGeometry(0.3, 0.3)
         display = Mesh(planeGeometry, material)
         display.rotateX(-90 * 2 * Math.PI / 360)
-        display.rotateZ(-90 * 2 * Math.PI / 360)
+        if (rightController) {
+            display.rotateZ(-90 * 2 * Math.PI / 360)
+        } else {
+            display.rotateZ(90 * 2 * Math.PI / 360)
+        }
         display.position.x = 0.3
+        if (rightController) {
+            display.position.x = 0.3
+        } else {
+            display.position.x = -0.3
+        }
         display.position.z = 0.15
         //display.position.y = 0.15
 
         entity.add(display)
 
         tools.add(MoveTool(this))
+        tools.add(TravelTool(this))
         tools.add(AddTool(this))
         tools.add(RemoveTool(this))
 //        tools.add(SelectTool(this))
 //        tools.add(NoTool(this))
 
-        activateTool(tools[0])
+        activateTool(tools[(index + 1) % 2])
     }
 
     fun activateTool(tool: Tool) {
@@ -102,9 +114,9 @@ abstract class InputDevice(index: Int, type: String) {
 
     fun display(text: String) {
         displayBitmap.clearRect(0, 0, displayCanvasWidth, displayCanvasHeight)
-        displayBitmap.fillStyle = "rgba(0,0,0,0.2)"
+        displayBitmap.fillStyle = "rgba(0,128,128,0.1)"
         displayBitmap.fillRect(0, 0, displayCanvasWidth, displayCanvasHeight)
-        displayBitmap.fillStyle = "rgba(0,0,0,0.4)"
+        displayBitmap.fillStyle = "rgba(0,255,255,0.3)"
 
         val lines = text.split('\n')
         var lineNumber = 1
@@ -161,8 +173,10 @@ abstract class InputDevice(index: Int, type: String) {
         for (result in results) {
             val distance: Double = result["distance"]
             val obj: Object3D = result["object"]
-            select(obj.name)
-            return distance
+            if (virtualRealityController!!.nodes.containsKey(obj.name)) {
+                select(obj.name)
+                return distance
+            }
         }
 
         return null
