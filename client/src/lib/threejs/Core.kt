@@ -113,3 +113,8 @@ open class Object3D(
 
   @native open fun clone(recursive: Boolean): Object3D = noImpl
 }
+
+@native("THREE.Group")
+open class Group() : Object3D() {
+
+}

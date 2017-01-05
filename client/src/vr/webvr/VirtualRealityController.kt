@@ -1,5 +1,6 @@
 package vr.webvr
 
+import lib.threejs.Group
 import lib.threejs.Object3D
 import lib.threejs.Vector3
 import renderTime
@@ -27,13 +28,19 @@ class VirtualRealityController(var displayController: DisplayController, var med
     var linkedServerCellUrl: String? = null
     var neighbours: MutableMap<String, Vector3> = mutableMapOf()
 
-    var roomPosition = Vector3(5.0, 0.0, 0.0)
+    var roomGroup = Group()
+
+    //var roomPosition = Vector3(5.0, 0.0, 0.0)
 
     fun addNodeActuator(nodeActuator: NodeActuator) {
         nodeActuators[nodeActuator.type] = nodeActuator
     }
 
     init {
+        roomGroup.position.x = -5.0
+        roomGroup.position.y = 0.0
+        roomGroup.position.z = 0.0
+        scene.add(roomGroup)
         addNodeActuator(LightFieldActuator(this))
         addNodeActuator(PrimitiveActuator(this))
     }
@@ -87,9 +94,9 @@ class VirtualRealityController(var displayController: DisplayController, var med
         position.y = node.position.y
         position.z = node.position.z
 
-        position.x -= roomPosition.x
+        /*position.x -= roomPosition.x
         position.y -= roomPosition.y
-        position.z -= roomPosition.z
+        position.z -= roomPosition.z*/
 
         if (neighbours.containsKey(cellUri) && node.parentUrl == null) {
             val neighbourVector = neighbours[cellUri]!!
@@ -104,9 +111,9 @@ class VirtualRealityController(var displayController: DisplayController, var med
 
         val nodePosition: Vector3 = position.clone()
 
-        nodePosition.x += roomPosition.x
-        nodePosition.y += roomPosition.y
-        nodePosition.z += roomPosition.z
+        nodePosition.x -= roomGroup.position.x
+        nodePosition.y -= roomGroup.position.y
+        nodePosition.z -= roomGroup.position.z
 
         if (neighbours.containsKey(cellUri) && node.parentUrl == null) {
             val neighbourVector = neighbours[cellUri]!!

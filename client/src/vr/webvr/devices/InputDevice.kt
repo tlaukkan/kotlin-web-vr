@@ -156,7 +156,7 @@ abstract class InputDevice(index: Int, type: String) {
         val raycaster = Raycaster()
         raycaster.set(origin, direction)
 
-        val results = raycaster.intersectObjects(virtualRealityController!!.scene.children, false)
+        val results = raycaster.intersectObjects(virtualRealityController!!.scene.children, true)
 
         for (result in results) {
             val distance: Double = result["distance"]

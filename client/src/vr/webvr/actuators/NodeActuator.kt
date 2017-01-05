@@ -47,7 +47,7 @@ abstract class NodeActuator(var controller: VirtualRealityController, var type: 
                 println("Added orphan ${obj.name} as parent $parentUrl was not found.")
             }
         } else {
-            controller.scene.add(obj)
+            virtualRealityController!!.roomGroup.add(obj)
         }
     }
 
