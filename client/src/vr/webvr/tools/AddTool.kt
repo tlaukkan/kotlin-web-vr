@@ -84,9 +84,10 @@ class AddTool(inputDevice: InputDevice) : Tool("Add Tool", inputDevice) {
         val orientation = Quaternion(0.0, 0.0, 0.0, 1.0)
         protoObject!!.getWorldQuaternion(orientation)
 
-        protoNode!!.position.x = position.x
+        virtualRealityController!!.setNodePosition(protoNode!!, position)
+        /*protoNode!!.position.x = position.x
         protoNode!!.position.y = position.y
-        protoNode!!.position.z = position.z
+        protoNode!!.position.z = position.z*/
 
         protoNode!!.orientation.x = orientation.x
         protoNode!!.orientation.y = orientation.y

@@ -3,6 +3,7 @@ package vr.webvr.actuators
 import lib.threejs.Object3D
 import lib.threejs.Quaternion
 import lib.threejs.Vector3
+import virtualRealityController
 import vr.network.model.DataQuaternion
 import vr.network.model.DataVector3
 import vr.network.model.Node
@@ -14,7 +15,7 @@ class NodeInterpolator(val nodeUrl: String) {
 
     var initialized = false
 
-    val targetPosition: Vector3 = Vector3(0.0, 0.0, 0.0)
+    var targetPosition: Vector3 = Vector3(0.0, 0.0, 0.0)
     val targetOrientation: Quaternion = Quaternion(0.0, 0.0, 0.0, 1.0)
     val targetScale: Vector3 = Vector3(1.0, 1.0, 1.0)
 
@@ -32,9 +33,7 @@ class NodeInterpolator(val nodeUrl: String) {
     fun updateTarget(time: Double, timeDelta: Double, node: Node) {
         //println("Updated node: $nodeUrl($time / $timeDelta)")
 
-        targetPosition.x = node.position.x
-        targetPosition.y = node.position.y
-        targetPosition.z = node.position.z
+        virtualRealityController!!.getNodePosition(node, targetPosition)
         targetOrientation.x = node.orientation.x
         targetOrientation.y = node.orientation.y
         targetOrientation.z = node.orientation.z
@@ -45,12 +44,13 @@ class NodeInterpolator(val nodeUrl: String) {
 
         if (!initialized) {
             initialized = true
-            position.x = node.position.x
-            position.y = node.position.y
-            position.z = node.position.z
-            intermediatePosition.x = node.position.x
-            intermediatePosition.y = node.position.y
-            intermediatePosition.z = node.position.z
+            position.x = targetPosition.x
+            position.y = targetPosition.y
+            position.z = targetPosition.z
+            intermediatePosition.x = targetPosition.x
+            intermediatePosition.y = targetPosition.y
+            intermediatePosition.z = targetPosition.z
+
             orientation.x = node.orientation.x
             orientation.y = node.orientation.y
             orientation.z = node.orientation.z

@@ -27,6 +27,8 @@ class VirtualRealityController(var displayController: DisplayController, var med
     var linkedServerCellUrl: String? = null
     var neighbours: MutableMap<String, Vector3> = mutableMapOf()
 
+    var roomPosition = Vector3(5.0, 0.0, 0.0)
+
     fun addNodeActuator(nodeActuator: NodeActuator) {
         nodeActuators[nodeActuator.type] = nodeActuator
     }
@@ -48,12 +50,12 @@ class VirtualRealityController(var displayController: DisplayController, var med
                 return
             }
 
-            if (neighbours.containsKey(cellUri)) {
+            /*if (neighbours.containsKey(cellUri)) {
                 val neighbourVector = neighbours[cellUri]!!
                 node.position.x += neighbourVector.x
                 node.position.y += neighbourVector.y
                 node.position.z += neighbourVector.z
-            }
+            }*/
 
             if (node.removed) {
                 if (nodes.containsKey(node.url)) {
@@ -76,6 +78,46 @@ class VirtualRealityController(var displayController: DisplayController, var med
         } else {
             println("No activator defined for $type")
         }
+    }
+
+    fun getNodePosition(node: Node, position: Vector3) : Unit {
+        val cellUri = node.url.substring(0, node.url.lastIndexOf('/'))
+
+        position.x = node.position.x
+        position.y = node.position.y
+        position.z = node.position.z
+
+        position.x -= roomPosition.x
+        position.y -= roomPosition.y
+        position.z -= roomPosition.z
+
+        if (neighbours.containsKey(cellUri) && node.parentUrl == null) {
+            val neighbourVector = neighbours[cellUri]!!
+            position.x += neighbourVector.x
+            position.y += neighbourVector.y
+            position.z += neighbourVector.z
+        }
+    }
+
+    fun setNodePosition(node: Node, position: Vector3) : Unit {
+        val cellUri = node.url.substring(0, node.url.lastIndexOf('/'))
+
+        val nodePosition: Vector3 = position.clone()
+
+        nodePosition.x += roomPosition.x
+        nodePosition.y += roomPosition.y
+        nodePosition.z += roomPosition.z
+
+        if (neighbours.containsKey(cellUri) && node.parentUrl == null) {
+            val neighbourVector = neighbours[cellUri]!!
+            nodePosition.x -= neighbourVector.x
+            nodePosition.y -= neighbourVector.y
+            nodePosition.z -= neighbourVector.z
+        }
+
+        node.position.x = nodePosition.x
+        node.position.y = nodePosition.y
+        node.position.z = nodePosition.z
     }
 
     fun update() {

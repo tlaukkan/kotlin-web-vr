@@ -118,9 +118,13 @@ class MoveTool(inputDevice: InputDevice) : Tool("Move tool", inputDevice) {
         val node = virtualRealityController!!.nodes[nodeUrl] ?: return
         val nodeType = virtualRealityController!!.nodeTypes[nodeUrl]!! ?: return
 
+        virtualRealityController!!.setNodePosition(node!!, objectPosition)
+
+        /*
         node.position.x = objectPosition.x
         node.position.y = objectPosition.y
         node.position.z = objectPosition.z
+        */
 
         node.orientation.x = orientationChange.x
         node.orientation.y = orientationChange.y
