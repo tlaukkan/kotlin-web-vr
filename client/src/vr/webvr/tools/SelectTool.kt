@@ -15,6 +15,10 @@ class SelectTool(inputDevice: InputDevice) : Tool("Select Tool", inputDevice) {
         inputDevice.showSelectLine(0xffffff)
     }
 
+    override fun render() {
+
+    }
+
     override fun deactive() {
         inputDevice.hideSelectLine()
         gripped = false

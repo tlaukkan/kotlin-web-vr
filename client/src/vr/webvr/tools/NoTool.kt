@@ -11,6 +11,10 @@ class NoTool(inputDevice: InputDevice) : Tool("No Tool", inputDevice) {
     override fun active() {
     }
 
+    override fun render() {
+
+    }
+
     override fun deactive() {
     }
 

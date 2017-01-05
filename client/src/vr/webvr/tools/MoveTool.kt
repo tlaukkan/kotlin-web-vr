@@ -25,6 +25,10 @@ class MoveTool(inputDevice: InputDevice) : Tool("Move tool", inputDevice) {
         inputDevice.showSelectLine(0x0000ff)
     }
 
+    override fun render() {
+
+    }
+
     override fun deactive() {
         inputDevice.hideSelectLine()
     }

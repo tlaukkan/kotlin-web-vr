@@ -24,7 +24,7 @@ class TravelTool(inputDevice: InputDevice) : Tool("Travel tool", inputDevice) {
         val material = MeshBasicMaterial()
         material.transparent = true
         material.color = Color(0x00ffff)
-        material.opacity = 0.05
+        material.opacity = 0.1
 
         pointerObject = Mesh(geometry, material)
         pointerObject.castShadow = false
@@ -35,59 +35,52 @@ class TravelTool(inputDevice: InputDevice) : Tool("Travel tool", inputDevice) {
         inputDevice.showSelectLine(0x00ffff)
     }
 
+    override fun render() {
+        if (inputDevice.pressedButtons.contains(InputButton.TRIGGER)) {
+            var selectDistance = inputDevice.rayNodes()
+            if (selectDistance != null) {
+                var position = Vector3()
+                inputDevice.entity.getWorldPosition(position!!)
+                var orientation = Quaternion(0.0, 0.0, 0.0, 1.0)
+                inputDevice.entity.getWorldQuaternion(orientation)
+
+                val direction = Vector3(0.0, 0.0, -selectDistance!!)
+                direction.applyQuaternion(orientation!!)
+                position!!.add(direction)
+
+                pointerObject.position.x = position!!.x
+                pointerObject.position.y = position!!.y
+                pointerObject.position.z = position!!.z
+            }
+        }
+    }
+
     override fun deactive() {
         inputDevice.hideSelectLine()
     }
 
     override fun onPressed(button: InputButton) {
         if (button == InputButton.TRIGGER) {
-            var selectDistance = inputDevice.rayNodes()
-            if (selectDistance != null) {
-                var startPosition = Vector3()
-                inputDevice.entity.getWorldPosition(startPosition!!)
-                var startOrientation = Quaternion(0.0, 0.0, 0.0, 1.0)
-                inputDevice.entity.getWorldQuaternion(startOrientation)
-
-                val direction = Vector3(0.0, 0.0, -selectDistance!!)
-                direction.applyQuaternion(startOrientation!!)
-                startPosition!!.add(direction)
-
-                pointerObject.position.x = startPosition!!.x
-                pointerObject.position.y = startPosition!!.y
-                pointerObject.position.z = startPosition!!.z
-
-                virtualRealityController!!.scene.add(pointerObject)
-            }
+            virtualRealityController!!.scene.add(pointerObject)
         }
     }
 
     override fun onSqueezed(button: InputButton, value: Double) {
-        if (button == InputButton.TRIGGER) {
-            var selectDistance = inputDevice.rayNodes()
-            if (selectDistance != null) {
-                var startPosition = Vector3()
-                inputDevice.entity.getWorldPosition(startPosition!!)
-                var startOrientation = Quaternion(0.0, 0.0, 0.0, 1.0)
-                inputDevice.entity.getWorldQuaternion(startOrientation)
-
-                val direction = Vector3(0.0, 0.0, -selectDistance!!)
-                direction.applyQuaternion(startOrientation!!)
-                startPosition!!.add(direction)
-
-                pointerObject.position.x = startPosition!!.x
-                pointerObject.position.y = startPosition!!.y
-                pointerObject.position.z = startPosition!!.z
-                if (renderTime - lastSqueezeMoveTime > 0.15) {
-                    lastSqueezeMoveTime = renderTime
-                }
-            }
-        }
     }
 
     override fun onReleased(button: InputButton) {
-        if (button == InputButton.TRIGGER) {
-            virtualRealityController!!.scene.remove(pointerObject)
-        }
+        virtualRealityController!!.scene.remove(pointerObject)
+        var position = Vector3()
+        pointerObject.getWorldPosition(position!!)
+
+        /*val roomPosition = virtualRealityController!!.roomGroup.position
+        position.x += roomPosition.x
+        position.y += roomPosition.y
+        position.z += roomPosition.z*/
+
+        virtualRealityController!!.roomGroup.position.x -= position.x
+        virtualRealityController!!.roomGroup.position.y -= position.y
+        virtualRealityController!!.roomGroup.position.z -= position.z
     }
 
     override fun onPadTouched(x: Double, y: Double) {

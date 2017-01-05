@@ -110,6 +110,10 @@ class AddTool(inputDevice: InputDevice) : Tool("Add Tool", inputDevice) {
         updateObject()
     }
 
+    override fun render() {
+
+    }
+
     override fun deactive() {
         if (protoObject != null) {
             inputDevice.entity.remove(protoObject!!)

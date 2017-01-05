@@ -19,6 +19,8 @@ abstract class Tool(var name: String, var inputDevice: InputDevice) {
 
     abstract fun deactive()
 
+    abstract fun render()
+
     abstract fun onPressed(button: InputButton)
 
     abstract fun onReleased(button: InputButton)

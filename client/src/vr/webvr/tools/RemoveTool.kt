@@ -15,6 +15,10 @@ class RemoveTool(inputDevice: InputDevice) : Tool("RemoveTool Tool", inputDevice
         inputDevice.showSelectLine(0xff0000)
     }
 
+    override fun render() {
+
+    }
+
     override fun deactive() {
         inputDevice.hideSelectLine()
     }

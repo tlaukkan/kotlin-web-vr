@@ -241,6 +241,8 @@ abstract class InputDevice(index: Int, type: String) {
             this.entity.visible = true
         }
 
+        this.activeTool.render()
+
     }
 
     fun squeezed(button: InputButton, value: Double) {
