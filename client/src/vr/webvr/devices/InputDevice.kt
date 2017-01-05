@@ -182,6 +182,32 @@ abstract class InputDevice(index: Int, type: String) {
         return null
     }
 
+    fun rayNodes() : Double? {
+        val origin = Vector3()
+        entity.getWorldPosition(origin)
+        val orientation = Quaternion(0.0, 0.0, 0.0, 1.0)
+        entity.getWorldQuaternion(orientation)
+
+        val direction = Vector3(0.0, 0.0, -1.0)
+        direction.applyQuaternion(orientation)
+
+        val raycaster = Raycaster()
+        raycaster.set(origin, direction)
+
+        val results = raycaster.intersectObjects(virtualRealityController!!.scene.children, true)
+
+        for (result in results) {
+            val distance: Double = result["distance"]
+            val obj: Object3D = result["object"]
+            if (virtualRealityController!!.nodes.containsKey(obj.name)) {
+//                select(obj.name)
+                return distance
+            }
+        }
+
+        return null
+    }
+
     private fun select(selectedNodeUrl: String) {
         val selectedNode = virtualRealityController!!.nodes[selectedNodeUrl] ?: return
         val selectedObject = virtualRealityController!!.scene.getObjectByName(selectedNode.url) ?: return

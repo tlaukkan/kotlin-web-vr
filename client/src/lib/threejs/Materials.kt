@@ -36,7 +36,12 @@ open class Material {
 }
 
 @native("THREE.MeshBasicMaterial")
-class MeshBasicMaterial(parameters: Any) : Material() {
+class MeshBasicMaterial() : Material() {
+
+  constructor(parameters: Any) : this() {
+
+  }
+
   @native var map: Texture = noImpl
   @native var specularMap: Texture = noImpl
   @native var wireframe: Boolean = noImpl

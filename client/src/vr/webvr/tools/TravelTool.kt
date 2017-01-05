@@ -1,6 +1,8 @@
 package vr.webvr.tools
 
 import lib.threejs.*
+import lib.threejs.Extra.BoxGeometry
+import lib.threejs.Extra.SphereGeometry
 import renderTime
 import virtualRealityController
 import vr.network.model.PrimitiveNode
@@ -13,13 +15,21 @@ import vr.webvr.devices.InputDevice
  */
 class TravelTool(inputDevice: InputDevice) : Tool("Travel tool", inputDevice) {
 
-    var selectDistance: Double? = null
+    var lastSqueezeMoveTime: Double = 0.0
+    val pointerObject: Object3D
 
-    var startPosition: Vector3? = null
-    var startOrientation: Quaternion? = null
+    init {
+        var geometry = SphereGeometry(0.02, 50, 50, 0.0, Math.PI * 2, 0.0, Math.PI * 2)
 
-    var objectStartPosition: Vector3? = null
-    var objectStartOrientation: Quaternion? = null
+        val material = MeshBasicMaterial()
+        material.transparent = true
+        material.color = Color(0x00ffff)
+        material.opacity = 0.05
+
+        pointerObject = Mesh(geometry, material)
+        pointerObject.castShadow = false
+        pointerObject.receiveShadow = false
+    }
 
     override fun active() {
         inputDevice.showSelectLine(0x00ffff)
@@ -31,41 +41,43 @@ class TravelTool(inputDevice: InputDevice) : Tool("Travel tool", inputDevice) {
 
     override fun onPressed(button: InputButton) {
         if (button == InputButton.TRIGGER) {
-            inputDevice.unselectNodes()
-            selectDistance = inputDevice.selectNodes()
-            if (inputDevice.selectedNodeUrls.size > 0) {
-                val nodeUrl = inputDevice.selectedNodeUrls[0]
-
-                startPosition = Vector3()
+            var selectDistance = inputDevice.rayNodes()
+            if (selectDistance != null) {
+                var startPosition = Vector3()
                 inputDevice.entity.getWorldPosition(startPosition!!)
-                startOrientation = Quaternion(0.0, 0.0, 0.0, 1.0)
+                var startOrientation = Quaternion(0.0, 0.0, 0.0, 1.0)
+                inputDevice.entity.getWorldQuaternion(startOrientation)
 
-                // Move position to intersection point of select rate
-                /*val direction = Vector3(0.0, 0.0, -selectDistance!!)
+                val direction = Vector3(0.0, 0.0, -selectDistance!!)
                 direction.applyQuaternion(startOrientation!!)
-                startPosition!!.add(direction)*/
+                startPosition!!.add(direction)
 
-                inputDevice.entity.getWorldQuaternion(startOrientation!!)
+                pointerObject.position.x = startPosition!!.x
+                pointerObject.position.y = startPosition!!.y
+                pointerObject.position.z = startPosition!!.z
 
-                val obj = virtualRealityController!!.scene.getObjectByName(nodeUrl) ?: return
-
-                objectStartPosition = Vector3()
-                obj.getWorldPosition(objectStartPosition!!)
-                objectStartOrientation = Quaternion(0.0, 0.0, 0.0, 1.0)
-                obj.getWorldQuaternion(objectStartOrientation!!)
-
+                virtualRealityController!!.scene.add(pointerObject)
             }
         }
     }
 
-    var lastSqueezeMoveTime: Double = 0.0
-
     override fun onSqueezed(button: InputButton, value: Double) {
         if (button == InputButton.TRIGGER) {
-            if (inputDevice.selectedNodeUrls.size > 0) {
+            var selectDistance = inputDevice.rayNodes()
+            if (selectDistance != null) {
+                var startPosition = Vector3()
+                inputDevice.entity.getWorldPosition(startPosition!!)
+                var startOrientation = Quaternion(0.0, 0.0, 0.0, 1.0)
+                inputDevice.entity.getWorldQuaternion(startOrientation)
 
+                val direction = Vector3(0.0, 0.0, -selectDistance!!)
+                direction.applyQuaternion(startOrientation!!)
+                startPosition!!.add(direction)
+
+                pointerObject.position.x = startPosition!!.x
+                pointerObject.position.y = startPosition!!.y
+                pointerObject.position.z = startPosition!!.z
                 if (renderTime - lastSqueezeMoveTime > 0.15) {
-                    moveNodeTo()
                     lastSqueezeMoveTime = renderTime
                 }
             }
@@ -74,64 +86,12 @@ class TravelTool(inputDevice: InputDevice) : Tool("Travel tool", inputDevice) {
 
     override fun onReleased(button: InputButton) {
         if (button == InputButton.TRIGGER) {
-            if (inputDevice.selectedNodeUrls.size > 0) {
-                moveNodeTo()
-                inputDevice.unselectNodes()
-            }
+            virtualRealityController!!.scene.remove(pointerObject)
         }
     }
 
     override fun onPadTouched(x: Double, y: Double) {
     }
 
-    private fun moveNodeTo() {
-        val nodeUrl = inputDevice.selectedNodeUrls[0]
-
-        val currentPosition = Vector3()
-        inputDevice.entity.getWorldPosition(currentPosition!!)
-        val currentOrientation = Quaternion(0.0, 0.0, 0.0, 1.0)
-        inputDevice.entity.getWorldQuaternion(currentOrientation!!)
-
-        // Move position to intersection point of select rate
-        /*val direction = Vector3(0.0, 0.0, -selectDistance!!)
-        direction.applyQuaternion(currentOrientation!!)
-        currentPosition!!.add(direction)*/
-
-        //val obj = virtualRealityController!!.scene.getObjectByName(nodeUrl) ?: return
-
-        val positionChange = currentPosition!!.clone()
-        positionChange.sub(startPosition!!)
-
-        val objectPosition = objectStartPosition!!.clone()
-        objectPosition.add(positionChange)
-
-        val originalOrientation = startOrientation!!.clone()
-        val originalOrientationConjugate = originalOrientation.conjugate()
-
-        val orientationChange = currentOrientation.clone()
-        orientationChange.multiply(originalOrientationConjugate)
-
-        val objectOrientation = objectStartOrientation!!.clone()
-        //inputDevice.entity.getWorldQuaternion(objectOrientation!!)
-        orientationChange.multiply(objectOrientation)
-
-        val node = virtualRealityController!!.nodes[nodeUrl] ?: return
-        val nodeType = virtualRealityController!!.nodeTypes[nodeUrl]!! ?: return
-
-        virtualRealityController!!.setNodePosition(node!!, objectPosition)
-
-        /*
-        node.position.x = objectPosition.x
-        node.position.y = objectPosition.y
-        node.position.z = objectPosition.z
-        */
-
-        node.orientation.x = orientationChange.x
-        node.orientation.y = orientationChange.y
-        node.orientation.z = orientationChange.z
-        node.orientation.w = orientationChange.w
-
-        virtualRealityController!!.networkClient!!.send(node, nodeType)
-    }
 
 }
