@@ -33,12 +33,12 @@ class LightActuator(controller: VirtualRealityController) : NodeActuator(control
         val light = PointLight(typedNode.color, typedNode.intensity, typedNode.distance, typedNode.decay)
         light.castShadow = true
 
-        //light.shadowMapWidth = 2048
-        //light.shadowMapHeight = 2048
+        light.shadowMapWidth = 1024
+        light.shadowMapHeight = 1024
 
         light.shadow.camera.near = 0.1
         light.shadow.camera.far = typedNode.distance / 2
-        light.shadow.bias = -0.005
+        //light.shadow.bias = -0.005
 
 
         /*val d = 10

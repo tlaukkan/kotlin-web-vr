@@ -25,6 +25,10 @@ class AddTool(inputDevice: InputDevice) : Tool("Add Tool", inputDevice) {
 
     private var selectedPrimitive = primitives[0]
 
+    private var textures = listOf("textures/alien.jpg", "textures/gold.jpg", "textures/moss.jpg")
+
+    private var selectedTexture = textures[0]
+
     private var protoObject: Object3D? = null
 
     private var protoNode: Node? = null
@@ -61,7 +65,7 @@ class AddTool(inputDevice: InputDevice) : Tool("Add Tool", inputDevice) {
         println(nodeUrl)
 
         if (selectedMode == AddMode.PRIMITIVE) {
-            protoNode = PrimitiveNode(selectedPrimitive, "textures/alien.jpg")
+            protoNode = PrimitiveNode(selectedPrimitive, selectedTexture)
             protoNode!!.url = nodeUrl
 
             virtualRealityController!!.nodeActuators["PrimitiveNode"]!!.construct(protoNode!!, { obj: Object3D? ->
@@ -164,6 +168,24 @@ class AddTool(inputDevice: InputDevice) : Tool("Add Tool", inputDevice) {
                 if (scale <= 0.125) {
                     scale = 0.125
                 }
+                updateDisplay()
+                updateObject()
+            }
+            if (button == InputButton.LEFT) {
+                var index = textures.indexOf(selectedTexture) - 1
+                if (index < 0) {
+                    index = textures.size - 1
+                }
+                selectedTexture = textures[index]
+                updateDisplay()
+                updateObject()
+            }
+            if (button == InputButton.RIGHT) {
+                var index = textures.indexOf(selectedTexture) + 1
+                if (index >= textures.size) {
+                    index = 0
+                }
+                selectedTexture = textures[index]
                 updateDisplay()
                 updateObject()
             }
