@@ -8,10 +8,7 @@ import renderTimeDelta
 import vr.network.NetworkClient
 import vr.network.model.Node
 import vr.util.dynamicCast
-import vr.webvr.actuators.NodeActuator
-import vr.webvr.actuators.LightFieldActuator
-import vr.webvr.actuators.NodeInterpolator
-import vr.webvr.actuators.PrimitiveActuator
+import vr.webvr.actuators.*
 
 class VirtualRealityController(var displayController: DisplayController, var mediaController: MediaController) {
 
@@ -42,6 +39,7 @@ class VirtualRealityController(var displayController: DisplayController, var med
         roomGroup.position.z = 0.0
         scene.add(roomGroup)
         addNodeActuator(LightFieldActuator(this))
+        addNodeActuator(LightActuator(this))
         addNodeActuator(PrimitiveActuator(this))
     }
 

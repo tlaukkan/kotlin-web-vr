@@ -29,7 +29,6 @@ class LightFieldActuator(controller: VirtualRealityController) : NodeActuator(co
             obj.shadowMapWidth = 8192
             obj.shadowMapHeight = 8192
             obj.shadow.bias = 0.000015
-
         }
         obj.name = node.url
         obj.updateMatrix()

@@ -18,6 +18,7 @@ class Mapper {
         addValueClass(LightFieldNode::class.java)
         addValueClass(ModelNode::class.java)
         addValueClass(PrimitiveNode::class.java)
+        addValueClass(LightNode::class.java)
         addValueClass(HandshakeRequest::class.java)
         addValueClass(HandshakeResponse::class.java)
         addValueClass(LinkRequest::class.java)

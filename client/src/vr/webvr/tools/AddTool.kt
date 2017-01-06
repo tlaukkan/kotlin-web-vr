@@ -4,6 +4,7 @@ import lib.threejs.Object3D
 import lib.threejs.Quaternion
 import lib.threejs.Vector3
 import virtualRealityController
+import vr.network.model.LightNode
 import vr.network.model.Node
 import vr.network.model.PrimitiveNode
 import vr.webvr.devices.InputButton
@@ -15,7 +16,7 @@ import vr.webvr.devices.InputDevice
 class AddTool(inputDevice: InputDevice) : Tool("Add Tool", inputDevice) {
 
     private enum class AddMode {
-        PRIMITIVE, MODEL
+        PRIMITIVE, LIGHT
     }
 
     private var selectedMode: AddMode = AddMode.PRIMITIVE
@@ -53,15 +54,34 @@ class AddTool(inputDevice: InputDevice) : Tool("Add Tool", inputDevice) {
         if (protoObject != null) {
             inputDevice.entity.remove(protoObject!!)
         }
+
+        val linkedServerUrl = virtualRealityController!!.linkedServerCellUrl
+        println(linkedServerUrl)
+        val nodeUrl = "${virtualRealityController!!.linkedServerCellUrl}/00000000-0000-0000-0000-000000000000"
+        println(nodeUrl)
+
         if (selectedMode == AddMode.PRIMITIVE) {
-            val linkedServerUrl = virtualRealityController!!.linkedServerCellUrl
-            println(linkedServerUrl)
-            val nodeUrl = "${virtualRealityController!!.linkedServerCellUrl}/00000000-0000-0000-0000-000000000000"
-            println(nodeUrl)
             protoNode = PrimitiveNode(selectedPrimitive, "textures/alien.jpg")
             protoNode!!.url = nodeUrl
 
             virtualRealityController!!.nodeActuators["PrimitiveNode"]!!.construct(protoNode!!, { obj: Object3D? ->
+                if (obj != null) {
+                    protoObject = obj
+                    obj.position.z = -scale
+                    obj.scale.x = scale
+                    obj.scale.y = scale
+                    obj.scale.z = scale
+                    inputDevice.entity.add(protoObject!!)
+                }
+            })
+        }
+
+        if (selectedMode == AddMode.LIGHT) {
+            protoNode = LightNode()
+            protoNode!!.opacity = 0.8
+            protoNode!!.url = nodeUrl
+
+            virtualRealityController!!.nodeActuators["LightNode"]!!.construct(protoNode!!, { obj: Object3D? ->
                 if (obj != null) {
                     protoObject = obj
                     obj.position.z = -scale

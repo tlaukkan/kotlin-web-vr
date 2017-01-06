@@ -73,7 +73,7 @@ abstract class NodeActuator(var controller: VirtualRealityController, var type: 
     open fun remove(node: Node) {
         val obj = controller.scene.getObjectByName(node.url)
         if (obj != null) {
-            controller.scene.remove(obj)
+            controller.roomGroup.remove(obj)
         }
     }
 

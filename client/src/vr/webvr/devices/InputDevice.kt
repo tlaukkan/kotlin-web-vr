@@ -147,10 +147,13 @@ abstract class InputDevice(index: Int, type: String) {
     fun unselectNodes() {
         for (selectedNodeUrl in selectedNodeUrls) {
             val obj = virtualRealityController!!.scene.getObjectByName(selectedNodeUrl)
+            val node = virtualRealityController!!.nodes[selectedNodeUrl]
             if (obj != null) {
                 val material = obj.material
                 material.transparent = false
-                material.opacity = 1.0
+                if (node != null) {
+                    material.opacity = node.opacity
+                }
             }
         }
         selectedNodeUrls.clear()

@@ -27,6 +27,10 @@ class PrimitiveActuator(controller: VirtualRealityController) : NodeActuator(con
             if (geometry != null) {
                 var material = MeshPhongMaterial(object {})
                 material.map = texture
+                material.opacity = node.opacity
+                if (node.opacity < 1.0) {
+                    material.transparent = true
+                }
 
                 val obj = Mesh(geometry, material)
                 obj.castShadow = true
