@@ -24,19 +24,12 @@ class RendererController {
         renderer.sortObjects = false
 //        renderer.setClearColor(0xefd1b5)
         renderer.setClearColor(0x000000)
+
         renderer.physicallyCorrectLights = true
         renderer.gammaInput = true
         renderer.gammaOutput = true
 
-        //renderer.shadowMapWidth = 8192
-        //renderer.shadowMapHeight = 8192
-
         renderer.shadowMapEnabled = true
-        //renderer.shadowMapSoft = true
-        //renderer.shadowMap.type = BasicShadowMap
-
-        //renderer2.toneMapping = THREE.ReinhardToneMapping;
-
 
         document.body!!.appendChild(renderer.domElement)
 

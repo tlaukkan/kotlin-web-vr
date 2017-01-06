@@ -5,17 +5,11 @@ import org.w3c.dom.Element
 @native("THREE.WebGLRenderer")
 open class WebGLRenderer(parameters: Any) {
   @native var domElement: Element = noImpl
-  @native var autoClear: Boolean = noImpl
   @native var sortObjects: Boolean = noImpl
   @native var physicallyCorrectLights: Boolean = noImpl
   @native var gammaInput: Boolean = noImpl
   @native var gammaOutput: Boolean = noImpl
   @native var shadowMapEnabled: Boolean = noImpl
-  @native var shadowMapSoft: Boolean = noImpl
-
-  @native var shadowMap: dynamic = noImpl
-  @native var shadowMapWidth: Int = noImpl
-  @native var shadowMapHeight: Int = noImpl
 
   //Functions
   fun setSize(innerWidth: Double, innerHeight: Double): Unit = noImpl
