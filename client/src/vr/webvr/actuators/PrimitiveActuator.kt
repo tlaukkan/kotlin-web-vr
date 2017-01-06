@@ -33,10 +33,14 @@ class PrimitiveActuator(controller: VirtualRealityController) : NodeActuator(con
                 }
 
                 val obj = Mesh(geometry, material)
-                /*if (!("sphere".equals(typedNode.shape)) ) {
-                }*/
+                if (!("sphere".equals(typedNode.shape)) ) {
+                    obj.castShadow = true
+                } else {
+                    val shadowObject = Mesh(SphereGeometry(0.48, 40, 40, 0.0, Math.PI * 2, 0.0, Math.PI * 2), MeshBasicMaterial(object {}))
+                    shadowObject.castShadow = true
+                    obj.add(shadowObject)
+                }
                 obj.receiveShadow = true
-                obj.castShadow = true
 
                 onConstructed(obj)
             } else {
