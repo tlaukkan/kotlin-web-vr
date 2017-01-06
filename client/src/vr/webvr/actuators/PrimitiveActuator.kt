@@ -19,7 +19,7 @@ class PrimitiveActuator(controller: VirtualRealityController) : NodeActuator(con
             if ("box".equals(typedNode.shape)) {
                     geometry = BoxGeometry(1, 1, 1)
             } else if ("sphere".equals(typedNode.shape)) {
-                geometry = SphereGeometry(0.5, 20, 20, 0.0, Math.PI * 2, 0.0, Math.PI * 2)
+                geometry = SphereGeometry(0.5, 40, 40, 0.0, Math.PI * 2, 0.0, Math.PI * 2)
             } else {
                 geometry = null
             }

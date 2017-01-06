@@ -38,7 +38,7 @@ class LightActuator(controller: VirtualRealityController) : NodeActuator(control
 
         light.shadow.camera.near = 0.1
         light.shadow.camera.far = typedNode.distance / 2
-        //light.shadow.bias = -0.005
+        light.shadow.bias = 0.002
 
 
         /*val d = 10
