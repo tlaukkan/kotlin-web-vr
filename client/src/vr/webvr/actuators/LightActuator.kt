@@ -29,6 +29,19 @@ class LightActuator(controller: VirtualRealityController) : NodeActuator(control
         obj.castShadow = false
         obj.receiveShadow = false
 
+        val light = PointLight(typedNode.color, typedNode.intensity, typedNode.distance, typedNode.decay)
+        light.castShadow = true
+        val d = 10
+        light.shadowCameraLeft = -d
+        light.shadowCameraRight = d
+        light.shadowCameraTop = d
+        light.shadowCameraBottom = -d
+        light.shadowMapWidth = 8192
+        light.shadowMapHeight = 8192
+        light.shadow.bias = 0.000015
+
+        obj.add(light)
+
         onConstructed(obj)
 
     }

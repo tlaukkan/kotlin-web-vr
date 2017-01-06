@@ -34,7 +34,7 @@ class VirtualRealityController(var displayController: DisplayController, var med
     }
 
     init {
-        roomGroup.position.x = -5.0
+        roomGroup.position.x = 0.0
         roomGroup.position.y = 0.0
         roomGroup.position.z = 0.0
         scene.add(roomGroup)

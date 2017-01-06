@@ -1,15 +1,7 @@
 package lib.threejs
 
 @native("THREE.Light")
-open class Light(@native var color: Int) : Object3D()
-
-@native("THREE.DirectionalLight")
-class DirectionalLight(color: Int, intensity: Double = 1.0) : Light(color) {
-  //Properties
-  @native
-  var target: Object3D = noImpl
-  @native
-  var intensity: Double = 0.0
+open class Light(@native var color: Int) : Object3D() {
   @native
   var onlyShadow: Boolean = false
   @native
@@ -32,6 +24,15 @@ class DirectionalLight(color: Int, intensity: Double = 1.0) : Light(color) {
   var shadowMapHeight: Int = 512
 }
 
+@native("THREE.DirectionalLight")
+class DirectionalLight(color: Int, intensity: Double = 1.0) : Light(color) {
+  //Properties
+  @native
+  var target: Object3D = noImpl
+  @native
+  var intensity: Double = 0.0
+}
+
 
 @native("THREE.AmbientLight")
 class AmbientLight(color: Int, intensity: Double = 1.0) : Light(color) {
@@ -42,6 +43,13 @@ open class HemisphereLight(skyColorHex: Int, groundColorHex: Int, intensity: Dou
 
   var groundColor: Color = noImpl
   var intensity: Number = noImpl
+
+  fun copy(source: HemisphereLight): HemisphereLight = noImpl
+  override fun  clone(recursive: Boolean): HemisphereLight = noImpl
+}
+
+@native("THREE.PointLight")
+open class PointLight(color: Int, intensity: Double = 1.0, distance: Double = 0.0, decay: Double = 1.0) : Light(color) {
 
   fun copy(source: HemisphereLight): HemisphereLight = noImpl
   override fun  clone(recursive: Boolean): HemisphereLight = noImpl
