@@ -17,6 +17,7 @@ class LightActuator(controller: VirtualRealityController) : NodeActuator(control
         val geometry: Geometry?
 
         geometry = SphereGeometry(1.0, 50, 50, 0.0, Math.PI * 2, 0.0, Math.PI * 2)
+
         val material = MeshBasicMaterial()
         material.transparent = true
         material.color = Color(typedNode.color)
@@ -31,14 +32,32 @@ class LightActuator(controller: VirtualRealityController) : NodeActuator(control
 
         val light = PointLight(typedNode.color, typedNode.intensity, typedNode.distance, typedNode.decay)
         light.castShadow = true
-        val d = 10
+
+        light.shadowMapWidth = 4096
+        light.shadowMapHeight = 4096
+        //light.shadowMap.dispose()
+        //light.shadowMap = null
+
+        light.shadow.camera.near = 0.1
+        light.shadow.camera.far = typedNode.distance
+        light.shadow.bias = 0.0
+
+
+        /*val d = 10
         light.shadowCameraLeft = -d
         light.shadowCameraRight = d
         light.shadowCameraTop = d
-        light.shadowCameraBottom = -d
-        light.shadowMapWidth = 8192
-        light.shadowMapHeight = 8192
-        light.shadow.bias = 0.000015
+        light.shadowCameraBottom = -d*/
+
+        /*val d = 10
+        light.shadowCameraLeft = -d
+        light.shadowCameraRight = d
+        light.shadowCameraTop = d
+        light.shadowCameraBottom = -d*/
+
+        //light.shadowMapWidth = 8192
+        //light.shadowMapHeight = 8192
+        //light.shadow.bias = 0.000015
 
         obj.add(light)
 

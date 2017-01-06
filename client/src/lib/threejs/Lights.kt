@@ -3,25 +3,28 @@ package lib.threejs
 @native("THREE.Light")
 open class Light(@native var color: Int) : Object3D() {
   @native
-  var onlyShadow: Boolean = false
+  var onlyShadow: Boolean = noImpl
   @native
-  var shadowCameraNear: Int = 50
+  var shadowCameraNear: Int = noImpl
   @native
-  var shadowCameraFar: Int = 5000
+  var shadowCameraFar: Int = noImpl
   @native
-  var shadowCameraLeft: Int = -500
+  var shadowCameraLeft: Int = noImpl
   @native
-  var shadowCameraRight: Int = 500
+  var shadowCameraRight: Int = noImpl
   @native
-  var shadowCameraTop: Int = 500
+  var shadowCameraTop: Int = noImpl
   @native
-  var shadowCameraBottom: Int = -500
+  var shadowCameraBottom: Int = noImpl
   @native
-  var shadowBias: Double = 0.0
+  var shadowBias: Double = noImpl
   @native
-  var shadowMapWidth: Int = 512
+  var shadowMapWidth: Int = noImpl
   @native
-  var shadowMapHeight: Int = 512
+  var shadowMapHeight: Int = noImpl
+
+  @native var shadowMap: dynamic = noImpl
+
 }
 
 @native("THREE.DirectionalLight")
@@ -31,6 +34,7 @@ class DirectionalLight(color: Int, intensity: Double = 1.0) : Light(color) {
   var target: Object3D = noImpl
   @native
   var intensity: Double = 0.0
+
 }
 
 

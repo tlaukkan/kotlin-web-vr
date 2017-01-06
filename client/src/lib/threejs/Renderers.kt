@@ -11,6 +11,11 @@ open class WebGLRenderer(parameters: Any) {
   @native var gammaInput: Boolean = noImpl
   @native var gammaOutput: Boolean = noImpl
   @native var shadowMapEnabled: Boolean = noImpl
+  @native var shadowMapSoft: Boolean = noImpl
+
+  @native var shadowMap: dynamic = noImpl
+  @native var shadowMapWidth: Int = noImpl
+  @native var shadowMapHeight: Int = noImpl
 
   //Functions
   fun setSize(innerWidth: Double, innerHeight: Double): Unit = noImpl
@@ -28,3 +33,5 @@ open class WebGLRenderer(parameters: Any) {
   @native fun setPixelRatio(value: Number): Unit = noImpl
 
 }
+
+@native("THREE.BasicShadowMap") var BasicShadowMap: dynamic = noImpl

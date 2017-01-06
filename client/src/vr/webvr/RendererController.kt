@@ -27,7 +27,13 @@ class RendererController {
         renderer.physicallyCorrectLights = true
         renderer.gammaInput = true
         renderer.gammaOutput = true
+
+        //renderer.shadowMapWidth = 8192
+        //renderer.shadowMapHeight = 8192
+
         renderer.shadowMapEnabled = true
+        //renderer.shadowMapSoft = true
+        //renderer.shadowMap.type = BasicShadowMap
 
         //renderer2.toneMapping = THREE.ReinhardToneMapping;
 
