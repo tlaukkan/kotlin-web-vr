@@ -20,7 +20,7 @@ class AddTool(inputDevice: InputDevice) : Tool("Add Tool", inputDevice) {
 
     private var selectedMode: AddMode = AddMode.PRIMITIVE
 
-    private var primitives = listOf("box", "sphere", "plane")
+    private var primitives = listOf("box", "sphere")
 
     private var selectedPrimitive = primitives[0]
 
@@ -58,7 +58,7 @@ class AddTool(inputDevice: InputDevice) : Tool("Add Tool", inputDevice) {
             println(linkedServerUrl)
             val nodeUrl = "${virtualRealityController!!.linkedServerCellUrl}/00000000-0000-0000-0000-000000000000"
             println(nodeUrl)
-            protoNode = PrimitiveNode("box", "textures/alien.jpg")
+            protoNode = PrimitiveNode(selectedPrimitive, "textures/alien.jpg")
             protoNode!!.url = nodeUrl
 
             virtualRealityController!!.nodeActuators["PrimitiveNode"]!!.construct(protoNode!!, { obj: Object3D? ->
