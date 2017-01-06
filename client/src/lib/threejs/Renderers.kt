@@ -32,3 +32,5 @@ open class WebGLRenderer(parameters: Any) {
 }
 
 @native("THREE.BasicShadowMap") var BasicShadowMap: dynamic = noImpl
+@native("THREE.PCFSoftShadowMap") var PCFSoftShadowMap: dynamic = noImpl
+@native("THREE.PCFShadowMap") var PCFShadowMap: dynamic = noImpl

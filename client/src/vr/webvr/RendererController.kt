@@ -30,9 +30,10 @@ class RendererController {
         renderer.gammaOutput = true
 
         renderer.shadowMapEnabled = true
-        renderer.shadowMapWidth = 1024
-        renderer.shadowMapHeight = 1024
-        //renderer.shadowMap.type = BasicShadowMap
+        //renderer.shadowMapWidth = 2048
+        //renderer.shadowMapHeight = 2048
+        //renderer.soft
+        renderer.shadowMap.type = PCFSoftShadowMap
 
         //renderer2.toneMapping = THREE.ReinhardToneMapping;
 
