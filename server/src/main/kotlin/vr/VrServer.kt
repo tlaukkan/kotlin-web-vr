@@ -89,7 +89,7 @@ class VrServer(val url: String = "http://localhost:8080/") {
         config.addHttpHandler(StaticHttpHandler("out/resources/main/webapp"))
 
         // Add Jersey REST HTTP handler.
-        val restHandler = GrizzlyHttpContainer(ResourceConfig(NodeRestService::class.java))
+        val restHandler = GrizzlyHttpContainer(ResourceConfig(NodeRestService::class.java, TextureRestService::class.java))
         config.addHttpHandler(restHandler, HttpHandlerRegistration.builder().contextPath("/api").build())
 
 
