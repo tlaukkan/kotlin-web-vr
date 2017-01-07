@@ -10,9 +10,9 @@ import vr.webvr.tools.SelectTool
 import vr.webvr.tools.NoTool
 import kotlin.browser.window
 
-class InputDeviceController(displayController: DisplayController) {
+class InputDeviceController(val vrClient: VrClient) {
 
-    val displayController = displayController
+    val displayController = vrClient.displayController
     var inputDevices: MutableMap<Int, InputDevice> = mutableMapOf()
     var inputDeviceModels: MutableMap<String, Object3D> = mutableMapOf()
 

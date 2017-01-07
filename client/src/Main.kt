@@ -1,5 +1,6 @@
 import lib.webvrapi.getVRDisplays
 import lib.webvrapi.navigator
+import vr.webvr.VrClient
 
 var CLIENT: VrClient? = null
 

@@ -1,5 +1,6 @@
 package vr.webvr.actuators
 
+import CLIENT
 import lib.threejs.*
 import lib.threejs.Extra.BoxGeometry
 import lib.threejs.Extra.SphereGeometry
@@ -13,7 +14,7 @@ class PrimitiveActuator(controller: VirtualRealityController) : NodeActuator(con
     override fun construct(node: Node, onConstructed: (Object3D?) -> Unit) {
         val typedNode: PrimitiveNode = dynamicCast(node)
 
-        controller.mediaController.loadTexture(typedNode.texture , { path, texture ->
+        CLIENT!!.mediaController.loadTexture(typedNode.texture , { path, texture ->
             val geometry: Geometry?
 
             if ("box".equals(typedNode.shape)) {

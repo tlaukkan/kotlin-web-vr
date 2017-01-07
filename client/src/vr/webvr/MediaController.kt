@@ -3,7 +3,7 @@ package vr.webvr
 import CLIENT
 import lib.threejs.*
 
-class MediaController {
+class MediaController(val vrClient: VrClient) {
 
     val models: MutableMap<String, Object3D> = mutableMapOf()
 

@@ -6,7 +6,6 @@ import lib.threejs.*
 import vr.webvr.model.FovPort
 import vr.webvr.model.NDCScaleOffset
 import vr.webvr.model.Rectangle
-import lib.webvrapi.VRDisplay
 import lib.webvrapi.VRFieldOfView
 import vr.util.floatsToDoubles
 import kotlin.browser.document
@@ -14,7 +13,7 @@ import kotlin.browser.window
 import kotlin.dom.addClass
 import kotlin.dom.onClick
 
-class DisplayController(val display: VRDisplay, rendererController: RendererController) {
+class DisplayController(val vrClient: VrClient) {
 
     var eyeTranslationL = Vector3()
     var eyeTranslationR = Vector3()
@@ -41,10 +40,10 @@ class DisplayController(val display: VRDisplay, rendererController: RendererCont
     init {
         addEnterVrButton()
 
-        this.renderer = rendererController.renderer
-        camera = rendererController.camera
+        this.renderer = vrClient.rendererController.renderer
+        camera = vrClient.rendererController.camera
 
-        scene = rendererController.scene
+        scene = vrClient.rendererController.scene
         canvas = this.renderer.domElement
 
         rendererWidth = window.innerWidth
@@ -65,7 +64,7 @@ class DisplayController(val display: VRDisplay, rendererController: RendererCont
         rendererWidth = width
         rendererHeight = height
         if (this.isPresenting) {
-            var eyeParamsL = this.display.getEyeParameters("left")
+            var eyeParamsL = vrClient.display.getEyeParameters("left")
             this.renderer.setPixelRatio(1)
             this.renderer.setSize(eyeParamsL.renderWidth.toDouble() * 2, eyeParamsL.renderHeight.toDouble())
         } else {
@@ -83,13 +82,13 @@ class DisplayController(val display: VRDisplay, rendererController: RendererCont
                 var source = canvas
             }
             println("Starting to present VR...")
-            display.requestPresent(arrayOf(vrLayer)).catch { error ->
+            vrClient.display.requestPresent(arrayOf(vrLayer)).catch { error ->
                 println("Failed to start presenting VR: $error")
             }.then {
                 println("Started presenting VR.")
             }
         } else {
-            display.exitPresent().catch { error ->
+            vrClient.display.exitPresent().catch { error ->
                 println("Failed to stop presenting VR: $error")
             }. then {
                 println("Stopped presenting VR.")
@@ -99,16 +98,16 @@ class DisplayController(val display: VRDisplay, rendererController: RendererCont
 
     fun onVrDisplayPresentChange() {
 
-        if (isPresenting == display.isPresenting) {
+        if (isPresenting == vrClient.display.isPresenting) {
             return
         }
 
-        isPresenting = display.isPresenting
+        isPresenting = vrClient.display.isPresenting
 
         if (isPresenting) {
             rendererPixelRatio = renderer.getPixelRatio().toDouble()
 
-            var eyeParamsL = this.display.getEyeParameters("left")
+            var eyeParamsL = vrClient.display.getEyeParameters("left")
             var eyeWidth = eyeParamsL.renderWidth.toDouble()
             var eyeHeight = eyeParamsL.renderHeight.toDouble()
 
@@ -136,14 +135,14 @@ class DisplayController(val display: VRDisplay, rendererController: RendererCont
 
     fun render(scene: Scene, camera: PerspectiveCamera) {
 
-        var pose = this.display.getPose()
+        var pose = vrClient.display.getPose()
 
         if (pose.position !== null) {
             this.camera.position.fromArray(floatsToDoubles(pose.position).toTypedArray())
             this.camera.position.multiplyScalar(this.scale)
             this.camera.quaternion.fromArray(floatsToDoubles(pose.orientation).toTypedArray())
             this.camera.updateMatrix()
-            this.standingMatrix.fromArray(floatsToDoubles(this.display.stageParameters.sittingToStandingTransform).toTypedArray())
+            this.standingMatrix.fromArray(floatsToDoubles(vrClient.display.stageParameters.sittingToStandingTransform).toTypedArray())
             this.camera.applyMatrix(this.standingMatrix)
         } else {
             this.camera.position.x = 0.0
@@ -173,8 +172,8 @@ class DisplayController(val display: VRDisplay, rendererController: RendererCont
             }
 
 
-            var eyeParamsL = this.display.getEyeParameters("left")
-            var eyeParamsR = this.display.getEyeParameters("right")
+            var eyeParamsL = vrClient.display.getEyeParameters("left")
+            var eyeParamsR = vrClient.display.getEyeParameters("right")
 
             var offsetLeft: List<String> = eyeParamsL.offset.toString().split(",")
             this.eyeTranslationL.x = safeParseDouble(offsetLeft.get(0))!!
@@ -227,7 +226,7 @@ class DisplayController(val display: VRDisplay, rendererController: RendererCont
 
             }
 
-            this.display.submitFrame(display.getPose())
+            vrClient.display.submitFrame(vrClient.display.getPose())
 
         }
     }

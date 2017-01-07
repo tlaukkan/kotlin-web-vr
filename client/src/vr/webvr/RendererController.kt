@@ -8,7 +8,7 @@ import kotlin.browser.window
 /**
  * Created by tlaukkan on 10/26/2016.
  */
-class RendererController {
+class RendererController(val vrClient: VrClient) {
 
     val scene: Scene
     val renderer: WebGLRenderer

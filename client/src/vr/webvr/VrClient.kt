@@ -1,3 +1,7 @@
+package vr.webvr
+
+import CLIENT
+
 import vr.network.NetworkClient
 import lib.threejs.Vector3
 import lib.webvrapi.VRDisplay
@@ -22,11 +26,11 @@ class VrClient(val display: VRDisplay) {
         CLIENT = this
         println("VR client startup...")
 
-        rendererController = RendererController()
-        displayController = DisplayController(display, rendererController)
-        inputDeviceController = InputDeviceController(displayController)
-        mediaController = MediaController()
-        vrController = VirtualRealityController(displayController, mediaController)
+        rendererController = RendererController(this)
+        displayController = DisplayController(this)
+        inputDeviceController = InputDeviceController(this)
+        mediaController = MediaController(this)
+        vrController = VirtualRealityController(this)
 
         val location = window.location
         val networkClient: NetworkClient

@@ -9,9 +9,9 @@ import vr.network.model.Node
 import vr.util.dynamicCast
 import vr.webvr.actuators.*
 
-class VirtualRealityController(var displayController: DisplayController, var mediaController: MediaController) {
+class VirtualRealityController(val vrClient: VrClient) {
 
-    var scene = displayController.scene
+    var scene = vrClient.displayController.scene
     val nodeActuators: MutableMap<String, NodeActuator> = mutableMapOf()
     val nodeInterpolators: MutableMap<String, NodeInterpolator> = mutableMapOf()
     val nodes: MutableMap<String, Node> = mutableMapOf()

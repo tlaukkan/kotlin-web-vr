@@ -130,7 +130,7 @@ class AddTool(inputDevice: InputDevice) : Tool("Add Tool", inputDevice) {
     }
 
     override fun active() {
-        textureNames = CLIENT!!.vrController.mediaController!!.textureNames
+        textureNames = CLIENT!!.mediaController!!.textureNames
         updateDisplay()
         updateObject()
     }
