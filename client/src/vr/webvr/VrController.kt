@@ -9,7 +9,7 @@ import vr.network.model.Node
 import vr.util.dynamicCast
 import vr.webvr.actuators.*
 
-class VirtualRealityController(val vrClient: VrClient) {
+class VrController(val vrClient: VrClient) {
 
     var scene = vrClient.displayController.scene
     val nodeActuators: MutableMap<String, NodeActuator> = mutableMapOf()
@@ -124,7 +124,7 @@ class VirtualRealityController(val vrClient: VrClient) {
         node.position.z = nodePosition.z
     }
 
-    fun update() {
+    fun render() {
         val nodeUrlsToRemoveFromInterpolators: MutableList<String> = mutableListOf()
         for (interpolator in nodeInterpolators.values) {
             val obj = scene.getObjectByName(interpolator.nodeUrl)

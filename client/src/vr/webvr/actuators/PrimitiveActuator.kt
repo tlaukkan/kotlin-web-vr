@@ -7,9 +7,9 @@ import lib.threejs.Extra.SphereGeometry
 import vr.network.model.Node
 import vr.network.model.PrimitiveNode
 import vr.util.dynamicCast
-import vr.webvr.VirtualRealityController
+import vr.webvr.VrController
 
-class PrimitiveActuator(controller: VirtualRealityController) : NodeActuator(controller, "PrimitiveNode") {
+class PrimitiveActuator(controller: VrController) : NodeActuator(controller, "PrimitiveNode") {
 
     override fun construct(node: Node, onConstructed: (Object3D?) -> Unit) {
         val typedNode: PrimitiveNode = dynamicCast(node)

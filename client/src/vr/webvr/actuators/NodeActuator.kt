@@ -4,9 +4,9 @@ import CLIENT
 import lib.threejs.Object3D
 import lib.threejs.Texture
 import vr.network.model.Node
-import vr.webvr.VirtualRealityController
+import vr.webvr.VrController
 
-abstract class NodeActuator(var controller: VirtualRealityController, var type: String) {
+abstract class NodeActuator(var controller: VrController, var type: String) {
 
     abstract fun construct(node: Node, onConstructed:(obj: Object3D?) -> Unit): Unit
 

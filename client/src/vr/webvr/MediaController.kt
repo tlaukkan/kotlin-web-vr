@@ -75,7 +75,7 @@ class MediaController(val vrClient: VrClient) {
         })
     }
 
-    fun loadMedia(displayController: DisplayController, inputDeviceController: InputDeviceController, mediaController: MediaController) {
+    fun loadMedia(displayController: DisplayController, inputDeviceController: InputController, mediaController: MediaController) {
         var vivePath = "models/obj/vive-controller/"
         mediaController.loadModel(vivePath + "vr_controller_vive_1_5.obj", { path, model ->
             var inputDeviceModel: Object3D = model.children[0]

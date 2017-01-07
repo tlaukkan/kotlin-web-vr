@@ -15,10 +15,10 @@ class VrClient(val display: VRDisplay) {
     var renderTime: Double = 0.0
     var renderTimeDelta: Double = 0.001
 
-    val vrController: VirtualRealityController
+    val vrController: VrController
     val rendererController: RendererController
     val displayController: DisplayController
-    val inputDeviceController: InputDeviceController
+    val inputController: InputController
     val mediaController: MediaController
     val restClient: RestClient
 
@@ -28,9 +28,9 @@ class VrClient(val display: VRDisplay) {
 
         rendererController = RendererController(this)
         displayController = DisplayController(this)
-        inputDeviceController = InputDeviceController(this)
+        inputController = InputController(this)
         mediaController = MediaController(this)
-        vrController = VirtualRealityController(this)
+        vrController = VrController(this)
 
         val location = window.location
         val networkClient: NetworkClient
@@ -69,7 +69,7 @@ class VrClient(val display: VRDisplay) {
             println("Disconnected")
         }
 
-        mediaController.loadMedia(displayController, inputDeviceController, mediaController)
+        mediaController.loadMedia(displayController, inputController, mediaController)
 
         display.requestAnimationFrame({ time -> render(time) })
 
@@ -85,8 +85,8 @@ class VrClient(val display: VRDisplay) {
 
         display.requestAnimationFrame({ time -> render(time) })
 
-        inputDeviceController.render()
-        vrController.update()
+        inputController.render()
+        vrController.render()
         rendererController.render()
         displayController.render(rendererController.scene, rendererController.camera)
     }

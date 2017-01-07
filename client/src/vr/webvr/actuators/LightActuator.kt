@@ -7,9 +7,9 @@ import vr.network.model.LightNode
 import vr.network.model.Node
 import vr.network.model.PrimitiveNode
 import vr.util.dynamicCast
-import vr.webvr.VirtualRealityController
+import vr.webvr.VrController
 
-class LightActuator(controller: VirtualRealityController) : NodeActuator(controller, "LightNode") {
+class LightActuator(controller: VrController) : NodeActuator(controller, "LightNode") {
 
     override fun construct(node: Node, onConstructed: (Object3D?) -> Unit) {
         val typedNode: LightNode = dynamicCast(node)

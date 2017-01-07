@@ -1,8 +1,8 @@
 package vr.webvr.devices
 
-import vr.webvr.InputDeviceController
+import vr.webvr.InputController
 
-class OpenVrGamepad(inputDeviceController: InputDeviceController, index: Int, type: String) : InputDevice(index, type) {
+class OpenVrGamepad(inputDeviceController: InputController, index: Int, type: String) : InputDevice(index, type) {
 
     override fun processInput() {
 
