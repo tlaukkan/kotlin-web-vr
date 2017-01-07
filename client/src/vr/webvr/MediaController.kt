@@ -1,10 +1,14 @@
 package vr.webvr
 
 import lib.threejs.*
+import virtualRealityController
 
 class MediaController {
 
     val models: MutableMap<String, Object3D> = mutableMapOf()
+
+
+    var textureNames: List<String> = listOf("textures/alien.jpg")
 
     val textures: MutableMap<String, Texture> = mutableMapOf()
     val texturesLoading: MutableMap<String, Boolean> = mutableMapOf()
@@ -71,4 +75,41 @@ class MediaController {
             }
         })
     }
+
+    fun loadMedia(displayController: DisplayController, inputDeviceController: InputDeviceController, mediaController: MediaController) {
+        var vivePath = "models/obj/vive-controller/"
+        mediaController.loadModel(vivePath + "vr_controller_vive_1_5.obj", { path, model ->
+            var inputDeviceModel: Object3D = model.children[0]
+
+            mediaController.loadTexture(vivePath + "onepointfive_texture.png", { path, texture ->
+                (inputDeviceModel.material as MeshPhongMaterial).map = texture
+            })
+            mediaController.loadTexture(vivePath + "onepointfive_spec.png", { path, texture ->
+                (inputDeviceModel.material as MeshPhongMaterial).specularMap = texture
+            })
+
+            inputDeviceController.inputDeviceModels["OpenVR Gamepad"] = model
+        })
+
+        mediaController.loadModel("models/animated/monster/monster.js", { path, model ->
+            var monster = model.clone(true)
+            monster.scale.x = 0.002
+            monster.scale.y = 0.002
+            monster.scale.z = 0.002
+
+            monster.position.x = -10.0
+            monster.position.y = 0.0
+            monster.position.z = 0.0
+            displayController.scene.add(monster)
+        })
+
+        virtualRealityController!!.restClient!!.get("textures", { textureNameArray: Array<String>? ->
+            println(textures)
+            if (textures != null) {
+                this.textureNames = textureNameArray!!.toList()
+            }
+        })
+    }
+
+
 }

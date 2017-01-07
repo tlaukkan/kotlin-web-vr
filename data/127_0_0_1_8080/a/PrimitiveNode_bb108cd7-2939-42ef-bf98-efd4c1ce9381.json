@@ -1,0 +1,25 @@
+{
+  "url" : "http://127.0.0.1:8080/api/cells/a/bb108cd7-2939-42ef-bf98-efd4c1ce9381",
+  "parentUrl" : null,
+  "removed" : false,
+  "position" : {
+    "x" : -0.4753797650337219,
+    "y" : 0.7515934705734253,
+    "z" : -0.6636142730712891
+  },
+  "orientation" : {
+    "x" : 0.0034645821793835825,
+    "y" : -0.08188399983370487,
+    "z" : -0.012849586661791234,
+    "w" : 0.9965530084760276
+  },
+  "scale" : {
+    "x" : 0.125,
+    "y" : 0.125,
+    "z" : 0.125
+  },
+  "volatile" : false,
+  "opacity" : 1.0,
+  "shape" : "box",
+  "texture" : "textures/paree_nightmare.jpg"
+}

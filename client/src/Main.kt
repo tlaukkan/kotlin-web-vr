@@ -1,11 +1,8 @@
 import vr.network.NetworkClient
-import lib.threejs.MeshPhongMaterial
-import lib.threejs.Object3D
 import lib.threejs.Vector3
-import org.w3c.dom.svg.SVGAnimatedInteger
+import vr.network.RestClient
 import vr.network.model.LinkRequest
 import vr.webvr.*
-import java.util.*
 import kotlin.browser.window
 
 var renderTime: Double = 0.0
@@ -18,57 +15,56 @@ fun main(args: Array<String>) {
     val displayDeviceController = DisplayDeviceController()
 
     displayDeviceController.startup({
+
         val rendererController: RendererController
         val displayController: DisplayController
         val inputDeviceController: InputDeviceController
         val mediaController: MediaController
-        try {
-            rendererController = RendererController()
-            displayController = DisplayController(displayDeviceController, rendererController)
-            inputDeviceController = InputDeviceController(displayController)
-            mediaController = MediaController()
-            virtualRealityController = VirtualRealityController(displayController, mediaController)
 
-            val location = window.location
-            val client: NetworkClient
-            if (location.port != null && location.port != undefined) {
-                client = NetworkClient("ws://${location.hostname}:${location.port}/ws")
-            } else {
-                client = NetworkClient("ws://${location.hostname}/ws")
-            }
+        rendererController = RendererController()
+        displayController = DisplayController(displayDeviceController, rendererController)
+        inputDeviceController = InputDeviceController(displayController)
+        mediaController = MediaController()
+        virtualRealityController = VirtualRealityController(displayController, mediaController)
 
-            virtualRealityController!!.networkClient = client
-
-            client.onConnected = { handshakeResponse ->
-                println("Connected " + client.url + " (" + handshakeResponse.software + ")")
-                client.send(listOf(LinkRequest(arrayOf(), arrayOf(handshakeResponse.serverCellUris[0]))))
-            }
-
-            client.onLinked = { linkResponse ->
-                virtualRealityController!!.neighbours.clear()
-                for (neighbour in linkResponse.neighbours) {
-                    virtualRealityController!!.neighbours[neighbour.cellUriTwo] = Vector3(
-                            neighbour.oneTwoDeltaVector.x,
-                            neighbour.oneTwoDeltaVector.y,
-                            neighbour.oneTwoDeltaVector.z)
-                }
-                virtualRealityController!!.linkedServerCellUrl = linkResponse.serverCellUris[0]
-                println("Linked to server cell: " + linkResponse.serverCellUris[0])
-            }
-
-            client.onReceive = { type, value ->
-                virtualRealityController!!.onReceive(type, value)
-            }
-
-            client.onDisconnected = {
-                println("Disconnected")
-            }
-
-            loadMedia(displayController, inputDeviceController, mediaController)
-        } catch (t: Throwable) {
-            println("VR client startup error: $t")
-            return@startup
+        val location = window.location
+        val networkClient: NetworkClient
+        if (location.port != null && location.port != undefined) {
+            networkClient = NetworkClient("ws://${location.hostname}:${location.port}/ws")
+            virtualRealityController!!.restClient = RestClient("http://${location.hostname}:${location.port}/api")
+        } else {
+            networkClient = NetworkClient("ws://${location.hostname}/ws")
+            virtualRealityController!!.restClient = RestClient("http://${location.hostname}/api")
         }
+
+        virtualRealityController!!.networkClient = networkClient
+
+        networkClient.onConnected = { handshakeResponse ->
+            println("Connected " + networkClient.url + " (" + handshakeResponse.software + ")")
+            networkClient.send(listOf(LinkRequest(arrayOf(), arrayOf(handshakeResponse.serverCellUris[0]))))
+        }
+
+        networkClient.onLinked = { linkResponse ->
+            virtualRealityController!!.neighbours.clear()
+            for (neighbour in linkResponse.neighbours) {
+                virtualRealityController!!.neighbours[neighbour.cellUriTwo] = Vector3(
+                        neighbour.oneTwoDeltaVector.x,
+                        neighbour.oneTwoDeltaVector.y,
+                        neighbour.oneTwoDeltaVector.z)
+            }
+            virtualRealityController!!.linkedServerCellUrl = linkResponse.serverCellUris[0]
+            println("Linked to server cell: " + linkResponse.serverCellUris[0])
+        }
+
+        networkClient.onReceive = { type, value ->
+            virtualRealityController!!.onReceive(type, value)
+        }
+
+        networkClient.onDisconnected = {
+            println("Disconnected")
+        }
+
+        mediaController.loadMedia(displayController, inputDeviceController, mediaController)
 
         fun render(time: Number): Unit {
             var timeMillis = time.toLong()
@@ -89,46 +85,6 @@ fun main(args: Array<String>) {
         displayDeviceController.display!!.requestAnimationFrame(::render)
     }, { error ->
         println("VR clinet startup error: $error")
-    })
-}
-
-private fun loadMedia(displayController: DisplayController, inputDeviceController: InputDeviceController, mediaController: MediaController) {
-    var vivePath = "models/obj/vive-controller/"
-    mediaController.loadModel(vivePath + "vr_controller_vive_1_5.obj", { path, model ->
-        var inputDeviceModel: Object3D = model.children[0]
-
-        mediaController.loadTexture(vivePath + "onepointfive_texture.png", { path, texture ->
-            (inputDeviceModel.material as MeshPhongMaterial).map = texture
-        })
-        mediaController.loadTexture(vivePath + "onepointfive_spec.png", { path, texture ->
-            (inputDeviceModel.material as MeshPhongMaterial).specularMap = texture
-        })
-
-        inputDeviceController.inputDeviceModels["OpenVR Gamepad"] = model
-    })
-
-    /*mediaController.loadModel("models/collada/monster/monster.dae", { path, model ->
-        var monster = model.clone(true)
-        monster.scale.x = 0.002
-        monster.scale.y = 0.002
-        monster.scale.z = 0.002
-
-        monster.position.x = 0.0
-        monster.position.y = 0.0
-        monster.position.z = 5.0
-        displayController.scene.add(monster)
-    })*/
-
-    mediaController.loadModel("models/animated/monster/monster.js", { path, model ->
-        var monster = model.clone(true)
-        monster.scale.x = 0.002
-        monster.scale.y = 0.002
-        monster.scale.z = 0.002
-
-        monster.position.x = -10.0
-        monster.position.y = 0.0
-        monster.position.z = 0.0
-        displayController.scene.add(monster)
     })
 }
 

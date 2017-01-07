@@ -25,9 +25,9 @@ class AddTool(inputDevice: InputDevice) : Tool("Add Tool", inputDevice) {
 
     private var selectedPrimitive = primitives[0]
 
-    private var textures = listOf("textures/alien.jpg", "textures/gold.jpg", "textures/moss.jpg")
+    private var textureNames = listOf("textures/alien.jpg")
 
-    private var selectedTexture = textures[0]
+    private var selectedTextureName = textureNames[0]
 
     private var protoObject: Object3D? = null
 
@@ -65,7 +65,7 @@ class AddTool(inputDevice: InputDevice) : Tool("Add Tool", inputDevice) {
         println(nodeUrl)
 
         if (selectedMode == AddMode.PRIMITIVE) {
-            protoNode = PrimitiveNode(selectedPrimitive, selectedTexture)
+            protoNode = PrimitiveNode(selectedPrimitive, selectedTextureName)
             protoNode!!.url = nodeUrl
 
             virtualRealityController!!.nodeActuators["PrimitiveNode"]!!.construct(protoNode!!, { obj: Object3D? ->
@@ -130,6 +130,7 @@ class AddTool(inputDevice: InputDevice) : Tool("Add Tool", inputDevice) {
     }
 
     override fun active() {
+        textureNames = virtualRealityController!!.mediaController!!.textureNames
         updateDisplay()
         updateObject()
     }
@@ -172,20 +173,20 @@ class AddTool(inputDevice: InputDevice) : Tool("Add Tool", inputDevice) {
                 updateObject()
             }
             if (button == InputButton.LEFT) {
-                var index = textures.indexOf(selectedTexture) - 1
+                var index = textureNames.indexOf(selectedTextureName) - 1
                 if (index < 0) {
-                    index = textures.size - 1
+                    index = textureNames.size - 1
                 }
-                selectedTexture = textures[index]
+                selectedTextureName = textureNames[index]
                 updateDisplay()
                 updateObject()
             }
             if (button == InputButton.RIGHT) {
-                var index = textures.indexOf(selectedTexture) + 1
-                if (index >= textures.size) {
+                var index = textureNames.indexOf(selectedTextureName) + 1
+                if (index >= textureNames.size) {
                     index = 0
                 }
-                selectedTexture = textures[index]
+                selectedTextureName = textureNames[index]
                 updateDisplay()
                 updateObject()
             }

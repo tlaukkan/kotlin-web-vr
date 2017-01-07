@@ -25,7 +25,9 @@ class TextureRestService() {
 
         val textures: MutableList<String> = mutableListOf()
         for (textureFile in textureFiles) {
-            textures.add("textures/${textureFile.name}")
+            if (!textureFile.isDirectory()) {
+                textures.add("textures/${textureFile.name}")
+            }
         }
 
         return textures
