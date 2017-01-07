@@ -1,10 +1,8 @@
 package vr.webvr.actuators
 
+import CLIENT
 import lib.threejs.Object3D
 import lib.threejs.Texture
-import renderTime
-import renderTimeDelta
-import virtualRealityController
 import vr.network.model.Node
 import vr.webvr.VirtualRealityController
 
@@ -47,7 +45,7 @@ abstract class NodeActuator(var controller: VirtualRealityController, var type: 
                 println("Added orphan ${obj.name} as parent $parentUrl was not found.")
             }
         } else {
-            virtualRealityController!!.roomGroup.add(obj)
+            CLIENT!!.vrController!!.roomGroup.add(obj)
         }
     }
 
@@ -67,7 +65,7 @@ abstract class NodeActuator(var controller: VirtualRealityController, var type: 
             controller.nodeInterpolators.put(node.url, NodeInterpolator(node.url))
             println("Added node interpolator for node: " + node.url)
         }
-        controller.nodeInterpolators[node.url]!!.updateTarget(renderTime, renderTimeDelta, node)
+        controller.nodeInterpolators[node.url]!!.updateTarget(CLIENT!!.renderTime, CLIENT!!.renderTimeDelta, node)
     }
 
     open fun remove(node: Node) {
@@ -79,7 +77,7 @@ abstract class NodeActuator(var controller: VirtualRealityController, var type: 
 
 
     fun updateObjectFromNode(obj: Object3D, node: Node) {
-        virtualRealityController!!.getNodePosition(node, obj.position)
+        CLIENT!!.vrController!!.getNodePosition(node, obj.position)
         obj.quaternion.x = node.orientation.x
         obj.quaternion.y = node.orientation.y
         obj.quaternion.z = node.orientation.z

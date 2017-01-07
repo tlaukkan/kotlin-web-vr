@@ -1,9 +1,9 @@
 package vr.webvr.tools
 
+import CLIENT
 import lib.threejs.Object3D
 import lib.threejs.Quaternion
 import lib.threejs.Vector3
-import virtualRealityController
 import vr.network.model.LightNode
 import vr.network.model.Node
 import vr.network.model.PrimitiveNode
@@ -59,16 +59,16 @@ class AddTool(inputDevice: InputDevice) : Tool("Add Tool", inputDevice) {
             inputDevice.entity.remove(protoObject!!)
         }
 
-        val linkedServerUrl = virtualRealityController!!.linkedServerCellUrl
+        val linkedServerUrl = CLIENT!!.vrController.linkedServerCellUrl
         println(linkedServerUrl)
-        val nodeUrl = "${virtualRealityController!!.linkedServerCellUrl}/00000000-0000-0000-0000-000000000000"
+        val nodeUrl = "${CLIENT!!.vrController.linkedServerCellUrl}/00000000-0000-0000-0000-000000000000"
         println(nodeUrl)
 
         if (selectedMode == AddMode.PRIMITIVE) {
             protoNode = PrimitiveNode(selectedPrimitive, selectedTextureName)
             protoNode!!.url = nodeUrl
 
-            virtualRealityController!!.nodeActuators["PrimitiveNode"]!!.construct(protoNode!!, { obj: Object3D? ->
+            CLIENT!!.vrController.nodeActuators["PrimitiveNode"]!!.construct(protoNode!!, { obj: Object3D? ->
                 if (obj != null) {
                     protoObject = obj
                     obj.position.z = -scale
@@ -85,7 +85,7 @@ class AddTool(inputDevice: InputDevice) : Tool("Add Tool", inputDevice) {
             protoNode!!.opacity = 0.8
             protoNode!!.url = nodeUrl
 
-            virtualRealityController!!.nodeActuators["LightNode"]!!.construct(protoNode!!, { obj: Object3D? ->
+            CLIENT!!.vrController.nodeActuators["LightNode"]!!.construct(protoNode!!, { obj: Object3D? ->
                 if (obj != null) {
                     protoObject = obj
                     obj.position.z = -scale
@@ -108,7 +108,7 @@ class AddTool(inputDevice: InputDevice) : Tool("Add Tool", inputDevice) {
         val orientation = Quaternion(0.0, 0.0, 0.0, 1.0)
         protoObject!!.getWorldQuaternion(orientation)
 
-        virtualRealityController!!.setNodePosition(protoNode!!, position)
+        CLIENT!!.vrController.setNodePosition(protoNode!!, position)
         /*protoNode!!.position.x = position.x
         protoNode!!.position.y = position.y
         protoNode!!.position.z = position.z*/
@@ -126,11 +126,11 @@ class AddTool(inputDevice: InputDevice) : Tool("Add Tool", inputDevice) {
 
         inputDevice.unselectNodes()
 
-        virtualRealityController!!.networkClient!!.send(listOf(protoNode!!))
+        CLIENT!!.vrController.networkClient!!.send(listOf(protoNode!!))
     }
 
     override fun active() {
-        textureNames = virtualRealityController!!.mediaController!!.textureNames
+        textureNames = CLIENT!!.vrController.mediaController!!.textureNames
         updateDisplay()
         updateObject()
     }

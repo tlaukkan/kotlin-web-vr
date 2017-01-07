@@ -1,10 +1,9 @@
 package vr.webvr.tools
 
+import CLIENT
 import lib.threejs.*
 import lib.threejs.Extra.BoxGeometry
 import lib.threejs.Extra.SphereGeometry
-import renderTime
-import virtualRealityController
 import vr.network.model.PrimitiveNode
 import vr.util.dynamicCast
 import vr.webvr.devices.InputButton
@@ -61,7 +60,7 @@ class TravelTool(inputDevice: InputDevice) : Tool("Travel tool", inputDevice) {
 
     override fun onPressed(button: InputButton) {
         if (button == InputButton.TRIGGER) {
-            virtualRealityController!!.scene.add(pointerObject)
+            CLIENT!!.vrController.scene.add(pointerObject)
         }
     }
 
@@ -69,7 +68,7 @@ class TravelTool(inputDevice: InputDevice) : Tool("Travel tool", inputDevice) {
     }
 
     override fun onReleased(button: InputButton) {
-        virtualRealityController!!.scene.remove(pointerObject)
+        CLIENT!!.vrController.scene.remove(pointerObject)
         var position = Vector3()
         pointerObject.getWorldPosition(position!!)
 
@@ -78,9 +77,9 @@ class TravelTool(inputDevice: InputDevice) : Tool("Travel tool", inputDevice) {
         position.y += roomPosition.y
         position.z += roomPosition.z*/
 
-        virtualRealityController!!.roomGroup.position.x -= position.x
-        virtualRealityController!!.roomGroup.position.y -= position.y
-        virtualRealityController!!.roomGroup.position.z -= position.z
+        CLIENT!!.vrController.roomGroup.position.x -= position.x
+        CLIENT!!.vrController.roomGroup.position.y -= position.y
+        CLIENT!!.vrController.roomGroup.position.z -= position.z
     }
 
     override fun onPadTouched(x: Double, y: Double) {

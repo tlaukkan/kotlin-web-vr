@@ -9,7 +9,6 @@ open class WebGLRenderer(parameters: Any) {
   @native var physicallyCorrectLights: Boolean = noImpl
   @native var gammaInput: Boolean = noImpl
   @native var gammaOutput: Boolean = noImpl
-  @native var shadowMapEnabled: Boolean = noImpl
   @native var shadowMapWidth: Int = noImpl
   @native var shadowMapHeight: Int = noImpl
   @native var shadowMap: dynamic = noImpl

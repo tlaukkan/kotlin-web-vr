@@ -13,7 +13,6 @@ class RendererController {
     val scene: Scene
     val renderer: WebGLRenderer
     val camera: PerspectiveCamera
-    //val cube: Mesh
 
     init {
         scene = Scene()
@@ -22,49 +21,20 @@ class RendererController {
         renderer.setSize(window.innerWidth, window.innerHeight)
         renderer.setPixelRatio(window.devicePixelRatio)
         renderer.sortObjects = false
-//        renderer.setClearColor(0xefd1b5)
         renderer.setClearColor(0x000000)
 
         renderer.physicallyCorrectLights = true
         renderer.gammaInput = true
         renderer.gammaOutput = true
 
-        renderer.shadowMapEnabled = true
-        //renderer.shadowMapWidth = 2048
-        //renderer.shadowMapHeight = 2048
-        //renderer.soft
+        renderer.shadowMap.Enabled = true
         renderer.shadowMap.type = PCFSoftShadowMap
 
-        //renderer2.toneMapping = THREE.ReinhardToneMapping;
-
-
         document.body!!.appendChild(renderer.domElement)
-
-//        scene.fog = FogExp2(Color(0xefd1b5), 0.05)
         scene.fog = FogExp2(Color(0x000000), 0.05)
-
-        //val sky = Sky()
-        //scene.add(sky.mesh)
-
-        //var geometry = BoxGeometry(1, 1, 1)
-
-        //var material = MeshBasicMaterial(object {
-        //    var color: Int = 0xffff00
-        //})
-
-        //cube = Mesh(geometry, material)
-        //cube.scale.x = 0.1
-        //cube.scale.y = 0.1
-        //cube.scale.z = 0.1
-        //scene.add(cube)
-
     }
 
     fun render() {
-
-        //cube.rotation.x += 0.1
-        //cube.rotation.y += 0.1
-
         renderer.render(scene, camera)
     }
 }

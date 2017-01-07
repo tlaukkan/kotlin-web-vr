@@ -1,7 +1,6 @@
 package vr.webvr.tools
 
-import lib.threejs.*
-import virtualRealityController
+import CLIENT
 import vr.webvr.devices.InputButton
 import vr.webvr.devices.InputDevice
 
@@ -34,10 +33,10 @@ class RemoveTool(inputDevice: InputDevice) : Tool("RemoveTool Tool", inputDevice
         if (button == InputButton.TRIGGER) {
             if (inputDevice.selectedNodeUrls.size > 0) {
                 val nodeUrl = inputDevice.selectedNodeUrls[0]
-                val node = virtualRealityController!!.nodes[nodeUrl] ?: return
-                val nodeType = virtualRealityController!!.nodeTypes[nodeUrl]!! ?: return
+                val node = CLIENT!!.vrController!!.nodes[nodeUrl] ?: return
+                val nodeType = CLIENT!!.vrController!!.nodeTypes[nodeUrl]!! ?: return
                 node.removed = true
-                virtualRealityController!!.networkClient!!.send(node, nodeType)
+                CLIENT!!.vrController!!.networkClient!!.send(node, nodeType)
             }
         }
     }

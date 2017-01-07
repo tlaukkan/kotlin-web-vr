@@ -1,12 +1,11 @@
 package vr.webvr
 
+import CLIENT
 import lib.threejs.*
-import virtualRealityController
 
 class MediaController {
 
     val models: MutableMap<String, Object3D> = mutableMapOf()
-
 
     var textureNames: List<String> = listOf("textures/alien.jpg")
 
@@ -103,7 +102,7 @@ class MediaController {
             displayController.scene.add(monster)
         })
 
-        virtualRealityController!!.restClient!!.get("textures", { textureNameArray: Array<String>? ->
+        CLIENT!!.restClient!!.get("textures", { textureNameArray: Array<String>? ->
             println(textures)
             if (textures != null) {
                 this.textureNames = textureNameArray!!.toList()

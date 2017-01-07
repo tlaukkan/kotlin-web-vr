@@ -1,7 +1,6 @@
 package vr.webvr.tools
 
 import lib.threejs.*
-import virtualRealityController
 import vr.webvr.devices.InputButton
 import vr.webvr.devices.InputDevice
 

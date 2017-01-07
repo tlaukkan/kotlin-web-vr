@@ -1,8 +1,7 @@
 package vr.webvr.tools
 
+import CLIENT
 import lib.threejs.*
-import renderTime
-import virtualRealityController
 import vr.network.model.PrimitiveNode
 import vr.util.dynamicCast
 import vr.webvr.devices.InputButton
@@ -51,7 +50,7 @@ class MoveTool(inputDevice: InputDevice) : Tool("Move tool", inputDevice) {
 
                 inputDevice.entity.getWorldQuaternion(startOrientation!!)
 
-                val obj = virtualRealityController!!.scene.getObjectByName(nodeUrl) ?: return
+                val obj = CLIENT!!.vrController!!.scene.getObjectByName(nodeUrl) ?: return
 
                 objectStartPosition = Vector3()
                 obj.getWorldPosition(objectStartPosition!!)
@@ -68,9 +67,9 @@ class MoveTool(inputDevice: InputDevice) : Tool("Move tool", inputDevice) {
         if (button == InputButton.TRIGGER) {
             if (inputDevice.selectedNodeUrls.size > 0) {
 
-                if (renderTime - lastSqueezeMoveTime > 0.15) {
+                if (CLIENT!!.renderTime - lastSqueezeMoveTime > 0.15) {
                     moveNodeTo()
-                    lastSqueezeMoveTime = renderTime
+                    lastSqueezeMoveTime = CLIENT!!.renderTime
                 }
             }
         }
@@ -119,10 +118,10 @@ class MoveTool(inputDevice: InputDevice) : Tool("Move tool", inputDevice) {
         //inputDevice.entity.getWorldQuaternion(objectOrientation!!)
         orientationChange.multiply(objectOrientation)
 
-        val node = virtualRealityController!!.nodes[nodeUrl] ?: return
-        val nodeType = virtualRealityController!!.nodeTypes[nodeUrl]!! ?: return
+        val node = CLIENT!!.vrController.nodes[nodeUrl] ?: return
+        val nodeType = CLIENT!!.vrController.nodeTypes[nodeUrl]!! ?: return
 
-        virtualRealityController!!.setNodePosition(node!!, objectPosition)
+        CLIENT!!.vrController.setNodePosition(node!!, objectPosition)
 
         /*
         node.position.x = objectPosition.x
@@ -135,7 +134,7 @@ class MoveTool(inputDevice: InputDevice) : Tool("Move tool", inputDevice) {
         node.orientation.z = orientationChange.z
         node.orientation.w = orientationChange.w
 
-        virtualRealityController!!.networkClient!!.send(node, nodeType)
+        CLIENT!!.vrController.networkClient!!.send(node, nodeType)
     }
 
 }

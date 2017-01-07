@@ -14,7 +14,7 @@ import kotlin.browser.window
 import kotlin.dom.addClass
 import kotlin.dom.onClick
 
-class DisplayController(displayDeviceController: DisplayDeviceController, rendererController: RendererController) {
+class DisplayController(val display: VRDisplay, rendererController: RendererController) {
 
     var eyeTranslationL = Vector3()
     var eyeTranslationR = Vector3()
@@ -29,7 +29,6 @@ class DisplayController(displayDeviceController: DisplayDeviceController, render
     var rendererPixelRatio: Double
 
     val scene: Scene
-    val display: VRDisplay
     val renderer: WebGLRenderer
     val canvas: Element
 
@@ -42,7 +41,6 @@ class DisplayController(displayDeviceController: DisplayDeviceController, render
     init {
         addEnterVrButton()
 
-        display = displayDeviceController.display!!
         this.renderer = rendererController.renderer
         camera = rendererController.camera
 

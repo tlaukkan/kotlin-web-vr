@@ -1,11 +1,11 @@
 package vr.webvr.devices
 
+import CLIENT
 import lib.threejs.*
 import vr.util.floatsToDoubles
 import lib.webvrapi.Gamepad
 import lib.webvrapi.getGamepads
 import lib.webvrapi.navigator
-import virtualRealityController
 import vr.webvr.tools.*
 import kotlin.browser.document
 import kotlin.browser.window
@@ -146,8 +146,8 @@ abstract class InputDevice(index: Int, type: String) {
 
     fun unselectNodes() {
         for (selectedNodeUrl in selectedNodeUrls) {
-            val obj = virtualRealityController!!.scene.getObjectByName(selectedNodeUrl)
-            val node = virtualRealityController!!.nodes[selectedNodeUrl]
+            val obj = CLIENT!!.vrController.scene.getObjectByName(selectedNodeUrl)
+            val node = CLIENT!!.vrController.nodes[selectedNodeUrl]
             if (obj != null) {
                 val material = obj.material
                 material.transparent = false
@@ -171,12 +171,12 @@ abstract class InputDevice(index: Int, type: String) {
         val raycaster = Raycaster()
         raycaster.set(origin, direction)
 
-        val results = raycaster.intersectObjects(virtualRealityController!!.scene.children, true)
+        val results = raycaster.intersectObjects(CLIENT!!.vrController.scene.children, true)
 
         for (result in results) {
             val distance: Double = result["distance"]
             val obj: Object3D = result["object"]
-            if (virtualRealityController!!.nodes.containsKey(obj.name)) {
+            if (CLIENT!!.vrController.nodes.containsKey(obj.name)) {
                 select(obj.name)
                 return distance
             }
@@ -197,12 +197,12 @@ abstract class InputDevice(index: Int, type: String) {
         val raycaster = Raycaster()
         raycaster.set(origin, direction)
 
-        val results = raycaster.intersectObjects(virtualRealityController!!.scene.children, true)
+        val results = raycaster.intersectObjects(CLIENT!!.vrController.scene.children, true)
 
         for (result in results) {
             val distance: Double = result["distance"]
             val obj: Object3D = result["object"]
-            if (virtualRealityController!!.nodes.containsKey(obj.name)) {
+            if (CLIENT!!.vrController.nodes.containsKey(obj.name)) {
 //                select(obj.name)
                 return distance
             }
@@ -212,8 +212,8 @@ abstract class InputDevice(index: Int, type: String) {
     }
 
     private fun select(selectedNodeUrl: String) {
-        val selectedNode = virtualRealityController!!.nodes[selectedNodeUrl] ?: return
-        val selectedObject = virtualRealityController!!.scene.getObjectByName(selectedNode.url) ?: return
+        val selectedNode = CLIENT!!.vrController.nodes[selectedNodeUrl] ?: return
+        val selectedObject = CLIENT!!.vrController.scene.getObjectByName(selectedNode.url) ?: return
         val material = selectedObject.material
         material.transparent = true
         material.opacity = 0.5
