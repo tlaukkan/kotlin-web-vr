@@ -1,0 +1,25 @@
+{
+  "url" : "http://127.0.0.1:8080/api/cells/a/76359bb3-8049-48d5-bcdb-566383de84d3",
+  "parentUrl" : null,
+  "removed" : false,
+  "position" : {
+    "x" : -0.17916586995124817,
+    "y" : 0.3520631492137909,
+    "z" : 0.781429648399353
+  },
+  "orientation" : {
+    "x" : 0.02564178293623755,
+    "y" : -0.496034376615202,
+    "z" : -0.09181228801060175,
+    "w" : 0.863054405373617
+  },
+  "scale" : {
+    "x" : 0.25,
+    "y" : 0.25,
+    "z" : 0.25
+  },
+  "volatile" : false,
+  "opacity" : 1.0,
+  "shape" : "box",
+  "texture" : "textures/aluminum.jpg"
+}
