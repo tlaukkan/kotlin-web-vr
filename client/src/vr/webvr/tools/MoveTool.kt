@@ -2,6 +2,7 @@ package vr.webvr.tools
 
 import CLIENT
 import lib.threejs.*
+import vr.network.model.Node
 import vr.network.model.PrimitiveNode
 import vr.util.dynamicCast
 import vr.webvr.devices.InputButton
@@ -20,12 +21,17 @@ class MoveTool(inputDevice: InputDevice) : Tool("Move tool", inputDevice) {
     var objectStartPosition: Vector3? = null
     var objectStartOrientation: Quaternion? = null
 
+    var actualObject: Object3D? = null
+    var protoObject: Object3D? = null
+
     override fun active() {
         inputDevice.showSelectLine(0x0000ff)
     }
 
     override fun render() {
-
+        if (inputDevice.pressedButtons.contains(InputButton.TRIGGER)) {
+            moveNodeTo(false)
+        }
     }
 
     override fun deactive() {
@@ -69,7 +75,7 @@ class MoveTool(inputDevice: InputDevice) : Tool("Move tool", inputDevice) {
             if (inputDevice.selectedNodeUrls.size > 0) {
 
                 if (CLIENT!!.renderTime - lastSqueezeMoveTime > 0.15) {
-                    moveNodeTo()
+                    moveNodeTo(true)
                     lastSqueezeMoveTime = CLIENT!!.renderTime
                 }
             }
@@ -79,8 +85,16 @@ class MoveTool(inputDevice: InputDevice) : Tool("Move tool", inputDevice) {
     override fun onReleased(button: InputButton) {
         if (button == InputButton.TRIGGER) {
             if (inputDevice.selectedNodeUrls.size > 0) {
-                moveNodeTo()
+                moveNodeTo(true)
                 inputDevice.unselectNodes()
+
+                if (protoObject != null) {
+                    CLIENT!!.vrController.roomGroup.remove(protoObject!!)
+                    actualObject!!.visible = true
+                    actualObject = null
+                    protoObject = null
+                }
+
             }
         }
     }
@@ -88,7 +102,7 @@ class MoveTool(inputDevice: InputDevice) : Tool("Move tool", inputDevice) {
     override fun onPadTouched(x: Double, y: Double) {
     }
 
-    private fun moveNodeTo() {
+    private fun moveNodeTo(sendNodeUpdate: Boolean) {
         val nodeUrl = inputDevice.selectedNodeUrls[0]
 
         val currentPosition = Vector3()
@@ -135,7 +149,31 @@ class MoveTool(inputDevice: InputDevice) : Tool("Move tool", inputDevice) {
         node.orientation.z = orientationChange.z
         node.orientation.w = orientationChange.w
 
-        CLIENT!!.vrController.networkClient!!.send(node, nodeType)
+        if (sendNodeUpdate) {
+            CLIENT!!.vrController.networkClient!!.send(node, nodeType)
+        }
+
+        if (protoObject == null) {
+            var obj = CLIENT!!.vrController.scene.getObjectByName(node.url)
+            if (obj != null) {
+                actualObject = obj
+                protoObject = obj.clone(true)
+                actualObject!!.visible = false
+                protoObject!!.name = "proto"
+                CLIENT!!.vrController.roomGroup.add(protoObject!!)
+            }
+        }
+
+        if (protoObject != null) {
+            protoObject!!.position.x = node.position.x
+            protoObject!!.position.y = node.position.y
+            protoObject!!.position.z = node.position.z
+
+            protoObject!!.quaternion.x = node.orientation.x
+            protoObject!!.quaternion.y = node.orientation.y
+            protoObject!!.quaternion.z = node.orientation.z
+            protoObject!!.quaternion.w = node.orientation.w
+        }
     }
 
 }
