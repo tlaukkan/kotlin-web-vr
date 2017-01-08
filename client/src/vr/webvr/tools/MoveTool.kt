@@ -42,11 +42,12 @@ class MoveTool(inputDevice: InputDevice) : Tool("Move tool", inputDevice) {
                 startPosition = Vector3()
                 inputDevice.entity.getWorldPosition(startPosition!!)
                 startOrientation = Quaternion(0.0, 0.0, 0.0, 1.0)
+                inputDevice.entity.getWorldQuaternion(startOrientation!!)
 
                 // Move position to intersection point of select rate
-                /*val direction = Vector3(0.0, 0.0, -selectDistance!!)
+                val direction = Vector3(0.0, 0.0, -selectDistance!!)
                 direction.applyQuaternion(startOrientation!!)
-                startPosition!!.add(direction)*/
+                startPosition!!.add(direction)
 
                 inputDevice.entity.getWorldQuaternion(startOrientation!!)
 
@@ -96,9 +97,9 @@ class MoveTool(inputDevice: InputDevice) : Tool("Move tool", inputDevice) {
         inputDevice.entity.getWorldQuaternion(currentOrientation!!)
 
         // Move position to intersection point of select rate
-        /*val direction = Vector3(0.0, 0.0, -selectDistance!!)
+        val direction = Vector3(0.0, 0.0, -selectDistance!!)
         direction.applyQuaternion(currentOrientation!!)
-        currentPosition!!.add(direction)*/
+        currentPosition!!.add(direction)
 
         //val obj = virtualRealityController!!.scene.getObjectByName(nodeUrl) ?: return
 
