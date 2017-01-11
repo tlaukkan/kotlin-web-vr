@@ -69,7 +69,7 @@ class VrClient(val display: VRDisplay) {
             println("Disconnected")
         }
 
-        mediaController.loadMedia(displayController, inputController, mediaController)
+        mediaController.loadMedia()
 
         display.requestAnimationFrame({ time -> render(time) })
 

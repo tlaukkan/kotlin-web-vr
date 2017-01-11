@@ -75,22 +75,22 @@ class MediaController(val vrClient: VrClient) {
         })
     }
 
-    fun loadMedia(displayController: DisplayController, inputDeviceController: InputController, mediaController: MediaController) {
+    fun loadMedia() {
         var vivePath = "models/obj/vive-controller/"
-        mediaController.loadModel(vivePath + "vr_controller_vive_1_5.obj", { path, model ->
+        CLIENT!!.mediaController.loadModel(vivePath + "vr_controller_vive_1_5.obj", { path, model ->
             var inputDeviceModel: Object3D = model.children[0]
 
-            mediaController.loadTexture(vivePath + "onepointfive_texture.png", { path, texture ->
+            CLIENT!!.mediaController.loadTexture(vivePath + "onepointfive_texture.png", { path, texture ->
                 (inputDeviceModel.material as MeshPhongMaterial).map = texture
             })
-            mediaController.loadTexture(vivePath + "onepointfive_spec.png", { path, texture ->
+            CLIENT!!.mediaController.loadTexture(vivePath + "onepointfive_spec.png", { path, texture ->
                 (inputDeviceModel.material as MeshPhongMaterial).specularMap = texture
             })
 
-            inputDeviceController.inputDeviceModels["OpenVR Gamepad"] = model
+            CLIENT!!.inputController.inputDeviceModels["OpenVR Gamepad"] = model
         })
 
-        mediaController.loadModel("models/animated/monster/monster.js", { path, model ->
+        CLIENT!!.mediaController.loadModel("models/animated/monster/monster.js", { path, model ->
             var monster = model.clone(true)
             monster.scale.x = 0.002
             monster.scale.y = 0.002
@@ -99,7 +99,7 @@ class MediaController(val vrClient: VrClient) {
             monster.position.x = -10.0
             monster.position.y = 0.0
             monster.position.z = 0.0
-            displayController.scene.add(monster)
+            CLIENT!!.displayController.scene.add(monster)
         })
 
         CLIENT!!.restClient!!.get("textures", { textureNameArray: Array<String>? ->
