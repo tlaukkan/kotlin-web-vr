@@ -71,23 +71,23 @@ class VrClient(val display: VRDisplay) {
 
         mediaController.loadMedia()
 
-        display.requestAnimationFrame({ time -> render(time) })
+        display.requestAnimationFrame({ time -> render() })
 
     }
 
-    fun render(time: Number): Unit {
-        var timeMillis = time.toLong()
+    fun render(): Unit {
+        var timeMillis = Date().getTime()
 
         if (renderTime != 0.0) {
             renderTimeDelta = timeMillis / 1000.0 - renderTime
         }
         renderTime = timeMillis / 1000.0
 
-        display.requestAnimationFrame({ time -> render(time) })
-
         inputController.render()
         vrController.render()
         rendererController.render()
         displayController.render(rendererController.scene, rendererController.camera)
+
+        display.requestAnimationFrame({ time -> render() })
     }
 }

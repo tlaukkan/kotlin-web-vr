@@ -63,6 +63,9 @@ class NodeInterpolator(val nodeUrl: String) {
             intermediateScale.x = node.scale.x
             intermediateScale.y = node.scale.y
             intermediateScale.z = node.scale.z
+            //println("Initialized node: $nodeUrl($time / $timeDelta)")
+        } else {
+            //println("Updated node: $nodeUrl($time / $timeDelta)")
         }
 
         if (lastUpdateTime != 0.0) {

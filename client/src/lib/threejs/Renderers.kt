@@ -11,6 +11,7 @@ open class WebGLRenderer(parameters: Any) {
   @native var gammaOutput: Boolean = noImpl
   @native var shadowMapWidth: Int = noImpl
   @native var shadowMapHeight: Int = noImpl
+  @native var shadowMapEnabled: Boolean = noImpl
   @native var shadowMap: dynamic = noImpl
 
   //Functions

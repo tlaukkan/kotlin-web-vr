@@ -1,0 +1,25 @@
+{
+  "url" : "http://127.0.0.1:8080/api/cells/a/30572d45-bf61-442d-9de0-b0dd69fb5579",
+  "parentUrl" : null,
+  "removed" : false,
+  "position" : {
+    "x" : 3.304815341593234,
+    "y" : -1.016607675044951,
+    "z" : -5.346674571191073
+  },
+  "orientation" : {
+    "x" : 0.008988313908461215,
+    "y" : -0.6910105431307056,
+    "z" : -0.008661606683641965,
+    "w" : 0.722736911370238
+  },
+  "scale" : {
+    "x" : 4.0,
+    "y" : 4.0,
+    "z" : 4.0
+  },
+  "volatile" : false,
+  "opacity" : 1.0,
+  "shape" : "box",
+  "texture" : "textures/alien.jpg"
+}

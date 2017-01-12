@@ -1,0 +1,25 @@
+{
+  "url" : "http://127.0.0.1:8080/api/cells/a/a37db1a7-d15c-4ba4-a506-b9c24fc7b8e2",
+  "parentUrl" : null,
+  "removed" : false,
+  "position" : {
+    "x" : -0.6278653740882874,
+    "y" : 0.5907338857650757,
+    "z" : -0.6128038763999939
+  },
+  "orientation" : {
+    "x" : -0.01378498917310061,
+    "y" : -0.09113062978023656,
+    "z" : 0.016050076834634358,
+    "w" : 0.9956141719839948
+  },
+  "scale" : {
+    "x" : 0.125,
+    "y" : 0.125,
+    "z" : 0.125
+  },
+  "volatile" : false,
+  "opacity" : 1.0,
+  "shape" : "box",
+  "texture" : "textures/wood.jpg"
+}

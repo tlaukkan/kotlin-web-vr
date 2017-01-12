@@ -48,6 +48,8 @@ class InputController(val vrClient: VrClient) {
                 continue
             }
 
+            println("Detecting gamepads: " + gamepad.pose)
+
             if (gamepad != null && gamepad.connected && gamepad.pose != null && this.inputDevices[gamepad.index] == null) {
                 val controller: InputDevice
                 if ("OpenVR Gamepad".equals(gamepad.id)) {
