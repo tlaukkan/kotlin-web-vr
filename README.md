@@ -1,4 +1,4 @@
-# kotlin-web-vr
+# Kotlin Web VR
 
 A Kotlin Web VR client-server framework.
 
