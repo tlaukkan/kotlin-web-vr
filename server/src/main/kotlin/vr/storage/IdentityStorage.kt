@@ -1,4 +1,4 @@
-package vr
+package vr.storage
 
 import vr.model.Identity
 import java.net.URI
@@ -7,7 +7,7 @@ import java.util.*
 /**
  * Created by tlaukkan on 7/9/2016.
  */
-class IdentityStore {
+class IdentityStorage {
     private val identitys: MutableMap<URI, Identity> = HashMap()
 
     @Synchronized fun addIdentity(identity: Identity) : Boolean {

@@ -9,6 +9,7 @@ import org.junit.Test
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
+import vr.model.Cell
 import java.util.*
 import java.util.logging.LogManager
 

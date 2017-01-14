@@ -14,6 +14,7 @@ import org.glassfish.jersey.process.JerseyProcessingUncaughtExceptionHandler
 import org.glassfish.jersey.server.ResourceConfig
 import org.glassfish.jersey.server.spi.Container
 import vr.config.ServerConfig
+import vr.model.Cell
 import vr.network.NetworkLinker
 import vr.network.NetworkServer
 import vr.network.WebSocketListener
@@ -21,6 +22,8 @@ import vr.network.model.DataVector3
 import vr.network.model.Envelope
 import vr.network.model.HandshakeResponse
 import vr.network.model.Node
+import vr.network.rest.NodeRestService
+import vr.network.rest.TextureRestService
 import vr.util.Mapper
 import java.io.File
 import java.net.URI

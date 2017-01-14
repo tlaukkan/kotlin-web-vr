@@ -10,6 +10,7 @@ import vr.network.NetworkServer
 import vr.network.model.DataVector3
 import vr.network.model.LightFieldNode
 import vr.network.model.PrimitiveNode
+import vr.storage.IdentityStorage
 import java.io.File
 import java.nio.charset.Charset
 import java.util.*
@@ -17,7 +18,7 @@ import java.util.logging.Logger
 import javax.vecmath.AxisAngle4d
 import javax.vecmath.Quat4d
 
-val IDENTITY_STORE = IdentityStore()
+val IDENTITY_STORE = IdentityStorage()
 
 private val log = Logger.getLogger("vr.main")
 

@@ -1,4 +1,4 @@
-package vr
+package vr.network.rest
 
 import logger
 import vr.network.NetworkServer

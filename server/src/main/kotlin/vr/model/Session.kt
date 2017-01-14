@@ -1,7 +1,7 @@
 package vr.model
 
 import org.glassfish.grizzly.websockets.WebSocket
-import vr.Cell
+import vr.model.Cell
 import java.util.*
 
 data class Session(val remoteHost: String,

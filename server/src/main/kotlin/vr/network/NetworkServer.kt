@@ -7,7 +7,7 @@ import vr.util.Mapper
 import org.glassfish.grizzly.websockets.Broadcaster
 import org.glassfish.grizzly.websockets.OptimizedBroadcaster
 import org.glassfish.grizzly.websockets.WebSocket
-import vr.Cell
+import vr.model.Cell
 import vr.VrServer
 import java.util.*
 import java.util.logging.Level

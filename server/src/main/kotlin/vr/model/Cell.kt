@@ -1,4 +1,4 @@
-package vr
+package vr.model
 
 import logger
 import vr.network.model.DataVector3
