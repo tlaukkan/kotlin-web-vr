@@ -6,7 +6,7 @@ import vr.webvr.devices.InputDevice
 /**
  * Created by tlaukkan on 11/1/2016.
  */
-class MenuTool(inputDevice: InputDevice) : Tool("Menu Tool", inputDevice) {
+class MenuTool(inputDevice: InputDevice) : Tool("Menu", inputDevice) {
 
     var toolIndex = 0
 

@@ -13,7 +13,7 @@ import vr.webvr.devices.InputDevice
 /**
  * Created by tlaukkan on 11/1/2016.
  */
-class AddTool(inputDevice: InputDevice) : Tool("Add Tool", inputDevice) {
+class AddTool(inputDevice: InputDevice) : Tool("Add", inputDevice) {
 
     private enum class AddMode {
         PRIMITIVE, LIGHT

@@ -6,7 +6,7 @@ import vr.webvr.devices.InputDevice
 /**
  * Created by tlaukkan on 11/1/2016.
  */
-class NoTool(inputDevice: InputDevice) : Tool("No Tool", inputDevice) {
+class NoTool(inputDevice: InputDevice) : Tool("None", inputDevice) {
 
     override fun active() {
     }

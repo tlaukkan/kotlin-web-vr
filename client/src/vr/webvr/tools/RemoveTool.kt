@@ -7,7 +7,7 @@ import vr.webvr.devices.InputDevice
 /**
  * Created by tlaukkan on 11/1/2016.
  */
-class RemoveTool(inputDevice: InputDevice) : Tool("RemoveTool Tool", inputDevice) {
+class RemoveTool(inputDevice: InputDevice) : Tool("Remove", inputDevice) {
     override fun active() {
         inputDevice.display("RemoveTool.")
 

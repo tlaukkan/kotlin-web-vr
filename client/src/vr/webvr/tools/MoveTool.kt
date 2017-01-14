@@ -11,7 +11,7 @@ import vr.webvr.devices.InputDevice
 /**
  * Created by tlaukkan on 11/1/2016.
  */
-class MoveTool(inputDevice: InputDevice) : Tool("Move tool", inputDevice) {
+class MoveTool(inputDevice: InputDevice) : Tool("Move", inputDevice) {
 
     var selectDistance: Double? = null
 

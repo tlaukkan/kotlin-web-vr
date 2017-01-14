@@ -12,7 +12,7 @@ import vr.webvr.devices.InputDevice
 /**
  * Created by tlaukkan on 11/1/2016.
  */
-class TravelTool(inputDevice: InputDevice) : Tool("Travel tool", inputDevice) {
+class TravelTool(inputDevice: InputDevice) : Tool("Travel", inputDevice) {
 
     var lastSqueezeMoveTime: Double = 0.0
     val pointerObject: Object3D
