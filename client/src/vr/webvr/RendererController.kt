@@ -2,6 +2,7 @@ package vr.webvr
 
 import lib.threejs.*
 import lib.threejs.Extra.BoxGeometry
+import vr.client.VrClient
 import kotlin.browser.document
 import kotlin.browser.window
 

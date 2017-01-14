@@ -4,6 +4,7 @@ import vr.CLIENT
 import lib.threejs.Group
 import lib.threejs.Object3D
 import lib.threejs.Vector3
+import vr.client.VrClient
 import vr.network.NetworkClient
 import vr.network.model.Node
 import vr.util.dynamicCast

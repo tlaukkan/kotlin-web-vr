@@ -1,4 +1,4 @@
-package vr.webvr
+package vr.client
 
 import vr.CLIENT
 

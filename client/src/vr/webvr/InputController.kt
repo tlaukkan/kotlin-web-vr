@@ -5,6 +5,7 @@ import vr.webvr.devices.InputDevice
 import lib.webvrapi.Gamepad
 import lib.webvrapi.getGamepads
 import lib.webvrapi.navigator
+import vr.client.VrClient
 import vr.webvr.devices.OpenVrGamepad
 import vr.webvr.tools.SelectTool
 import vr.webvr.tools.NoTool

@@ -2,6 +2,7 @@ package vr.webvr
 
 import vr.CLIENT
 import lib.threejs.*
+import vr.client.VrClient
 
 class MediaController(val vrClient: VrClient) {
 
