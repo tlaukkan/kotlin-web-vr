@@ -1,4 +1,4 @@
-package vr
+package vr.server
 
 import jersey.repackaged.com.google.common.util.concurrent.ThreadFactoryBuilder
 import logger
@@ -8,13 +8,14 @@ import org.glassfish.grizzly.http.server.HttpServer
 import org.glassfish.grizzly.http.server.NetworkListener
 import org.glassfish.grizzly.ssl.SSLEngineConfigurator
 import org.glassfish.grizzly.websockets.WebSocketAddOn
-import vr.util.grizzly.GrizzlyHttpContainer
+import vr.network.grizzly.GrizzlyHttpContainer
 import org.glassfish.grizzly.http.server.StaticHttpHandler
+import org.glassfish.grizzly.utils.Charsets
 import org.glassfish.jersey.process.JerseyProcessingUncaughtExceptionHandler
 import org.glassfish.jersey.server.ResourceConfig
 import org.glassfish.jersey.server.spi.Container
 import vr.config.ServerConfig
-import vr.model.Cell
+import vr.server.model.Cell
 import vr.network.NetworkLinker
 import vr.network.NetworkServer
 import vr.network.WebSocketListener
@@ -50,8 +51,6 @@ class VrServer(val url: String = "http://localhost:8080/") {
     }
 
     fun startup(): Unit {
-        //NETWORK_SERVER.addCell(Cell("Default"))
-
         log.info("VR server startup...")
         server.start()
         networkLinker.startup()

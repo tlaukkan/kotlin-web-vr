@@ -1,7 +1,7 @@
 package vr.network
 
 import logger
-import vr.model.Cell
+import vr.server.model.Cell
 import vr.network.model.LinkRequest
 import vr.network.model.Neighbour
 import vr.network.model.Node

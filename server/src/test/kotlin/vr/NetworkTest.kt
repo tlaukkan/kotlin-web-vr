@@ -10,6 +10,7 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import vr.network.model.*
+import vr.server.VrServer
 import java.io.File
 import java.nio.charset.Charset
 import java.util.*

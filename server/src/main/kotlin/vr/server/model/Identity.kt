@@ -1,4 +1,4 @@
-package vr.model
+package vr.server.model
 
 import vr.network.model.Node
 import java.net.URI

@@ -1,6 +1,6 @@
 package vr.storage
 
-import vr.model.Identity
+import vr.server.model.Identity
 import java.net.URI
 import java.util.*
 

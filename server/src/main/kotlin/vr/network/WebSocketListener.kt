@@ -1,9 +1,9 @@
 package vr.network
 
 import logger
-import vr.model.Session
+import vr.server.model.Session
 import org.glassfish.grizzly.websockets.*
-import vr.PORT_NETWORK_SERVER_MAP
+import vr.server.PORT_NETWORK_SERVER_MAP
 import java.net.URL
 import java.util.*
 import java.util.logging.Level

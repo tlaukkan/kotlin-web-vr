@@ -1,14 +1,14 @@
 package vr.network
 
 import logger
-import vr.model.*
 import vr.network.model.*
 import vr.util.Mapper
 import org.glassfish.grizzly.websockets.Broadcaster
 import org.glassfish.grizzly.websockets.OptimizedBroadcaster
 import org.glassfish.grizzly.websockets.WebSocket
-import vr.model.Cell
-import vr.VrServer
+import vr.server.model.Cell
+import vr.server.VrServer
+import vr.server.model.Session
 import java.util.*
 import java.util.logging.Level
 

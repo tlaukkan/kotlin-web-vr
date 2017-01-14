@@ -2,7 +2,7 @@ package vr.network.rest
 
 import logger
 import vr.IDENTITY_STORE
-import vr.model.Identity
+import vr.server.model.Identity
 import java.net.URI
 import java.util.*
 import javax.ws.rs.*

@@ -1,7 +1,7 @@
 package vr.network.rest
 
 import logger
-import vr.PORT_NETWORK_SERVER_MAP
+import vr.server.PORT_NETWORK_SERVER_MAP
 import vr.network.NetworkServer
 import vr.network.model.Node
 import java.util.*

@@ -10,6 +10,7 @@ import vr.network.NetworkServer
 import vr.network.model.DataVector3
 import vr.network.model.LightFieldNode
 import vr.network.model.PrimitiveNode
+import vr.server.VrServer
 import vr.storage.IdentityStorage
 import java.io.File
 import java.nio.charset.Charset
