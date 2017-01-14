@@ -23,9 +23,11 @@ abstract class InputDevice(index: Int, type: String) {
     var addedToScene = false
 
     var lastActiveToolIndex = 0
+
     var activeTool: Tool = NoTool(this)
+    val menuTool: MenuTool = MenuTool(this)
+
     val tools: MutableList<Tool> = mutableListOf()
-    val menuTool: MenuTool
     var gamepad: Gamepad? = null
 
     val entity: Object3D = Object3D()
@@ -80,17 +82,13 @@ abstract class InputDevice(index: Int, type: String) {
             display.position.x = -0.3
         }
         display.position.z = 0.15
-        //display.position.y = 0.15
 
         entity.add(display)
 
-        menuTool = MenuTool(this)
         tools.add(MoveTool(this))
         tools.add(TravelTool(this))
         tools.add(AddTool(this))
         tools.add(RemoveTool(this))
-//        tools.add(SelectTool(this))
-//        tools.add(NoTool(this))
 
         activateTool(tools[(index + 1) % 2])
     }
@@ -206,7 +204,6 @@ abstract class InputDevice(index: Int, type: String) {
             val distance: Double = result["distance"]
             val obj: Object3D = result["object"]
             if (CLIENT!!.vrController.nodes.containsKey(obj.name)) {
-//                select(obj.name)
                 return distance
             }
         }
@@ -272,18 +269,10 @@ abstract class InputDevice(index: Int, type: String) {
     fun released(button: InputButton) {
         if (button == InputButton.MENU) {
             if (activeTool == menuTool) {
-                activateTool(tools[lastActiveToolIndex])
+                activateTool(tools[menuTool.toolIndex])
             } else {
                 activateTool(menuTool)
             }
-            /*println("Changing active tool from ${activeTool.name}")
-            var toolIndex = tools.indexOf(activeTool)
-            toolIndex++
-            if (toolIndex == tools.size) {
-                toolIndex = 0
-            }
-            activateTool(tools[toolIndex])
-            println("Changed active tool to ${activeTool.name}")*/
             return
         }
         if (onReleased != null) {

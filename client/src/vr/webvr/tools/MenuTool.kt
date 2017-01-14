@@ -54,9 +54,6 @@ class MenuTool(inputDevice: InputDevice) : Tool("Menu Tool", inputDevice) {
             }
             updateDisplay()
         }
-        if (button == InputButton.TRIGGER) {
-            inputDevice.activateTool(inputDevice.tools[toolIndex])
-        }
     }
 
     override fun onSqueezed(button: InputButton, value: Double) {
