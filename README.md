@@ -31,6 +31,6 @@ Design:
     
 Development:
 
-1) Open project in IntelliJ Idea
-2) Run server/src/main/kotlin/vr/Main.kt from IDE
-3) Open Chrome Web VR to URL http://127.0.0.1:8080/
+* Open project in IntelliJ Idea
+* Run server/src/main/kotlin/vr/Main.kt from IDE
+* Open Chrome Web VR to URL http://127.0.0.1:8080/
