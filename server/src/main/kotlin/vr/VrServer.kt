@@ -13,9 +13,11 @@ import org.glassfish.grizzly.http.server.StaticHttpHandler
 import org.glassfish.jersey.process.JerseyProcessingUncaughtExceptionHandler
 import org.glassfish.jersey.server.ResourceConfig
 import org.glassfish.jersey.server.spi.Container
+import vr.config.ServerConfig
 import vr.network.NetworkLinker
 import vr.network.NetworkServer
 import vr.network.WebSocketListener
+import vr.network.model.DataVector3
 import vr.network.model.Envelope
 import vr.network.model.HandshakeResponse
 import vr.network.model.Node
@@ -179,6 +181,59 @@ class VrServer(val url: String = "http://localhost:8080/") {
             }
 
         }
+    }
+
+    fun configureCells(serverConfig: ServerConfig) {
+        // Configuring cells according to server configuration.
+        for (cellConfig in serverConfig.cells) {
+            var cell = Cell("${serverConfig.uri}api/cells/${cellConfig.name}")
+
+            this.networkServer.addCell(cell)
+            log.info("Added cell ${cellConfig.name} to server ${serverConfig.name} with uri ${cell.url}")
+        }
+
+        // Setting up cell neighbours according to server configuration.
+        for (cellConfig in serverConfig.cells) {
+            for (neighbour in cellConfig.neighbours.keys) {
+                var cell = this.networkServer.getCell("${serverConfig.uri}api/cells/${cellConfig.name}")
+
+                val neighbourCellUri: String
+                if (neighbour.contains('/')) {
+                    neighbourCellUri = neighbour
+                } else {
+                    neighbourCellUri = "${serverConfig.uri}api/cells/$neighbour"
+                }
+                val neighbourVector = cellConfig.neighbours[neighbour]!!
+
+                this.addNeighbour(cell, neighbourCellUri, neighbourVector)
+            }
+        }
+    }
+
+    fun addNeighbour(cell: Cell, neighbourCellUri: String, neighbourVector: DataVector3) {
+        val remoteNeighbour = !neighbourCellUri.startsWith(this.url)
+
+        if (!this.networkServer.hasCell(neighbourCellUri)) {
+            if (remoteNeighbour) {
+                this.networkServer.addCell(Cell(neighbourCellUri, true))
+                log.info("Added remote neighbour cell: $neighbourCellUri")
+            }
+            else {
+                log.warning("No such local neighbour cell: $neighbourCellUri")
+                return
+            }
+        }
+
+        val neighbourCell = this.networkServer.getCell(neighbourCellUri)!!
+
+        cell.neighbours[neighbourCellUri] = neighbourVector
+        neighbourCell.neighbours[cell.url] = DataVector3(
+                -neighbourVector.x,
+                -neighbourVector.y,
+                -neighbourVector.z)
+
+        log.info("Added neighbour: ${cell.url} ${cell.neighbours[neighbourCellUri]} - ${neighbourCell.url} ${neighbourCell.neighbours[cell.url]}")
+        return
     }
 
 }
