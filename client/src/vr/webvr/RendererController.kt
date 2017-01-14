@@ -16,9 +16,9 @@ class RendererController(val vrClient: VrClient) {
 
     init {
         scene = Scene()
-        camera = PerspectiveCamera(75.0, window.innerWidth / window.innerHeight, 0.1, 512.0)
+        camera = PerspectiveCamera(75.0, window.innerWidth as Double / window.innerHeight, 0.1, 512.0)
         renderer = WebGLRenderer( object {var antialias = true})
-        renderer.setSize(window.innerWidth, window.innerHeight)
+        renderer.setSize(window.innerWidth as Double, window.innerHeight as Double)
         renderer.setPixelRatio(window.devicePixelRatio)
         renderer.sortObjects = false
         renderer.setClearColor(0x000000)

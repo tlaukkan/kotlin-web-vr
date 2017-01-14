@@ -46,8 +46,8 @@ class DisplayController(val vrClient: VrClient) {
         scene = vrClient.rendererController.scene
         canvas = this.renderer.domElement
 
-        rendererWidth = window.innerWidth
-        rendererHeight = window.innerHeight
+        rendererWidth = window.innerWidth as Double
+        rendererHeight = window.innerHeight as Double
         rendererPixelRatio = window.devicePixelRatio
 
         window.addEventListener("vrdisplaypresentchange", { onVrDisplayPresentChange() }, false)
@@ -117,9 +117,9 @@ class DisplayController(val vrClient: VrClient) {
             rendererHeight = eyeHeight
         } else {
             renderer.setPixelRatio(this.rendererPixelRatio)
-            renderer.setSize(window.innerWidth, window.innerHeight)
-            rendererWidth = window.innerWidth
-            rendererHeight = window.innerHeight
+            renderer.setSize(window.innerWidth as Double, window.innerHeight as Double)
+            rendererWidth = window.innerWidth as Double
+            rendererHeight = window.innerHeight as Double
         }
 
     }

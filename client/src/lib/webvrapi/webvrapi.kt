@@ -7,7 +7,7 @@ import org.w3c.dom.events.Event
 import org.w3c.dom.events.EventTarget
 
 @native
-open class VRDisplay : EventTarget {
+open class VRDisplay : EventTarget() {
     open var isConnected: Boolean = noImpl
     open var isPresenting: Boolean = noImpl
     open var capabilities: VRDisplayCapabilities = noImpl
