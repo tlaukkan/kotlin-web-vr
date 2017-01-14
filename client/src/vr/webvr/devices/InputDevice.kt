@@ -8,7 +8,6 @@ import lib.webvrapi.getGamepads
 import lib.webvrapi.navigator
 import vr.webvr.tools.*
 import kotlin.browser.document
-import kotlin.browser.window
 
 /**
  * The VR controller object.
@@ -23,8 +22,10 @@ abstract class InputDevice(index: Int, type: String) {
 
     var addedToScene = false
 
+    var lastActiveToolIndex = 0
     var activeTool: Tool = NoTool(this)
     val tools: MutableList<Tool> = mutableListOf()
+    val menuTool: MenuTool
     var gamepad: Gamepad? = null
 
     val entity: Object3D = Object3D()
@@ -83,6 +84,7 @@ abstract class InputDevice(index: Int, type: String) {
 
         entity.add(display)
 
+        menuTool = MenuTool(this)
         tools.add(MoveTool(this))
         tools.add(TravelTool(this))
         tools.add(AddTool(this))
@@ -94,6 +96,7 @@ abstract class InputDevice(index: Int, type: String) {
     }
 
     fun activateTool(tool: Tool) {
+        lastActiveToolIndex = tools.indexOf(activeTool)
         activeTool.deactive()
         activeTool = tool
         display(activeTool.name)
@@ -268,14 +271,19 @@ abstract class InputDevice(index: Int, type: String) {
 
     fun released(button: InputButton) {
         if (button == InputButton.MENU) {
-            println("Changing active tool from ${activeTool.name}")
+            if (activeTool == menuTool) {
+                activateTool(tools[lastActiveToolIndex])
+            } else {
+                activateTool(menuTool)
+            }
+            /*println("Changing active tool from ${activeTool.name}")
             var toolIndex = tools.indexOf(activeTool)
             toolIndex++
             if (toolIndex == tools.size) {
                 toolIndex = 0
             }
             activateTool(tools[toolIndex])
-            println("Changed active tool to ${activeTool.name}")
+            println("Changed active tool to ${activeTool.name}")*/
             return
         }
         if (onReleased != null) {
