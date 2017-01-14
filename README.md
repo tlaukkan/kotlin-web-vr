@@ -8,7 +8,7 @@ Status:
  * World state is saved as JSON object in data folder.
  * Interpolation of object translation, rotation and scaling.
  * Tool API for building tool components for VR controllers.
- * Simple world building using lights and boxes/sphere primitives.
+ * Simple world building using lights and box/sphere primitives.
  * In world movement by point and click.
  * Automatic loading of textures from server path.
  * Physical lighting and shadows.
