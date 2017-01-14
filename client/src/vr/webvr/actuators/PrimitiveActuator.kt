@@ -1,6 +1,6 @@
 package vr.webvr.actuators
 
-import CLIENT
+import vr.CLIENT
 import lib.threejs.*
 import lib.threejs.Extra.BoxGeometry
 import lib.threejs.Extra.SphereGeometry

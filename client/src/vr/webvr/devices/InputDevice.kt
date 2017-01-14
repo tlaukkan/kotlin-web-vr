@@ -1,6 +1,6 @@
 package vr.webvr.devices
 
-import CLIENT
+import vr.CLIENT
 import lib.threejs.*
 import vr.util.floatsToDoubles
 import lib.webvrapi.Gamepad

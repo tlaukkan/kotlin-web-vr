@@ -1,6 +1,6 @@
 package vr.webvr.actuators
 
-import CLIENT
+import vr.CLIENT
 import lib.threejs.Object3D
 import lib.threejs.Texture
 import vr.network.model.Node

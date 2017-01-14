@@ -1,6 +1,6 @@
 package vr.webvr
 
-import CLIENT
+import vr.CLIENT
 import lib.threejs.Group
 import lib.threejs.Object3D
 import lib.threejs.Vector3

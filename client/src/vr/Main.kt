@@ -1,3 +1,5 @@
+package vr
+
 import lib.webvrapi.getVRDisplays
 import lib.webvrapi.navigator
 import vr.webvr.VrClient

@@ -1,6 +1,6 @@
 package vr.webvr.tools
 
-import CLIENT
+import vr.CLIENT
 import vr.webvr.devices.InputButton
 import vr.webvr.devices.InputDevice
 

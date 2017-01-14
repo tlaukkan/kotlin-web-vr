@@ -1,6 +1,6 @@
 package vr.webvr.tools
 
-import CLIENT
+import vr.CLIENT
 import lib.threejs.*
 import vr.network.model.Node
 import vr.network.model.PrimitiveNode
