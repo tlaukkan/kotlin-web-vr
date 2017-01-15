@@ -17,7 +17,7 @@ abstract class Tool(var name: String, var inputDevice: InputDevice) {
 
     abstract fun active()
 
-    abstract fun deactive()
+    abstract fun deactivate()
 
     abstract fun render()
 

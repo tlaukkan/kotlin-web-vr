@@ -1,5 +1,6 @@
 package vr.util
 
+import lib.threejs.Quaternion
 import lib.webvrapi.Float32Array
 import java.util.*
 
@@ -32,4 +33,13 @@ fun <T : Any> fromJson(string: String): T {
 fun <T> dynamicCast(obj: Any) : T {
     val dynamicNode: dynamic = obj
     return dynamicNode
+}
+
+
+fun getDeltaQuaternion(startOrientation: Quaternion, currentOrientation: Quaternion): Quaternion {
+    val originalOrientationConjugate = startOrientation.conjugate()
+
+    val orientationChange = currentOrientation.clone()
+    orientationChange.multiply(originalOrientationConjugate)
+    return orientationChange
 }

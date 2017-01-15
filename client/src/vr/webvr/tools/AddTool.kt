@@ -139,7 +139,7 @@ class AddTool(inputDevice: InputDevice) : Tool("Add", inputDevice) {
 
     }
 
-    override fun deactive() {
+    override fun deactivate() {
         if (protoObject != null) {
             inputDevice.entity.remove(protoObject!!)
         }

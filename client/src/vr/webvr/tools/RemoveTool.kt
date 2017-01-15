@@ -18,7 +18,7 @@ class RemoveTool(inputDevice: InputDevice) : Tool("Remove", inputDevice) {
 
     }
 
-    override fun deactive() {
+    override fun deactivate() {
         inputDevice.hideSelectLine()
     }
 

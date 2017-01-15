@@ -33,7 +33,7 @@ class MenuTool(inputDevice: InputDevice) : Tool("Menu", inputDevice) {
 
     }
 
-    override fun deactive() {
+    override fun deactivate() {
     }
 
     override fun onPressed(button: InputButton) {

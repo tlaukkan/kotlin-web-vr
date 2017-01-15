@@ -15,7 +15,7 @@ class NoTool(inputDevice: InputDevice) : Tool("None", inputDevice) {
 
     }
 
-    override fun deactive() {
+    override fun deactivate() {
     }
 
     override fun onPressed(button: InputButton) {

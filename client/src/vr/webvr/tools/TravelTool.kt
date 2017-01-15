@@ -54,7 +54,7 @@ class TravelTool(inputDevice: InputDevice) : Tool("Travel", inputDevice) {
         }
     }
 
-    override fun deactive() {
+    override fun deactivate() {
         inputDevice.hideSelectLine()
     }
 

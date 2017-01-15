@@ -95,7 +95,7 @@ abstract class InputDevice(index: Int, type: String) {
 
     fun activateTool(tool: Tool) {
         lastActiveToolIndex = tools.indexOf(activeTool)
-        activeTool.deactive()
+        activeTool.deactivate()
         activeTool = tool
         display(activeTool.name)
         activeTool.active()
