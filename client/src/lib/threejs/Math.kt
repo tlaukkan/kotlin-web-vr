@@ -176,7 +176,7 @@ class Vector3(
   fun round(): Unit = noImpl
   fun roundToZero(): Unit = noImpl
   fun negate(): Unit = noImpl
-  fun dot(v: Vector3): Unit = noImpl
+  fun dot(v: Vector3): Double = noImpl
   fun lengthSq(): Unit = noImpl
   fun length(): Double = noImpl
   fun lengthManhattan(): Unit = noImpl

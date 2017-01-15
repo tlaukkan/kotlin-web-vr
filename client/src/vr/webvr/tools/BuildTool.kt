@@ -47,26 +47,28 @@ class BuildTool(inputDevice: InputDevice) : Tool("Build", inputDevice) {
 
         if (!gripped) {
             if (button == InputButton.UP) {
-                translate(Vector3(0.0, 0.0, 1.0))
-            }
-
-            if (button == InputButton.DOWN) {
                 translate(Vector3(0.0, 0.0, -1.0))
             }
 
+            if (button == InputButton.DOWN) {
+                translate(Vector3(0.0, 0.0, 1.0))
+            }
+
             if (button == InputButton.LEFT) {
-                translate(Vector3(1.0, 0.0, 0.0))
+                translate(Vector3(-1.0, 0.0, 0.0))
             }
 
             if (button == InputButton.RIGHT) {
-                translate(Vector3(-1.0, 0.0, 0.0))
+                translate(Vector3(1.0, 0.0, 0.0))
             }
         } else {
             if (button == InputButton.UP) {
+                println("up")
                 translate(Vector3(0.0, 1.0, 0.0))
             }
 
             if (button == InputButton.DOWN) {
+                println("down")
                 translate(Vector3(0.0, -1.0,0.0))
             }
         }
@@ -80,25 +82,47 @@ class BuildTool(inputDevice: InputDevice) : Tool("Build", inputDevice) {
         println("Pad touched: $x,$y")
     }
 
-    private fun translate(translation: Vector3) {
+    private fun translate(localDirection: Vector3) {
+        val direction = localDirection.clone()
+        val inputDeviceOrientation = Quaternion(0.0, 0.0, 0.0, 1.0)
+        inputDevice.entity.getWorldQuaternion(inputDeviceOrientation)
+        direction.applyQuaternion(inputDeviceOrientation)
 
         for (nodeUrl in inputDevice.selectedNodeUrls) {
             val node = CLIENT!!.vrController.nodes[nodeUrl] ?: return
             val nodeType = CLIENT!!.vrController.nodeTypes[nodeUrl] ?: return
-
             var obj = CLIENT!!.vrController.scene.getObjectByName(node.url) ?: return
-
             val objectOrientation = Quaternion(0.0, 0.0, 0.0, 1.0)
             obj.getWorldQuaternion(objectOrientation)
-            translation.applyQuaternion(objectOrientation)
+
+            val xAxis = Vector3(1.0, 0.0, 0.0)
+            val yAxis = Vector3(0.0, 1.0, 0.0)
+            val zAxis = Vector3(0.0, 0.0, 1.0)
+
+            xAxis.applyQuaternion(objectOrientation)
+            yAxis.applyQuaternion(objectOrientation)
+            zAxis.applyQuaternion(objectOrientation)
+
+            val xDirection = xAxis.dot(direction)
+            val yDirection = yAxis.dot(direction)
+            val zDirection = zAxis.dot(direction)
+
+            val finalDirection: Vector3
+            if (Math.abs(xDirection) >= Math.abs(yDirection) && Math.abs(xDirection) >= Math.abs(zDirection)) {
+                finalDirection = xAxis.multiplyScalar(sign(xDirection))
+            } else if (Math.abs(yDirection) >= Math.abs(zDirection)) {
+                finalDirection = yAxis.multiplyScalar(sign(yDirection))
+            } else {
+                finalDirection = zAxis.multiplyScalar(sign(zDirection))
+            }
 
             val x = node.position.x
             val y = node.position.y
             val z = node.position.z
 
-            node.position.x += translation.x * node.scale.x
-            node.position.y += translation.y * node.scale.y
-            node.position.z += translation.z * node.scale.z
+            node.position.x += finalDirection.x * node.scale.x
+            node.position.y += finalDirection.y * node.scale.y
+            node.position.z += finalDirection.z * node.scale.z
 
             CLIENT!!.vrController.networkClient!!.send(node, nodeType)
 
@@ -107,5 +131,9 @@ class BuildTool(inputDevice: InputDevice) : Tool("Build", inputDevice) {
             node.position.z = z
         }
 
+    }
+
+    fun sign(value: Double) : Double {
+        return value / Math.abs(value)
     }
 }
