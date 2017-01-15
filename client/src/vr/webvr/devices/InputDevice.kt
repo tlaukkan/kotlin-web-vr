@@ -24,7 +24,7 @@ abstract class InputDevice(index: Int, type: String) {
 
     var lastActiveToolIndex = 0
 
-    var activeTool: Tool = NoTool(this)
+    var activeTool: Tool = NoneTool(this)
     val menuTool: MenuTool = MenuTool(this)
 
     val tools: MutableList<Tool> = mutableListOf()

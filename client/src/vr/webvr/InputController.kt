@@ -8,7 +8,7 @@ import lib.webvrapi.navigator
 import vr.client.VrClient
 import vr.webvr.devices.OpenVrGamepad
 import vr.webvr.tools.SelectTool
-import vr.webvr.tools.NoTool
+import vr.webvr.tools.NoneTool
 import kotlin.browser.window
 
 class InputController(val vrClient: VrClient) {
