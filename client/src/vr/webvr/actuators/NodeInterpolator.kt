@@ -86,30 +86,42 @@ class NodeInterpolator(val nodeUrl: String) {
      */
     fun interpolate(time: Double, timeDelta: Double, obj: Object3D) : Boolean {
 
-        //println("Interpolated node: $nodeUrl($time / $timeDelta)")
+        val endOfInterpolation = time - lastUpdateTime >= timeWindow * 10
 
-        position.add(getStep(position, intermediatePosition, timeDelta, timeWindow * 1.5))
-        intermediatePosition.add(getStep(intermediatePosition, targetPosition, timeDelta, timeWindow))
+        if (endOfInterpolation) {
+            obj.position.x = targetPosition.x
+            obj.position.y = targetPosition.y
+            obj.position.z = targetPosition.z
+            obj.quaternion.x = targetOrientation.x
+            obj.quaternion.y = targetOrientation.y
+            obj.quaternion.z = targetOrientation.z
+            obj.quaternion.w = targetOrientation.w
+            obj.scale.x = targetScale.x
+            obj.scale.y = targetScale.y
+            obj.scale.z = targetScale.z
+        } else {
+            position.add(getStep(position, intermediatePosition, timeDelta, timeWindow * 1.5))
+            intermediatePosition.add(getStep(intermediatePosition, targetPosition, timeDelta, timeWindow))
 
-        orientation.slerp(intermediateOrientation, timeDelta / (2 * timeWindow))
-        intermediateOrientation.slerp(targetOrientation, timeDelta / timeWindow)
+            orientation.slerp(intermediateOrientation, timeDelta / (2 * timeWindow))
+            intermediateOrientation.slerp(targetOrientation, timeDelta / timeWindow)
 
-        scale.add(getStep(scale, intermediateScale, timeDelta, timeWindow * 2.0))
-        intermediateScale.add(getStep(intermediateScale, targetScale, timeDelta, timeWindow))
+            scale.add(getStep(scale, intermediateScale, timeDelta, timeWindow * 2.0))
+            intermediateScale.add(getStep(intermediateScale, targetScale, timeDelta, timeWindow))
 
-        obj.position.x = position.x
-        obj.position.y = position.y
-        obj.position.z = position.z
-        obj.quaternion.x = orientation.x
-        obj.quaternion.y = orientation.y
-        obj.quaternion.z = orientation.z
-        obj.quaternion.w = orientation.w
-        obj.scale.x = scale.x
-        obj.scale.y = scale.y
-        obj.scale.z = scale.z
+            obj.position.x = position.x
+            obj.position.y = position.y
+            obj.position.z = position.z
+            obj.quaternion.x = orientation.x
+            obj.quaternion.y = orientation.y
+            obj.quaternion.z = orientation.z
+            obj.quaternion.w = orientation.w
+            obj.scale.x = scale.x
+            obj.scale.y = scale.y
+            obj.scale.z = scale.z
+        }
 
-        //println(time - lastUpdateTime)
-        return time - lastUpdateTime < 1.0
+        return !endOfInterpolation
     }
 
     private fun getStep(source: Vector3, target: Vector3, timeDelta: Double, timeWindow: Double): Vector3 {
