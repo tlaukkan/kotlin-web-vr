@@ -30,6 +30,7 @@ class TravelTool(inputDevice: InputDevice) : Tool("Travel", inputDevice) {
     }
 
     override fun active() {
+        gripped = false
         inputDevice.showSelectLine(0x00ffff)
     }
 
@@ -54,10 +55,14 @@ class TravelTool(inputDevice: InputDevice) : Tool("Travel", inputDevice) {
     }
 
     override fun deactivate() {
+        gripped = false
         inputDevice.hideSelectLine()
     }
 
     override fun onPressed(button: InputButton) {
+        if (button == InputButton.GRIP) {
+            gripped = true
+        }
         if (button == InputButton.TRIGGER) {
             CLIENT!!.vrController.scene.add(pointerObject)
         }
@@ -67,24 +72,67 @@ class TravelTool(inputDevice: InputDevice) : Tool("Travel", inputDevice) {
     }
 
     override fun onReleased(button: InputButton) {
-        if (button == InputButton.TRIGGER) {
-            CLIENT!!.vrController.scene.remove(pointerObject)
-            var position = Vector3()
-            pointerObject.getWorldPosition(position!!)
-
-            CLIENT!!.vrController.roomGroup.position.x -= position.x
-            CLIENT!!.vrController.roomGroup.position.y -= position.y
-            CLIENT!!.vrController.roomGroup.position.z -= position.z
-
-            return
-        }
         if (button == InputButton.GRIP) {
-            CLIENT!!.displayController.toggleVr()
+            gripped = false
         }
+        if (gripped) {
+            if (button == InputButton.UP) {
+                activeToolOnOtherDevice(HandTool::class.js.name)
+            }
+            if (button == InputButton.DOWN) {
+                activeToolOnOtherDevice(TravelTool::class.js.name)
+            }
+            if (button == InputButton.LEFT) {
+
+            }
+            if (button == InputButton.RIGHT) {
+
+            }
+        } else {
+            if (button == InputButton.UP) {
+                activeToolOnOtherDevice(AddTool::class.js.name)
+            }
+            if (button == InputButton.DOWN) {
+                activeToolOnOtherDevice(RemoveTool::class.js.name)
+            }
+            if (button == InputButton.LEFT) {
+                activeToolOnOtherDevice(BuildTool::class.js.name)
+            }
+            if (button == InputButton.RIGHT) {
+                activeToolOnOtherDevice(RotateTool::class.js.name)
+            }
+
+            if (button == InputButton.TRIGGER) {
+                CLIENT!!.vrController.scene.remove(pointerObject)
+                var position = Vector3()
+                pointerObject.getWorldPosition(position!!)
+
+                CLIENT!!.vrController.roomGroup.position.x -= position.x
+                CLIENT!!.vrController.roomGroup.position.y -= position.y
+                CLIENT!!.vrController.roomGroup.position.z -= position.z
+            }
+        }
+
     }
 
     override fun onPadTouched(x: Double, y: Double) {
     }
 
+    fun activeToolOnOtherDevice(toolClassName: String) {
+        val otherInputDevice = getOtherIputDevice() ?: return
+        otherInputDevice.activateToolByClass(toolClassName)
+    }
+
+    fun getOtherIputDevice() : InputDevice? {
+        println("Finding other input device.")
+        for (inputDeviceCandidate in CLIENT!!.inputController.inputDevices.values) {
+            if (inputDeviceCandidate != inputDevice) {
+                println("Found other input device (self is ${inputDevice.index}) : ${inputDeviceCandidate.index} ${inputDeviceCandidate.type}")
+                return inputDeviceCandidate
+            }
+        }
+        println("Did not find other input device.")
+        return null
+    }
 
 }

@@ -70,7 +70,7 @@ abstract class InputDevice(index: Int, type: String) {
         tools.add(travelTool)
         tools.add(RotateTool(this))
         tools.add(BuildTool(this))
-        tools.add(MoveTool(this))
+        tools.add(HandTool(this))
         tools.add(AddTool(this))
         tools.add(RemoveTool(this))
 
@@ -98,6 +98,16 @@ abstract class InputDevice(index: Int, type: String) {
 
         activateTool(tools[activeToolIndex])
 
+    }
+
+    fun activateToolByClass(toolClassName: String) {
+        for (tool in tools) {
+            println("Mathing tool class ${toolClassName} with ${tool.jsClass.name}")
+            if (tool != activeTool && tool.jsClass.name.equals(toolClassName)) {
+                println("Activating: ${tool.jsClass.name}")
+                activateTool(tool)
+            }
+        }
     }
 
     fun activateTool(tool: Tool) {

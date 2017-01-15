@@ -12,7 +12,7 @@ import vr.webvr.devices.InputDevice
 /**
  * Created by tlaukkan on 11/1/2016.
  */
-class MoveTool(inputDevice: InputDevice) : Tool("Move", inputDevice) {
+class HandTool(inputDevice: InputDevice) : Tool("Hand", inputDevice) {
 
     var selectRayDistance: Double = 0.0
 
