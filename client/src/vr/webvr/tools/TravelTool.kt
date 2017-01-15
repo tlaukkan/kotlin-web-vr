@@ -6,6 +6,7 @@ import lib.threejs.Extra.BoxGeometry
 import lib.threejs.Extra.SphereGeometry
 import vr.network.model.PrimitiveNode
 import vr.util.dynamicCast
+import vr.webvr.VrController
 import vr.webvr.devices.InputButton
 import vr.webvr.devices.InputDevice
 
@@ -104,12 +105,29 @@ class TravelTool(inputDevice: InputDevice) : Tool("Travel", inputDevice) {
 
             if (button == InputButton.TRIGGER) {
                 CLIENT!!.vrController.scene.remove(pointerObject)
-                var position = Vector3()
-                pointerObject.getWorldPosition(position!!)
 
-                CLIENT!!.vrController.roomGroup.position.x -= position.x
-                CLIENT!!.vrController.roomGroup.position.y -= position.y
-                CLIENT!!.vrController.roomGroup.position.z -= position.z
+                //var inputDevicePosition = Vector3()
+                //inputDevice.entity.getWorldPosition(inputDevicePosition!!)
+
+                var inputDevicePosition = Vector3()
+                CLIENT!!.displayController.camera.getWorldPosition(inputDevicePosition!!)
+
+                println(inputDevicePosition.x)
+                println(inputDevicePosition.y)
+                println(inputDevicePosition.z)
+
+                var pointerPosition = Vector3()
+                pointerObject.getWorldPosition(pointerPosition!!)
+
+                // Room floor should be at pointer y position
+                inputDevicePosition.y = 0.0
+
+                var travelTranslation = pointerPosition.clone()
+                travelTranslation.sub(inputDevicePosition)
+
+                CLIENT!!.vrController.roomGroup.position.x -= travelTranslation.x
+                CLIENT!!.vrController.roomGroup.position.y -= travelTranslation.y
+                CLIENT!!.vrController.roomGroup.position.z -= travelTranslation.z
             }
         }
 
@@ -119,11 +137,11 @@ class TravelTool(inputDevice: InputDevice) : Tool("Travel", inputDevice) {
     }
 
     fun activeToolOnOtherDevice(toolClassName: String) {
-        val otherInputDevice = getOtherIputDevice() ?: return
+        val otherInputDevice = getOtherInputDevice() ?: return
         otherInputDevice.activateToolByClass(toolClassName)
     }
 
-    fun getOtherIputDevice() : InputDevice? {
+    fun getOtherInputDevice() : InputDevice? {
         println("Finding other input device.")
         for (inputDeviceCandidate in CLIENT!!.inputController.inputDevices.values) {
             if (inputDeviceCandidate != inputDevice) {
