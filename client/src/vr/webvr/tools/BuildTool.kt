@@ -35,7 +35,11 @@ class BuildTool(inputDevice: InputDevice) : Tool("Build", inputDevice) {
         if (button == InputButton.GRIP) {
             gripped = true
         }
-
+        if (button == InputButton.TRIGGER) {
+            if (inputDevice.selectNodes() == null) {
+                inputDevice.unselectNodes()
+            }
+        }
     }
 
     override fun onReleased(button: InputButton) {
@@ -59,12 +63,6 @@ class BuildTool(inputDevice: InputDevice) : Tool("Build", inputDevice) {
             if (button == InputButton.RIGHT) {
                 translate(Vector3(1.0, 0.0, 0.0))
             }
-
-            if (button == InputButton.TRIGGER) {
-                if (inputDevice.selectNodes() == null) {
-                    inputDevice.unselectNodes()
-                }
-            }
         } else {
             if (button == InputButton.UP) {
                 println("up")
@@ -77,27 +75,23 @@ class BuildTool(inputDevice: InputDevice) : Tool("Build", inputDevice) {
             }
 
             if (button == InputButton.TRIGGER) {
-                if (inputDevice.selectNodes() == null) {
-                    inputDevice.unselectNodes()
-                } else {
+                val nodeUrl = inputDevice.selectedNodeUrls.last()
+                inputDevice.unselectNodes()
+                val node = CLIENT!!.vrController.nodes[nodeUrl] ?: return
+                val nodeType = CLIENT!!.vrController.nodeTypes[nodeUrl] ?: return
+                val clone : Node = dynamicCast(fromJson(toJson(node)))
+                clone.url = "${CLIENT!!.vrController.linkedServerCellUrl}/00000000-0000-0000-0000-000000000000"
 
-                    val nodeUrl = inputDevice.selectedNodeUrls.last()
-                    val node = CLIENT!!.vrController.nodes[nodeUrl] ?: return
-                    val nodeType = CLIENT!!.vrController.nodeTypes[nodeUrl] ?: return
-                    val clone : Node = dynamicCast(fromJson(toJson(node)))
-                    clone.url = "${CLIENT!!.vrController.linkedServerCellUrl}/00000000-0000-0000-0000-000000000000"
+                val direction = Vector3(0.0, 0.0, 1.0)
+                val inputDeviceOrientation = Quaternion(0.0, 0.0, 0.0, 1.0)
+                inputDevice.entity.getWorldQuaternion(inputDeviceOrientation)
+                direction.applyQuaternion(inputDeviceOrientation)
 
-                    val direction = Vector3(0.0, 0.0, 1.0)
-                    val inputDeviceOrientation = Quaternion(0.0, 0.0, 0.0, 1.0)
-                    inputDevice.entity.getWorldQuaternion(inputDeviceOrientation)
-                    direction.applyQuaternion(inputDeviceOrientation)
+                var obj = CLIENT!!.vrController.scene.getObjectByName(node.url) ?: return
+                val objectOrientation = Quaternion(0.0, 0.0, 0.0, 1.0)
+                obj.getWorldQuaternion(objectOrientation)
 
-                    var obj = CLIENT!!.vrController.scene.getObjectByName(node.url) ?: return
-                    val objectOrientation = Quaternion(0.0, 0.0, 0.0, 1.0)
-                    obj.getWorldQuaternion(objectOrientation)
-
-                    translate(direction, objectOrientation, clone, nodeType)
-                }
+                translate(direction, objectOrientation, clone, nodeType)
             }
         }
     }
