@@ -14,7 +14,6 @@ import vr.webvr.devices.InputDevice
  */
 class TravelTool(inputDevice: InputDevice) : Tool("Travel", inputDevice) {
 
-    var lastSqueezeMoveTime: Double = 0.0
     val pointerObject: Object3D
 
     init {
