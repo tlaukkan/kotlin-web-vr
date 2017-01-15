@@ -37,7 +37,7 @@ fun <T> dynamicCast(obj: Any) : T {
 
 
 fun getDeltaQuaternion(startOrientation: Quaternion, currentOrientation: Quaternion): Quaternion {
-    val originalOrientationConjugate = startOrientation.conjugate()
+    val originalOrientationConjugate = startOrientation!!.clone().conjugate()
 
     val orientationChange = currentOrientation.clone()
     orientationChange.multiply(originalOrientationConjugate)

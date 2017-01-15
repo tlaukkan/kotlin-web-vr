@@ -14,13 +14,13 @@ import vr.webvr.devices.InputDevice
  */
 class MoveTool(inputDevice: InputDevice) : Tool("Move", inputDevice) {
 
-    var selectRayDistance: Double? = null
+    var selectRayDistance: Double = 0.0
 
-    var inputDeviceStartPosition: Vector3? = null
-    var inputDeviceStartOrientation: Quaternion? = null
+    var selectPointStartPosition: Vector3 = Vector3()
+    var inputDeviceStartOrientation: Quaternion = Quaternion(0.0, 0.0, 0.0, 1.0)
 
-    var objectStartPosition: Vector3? = null
-    var objectStartOrientation: Quaternion? = null
+    var objectStartPosition: Vector3 = Vector3()
+    var objectStartOrientation: Quaternion = Quaternion(0.0, 0.0, 0.0, 1.0)
 
     var actualObject: Object3D? = null
     var protoObject: Object3D? = null
@@ -44,33 +44,28 @@ class MoveTool(inputDevice: InputDevice) : Tool("Move", inputDevice) {
     override fun onPressed(button: InputButton) {
         if (button == InputButton.TRIGGER) {
             inputDevice.unselectNodes()
-            selectRayDistance = inputDevice.selectNodes()
-
-            if (inputDevice.selectedNodeUrls.size == 0) {
-                return
-            }
+            selectRayDistance = inputDevice.selectNodes() ?: return
 
             val nodeUrl = inputDevice.selectedNodeUrls[0]
 
-            inputDeviceStartPosition = Vector3()
-            inputDevice.entity.getWorldPosition(inputDeviceStartPosition!!)
-
             inputDeviceStartOrientation = Quaternion(0.0, 0.0, 0.0, 1.0)
-            inputDevice.entity.getWorldQuaternion(inputDeviceStartOrientation!!)
+            inputDevice.entity.getWorldQuaternion(inputDeviceStartOrientation)
 
-            // Move position to intersection point of select rate
-            val direction = Vector3(0.0, 0.0, -selectRayDistance!!)
-            direction.applyQuaternion(inputDeviceStartOrientation!!)
-            inputDeviceStartPosition!!.add(direction)
+            selectPointStartPosition = Vector3()
+            inputDevice.entity.getWorldPosition(selectPointStartPosition)
+            // Move position to intersection point of select ray
+            val direction = Vector3(0.0, 0.0, -selectRayDistance)
+            direction.applyQuaternion(inputDeviceStartOrientation)
+            selectPointStartPosition.add(direction)
 
-            inputDevice.entity.getWorldQuaternion(inputDeviceStartOrientation!!)
+            inputDevice.entity.getWorldQuaternion(inputDeviceStartOrientation)
 
             val obj = CLIENT!!.vrController.scene.getObjectByName(nodeUrl) ?: return
 
             objectStartPosition = Vector3()
-            obj.getWorldPosition(objectStartPosition!!)
+            obj.getWorldPosition(objectStartPosition)
             objectStartOrientation = Quaternion(0.0, 0.0, 0.0, 1.0)
-            obj.getWorldQuaternion(objectStartOrientation!!)
+            obj.getWorldQuaternion(objectStartOrientation)
         }
     }
 
@@ -110,39 +105,34 @@ class MoveTool(inputDevice: InputDevice) : Tool("Move", inputDevice) {
     private fun moveNodeTo(sendNodeUpdate: Boolean) {
         val nodeUrl = inputDevice.selectedNodeUrls[0]
 
-        val currentPosition = Vector3()
-        inputDevice.entity.getWorldPosition(currentPosition!!)
-        val currentOrientation = Quaternion(0.0, 0.0, 0.0, 1.0)
-        inputDevice.entity.getWorldQuaternion(currentOrientation!!)
+        val inputDeviceCurrentOrientation = Quaternion(0.0, 0.0, 0.0, 1.0)
+        inputDevice.entity.getWorldQuaternion(inputDeviceCurrentOrientation)
 
-        // Move position to intersection point of select rate
-        val direction = Vector3(0.0, 0.0, -selectRayDistance!!)
-        direction.applyQuaternion(currentOrientation!!)
-        currentPosition!!.add(direction)
+        val selectPointCurrentPosition = Vector3()
+        inputDevice.entity.getWorldPosition(selectPointCurrentPosition)
+        // Move position to intersection point of select ray
+        val direction = Vector3(0.0, 0.0, -selectRayDistance)
+        direction.applyQuaternion(inputDeviceCurrentOrientation)
+        selectPointCurrentPosition.add(direction)
 
-        //val obj = virtualRealityController!!.scene.getObjectByName(nodeUrl) ?: return
+        val selectPointPositionChange = selectPointCurrentPosition.clone()
+        selectPointPositionChange.sub(selectPointStartPosition)
 
-        val positionChange = currentPosition!!.clone()
-        positionChange.sub(inputDeviceStartPosition!!)
+        val updatedObjectPosition = objectStartPosition.clone()
+        updatedObjectPosition.add(selectPointPositionChange)
 
-        val objectPosition = objectStartPosition!!.clone()
-        objectPosition.add(positionChange)
-
-        val originalOrientation = inputDeviceStartOrientation!!.clone()
-        val orientationChange = getDeltaQuaternion(originalOrientation, currentOrientation)
-
-        val objectOrientation = objectStartOrientation!!.clone()
-        orientationChange.multiply(objectOrientation)
+        val updatedObjectOrientation = getDeltaQuaternion(inputDeviceStartOrientation, inputDeviceCurrentOrientation)
+        updatedObjectOrientation.multiply(objectStartOrientation)
 
         val node = CLIENT!!.vrController.nodes[nodeUrl] ?: return
-        val nodeType = CLIENT!!.vrController.nodeTypes[nodeUrl]!! ?: return
+        val nodeType = CLIENT!!.vrController.nodeTypes[nodeUrl] ?: return
 
-        CLIENT!!.vrController.setNodePosition(node!!, objectPosition)
+        CLIENT!!.vrController.setNodePosition(node, updatedObjectPosition)
 
-        node.orientation.x = orientationChange.x
-        node.orientation.y = orientationChange.y
-        node.orientation.z = orientationChange.z
-        node.orientation.w = orientationChange.w
+        node.orientation.x = updatedObjectOrientation.x
+        node.orientation.y = updatedObjectOrientation.y
+        node.orientation.z = updatedObjectOrientation.z
+        node.orientation.w = updatedObjectOrientation.w
 
         if (sendNodeUpdate) {
             CLIENT!!.vrController.networkClient!!.send(node, nodeType)
