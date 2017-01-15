@@ -65,12 +65,10 @@ class BuildTool(inputDevice: InputDevice) : Tool("Build", inputDevice) {
             }
         } else {
             if (button == InputButton.UP) {
-                println("up")
                 translate(Vector3(0.0, 1.0, 0.0))
             }
 
             if (button == InputButton.DOWN) {
-                println("down")
                 translate(Vector3(0.0, -1.0,0.0))
             }
 
@@ -97,11 +95,9 @@ class BuildTool(inputDevice: InputDevice) : Tool("Build", inputDevice) {
     }
 
     override fun onSqueezed(button: InputButton, value: Double) {
-        println("Squeezed: $button $value")
     }
 
     override fun onPadTouched(x: Double, y: Double) {
-        println("Pad touched: $x,$y")
     }
 
     private fun translate(localDirection: Vector3) {

@@ -39,6 +39,8 @@ class Quaternion(x: Double, y: Double, z: Double, w: Double) {
 
   fun clone(): Quaternion = noImpl
 
+  fun setFromAxisAngle(axis: Vector3, angle: Double): Quaternion = noImpl
+
   fun fromArray(array: Array<Any>): Quaternion = noImpl
 }
 

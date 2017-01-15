@@ -68,6 +68,7 @@ abstract class InputDevice(index: Int, type: String) {
         val travelTool = TravelTool(this)
 
         tools.add(travelTool)
+        tools.add(RotateTool(this))
         tools.add(BuildTool(this))
         tools.add(MoveTool(this))
         tools.add(AddTool(this))
