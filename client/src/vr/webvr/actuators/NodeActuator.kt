@@ -3,7 +3,9 @@ package vr.webvr.actuators
 import vr.CLIENT
 import lib.threejs.Object3D
 import lib.threejs.Texture
+import lib.threejs.Vector3
 import vr.network.model.Node
+import vr.util.toJson
 import vr.webvr.VrController
 
 abstract class NodeActuator(var controller: VrController, var type: String) {
@@ -16,7 +18,7 @@ abstract class NodeActuator(var controller: VrController, var type: String) {
         obj.name = node.url
         updateObjectFromNode(obj, node)
 
-        interpolate(node)
+        updateInterpolator(node, null)
 
         add(node.parentUrl, obj)
         //controller.scene.add(obj)
@@ -49,8 +51,8 @@ abstract class NodeActuator(var controller: VrController, var type: String) {
         }
     }
 
-    open fun update(node: Node) {
-        interpolate(node)
+    open fun update(node: Node, oldNode: Node) {
+        updateInterpolator(node, oldNode)
 
         /*
         val obj = controller.scene.getObjectByName(node.url)
@@ -60,12 +62,28 @@ abstract class NodeActuator(var controller: VrController, var type: String) {
         */
     }
 
-    private fun interpolate(node: Node) {
+    private fun updateInterpolator(node: Node, oldNode: Node?) {
         if (!controller.nodeInterpolators.containsKey(node.url)) {
-            controller.nodeInterpolators.put(node.url, NodeInterpolator(node.url))
-            println("Added node interpolator for node: " + node.url)
+            val interpolator = NodeInterpolator(node.url)
+            controller.nodeInterpolators.put(node.url, interpolator)
+            if (oldNode != null) {
+                interpolator.initialize(CLIENT!!.renderTime, oldNode)
+                interpolator.update(CLIENT!!.renderTime, node)
+                //println("Added node interpolator for old node: " + node.url)
+                /*val oldPosition = Vector3()
+                CLIENT!!.vrController.getNodePositionToLocalCoordinates(oldNode, oldPosition)
+                val newPosition = Vector3()
+                CLIENT!!.vrController.getNodePositionToLocalCoordinates(node, newPosition)
+                println(newPosition.distanceTo(oldPosition))
+                println(toJson(node))
+                println(toJson(oldNode))*/
+            } else {
+                interpolator.initialize(CLIENT!!.renderTime, node)
+                //println("Added node interpolator for new node: " + node.url)
+            }
+        } else {
+            controller.nodeInterpolators[node.url]!!.update(CLIENT!!.renderTime, node)
         }
-        controller.nodeInterpolators[node.url]!!.updateTarget(CLIENT!!.renderTime, CLIENT!!.renderTimeDelta, node)
     }
 
     open fun remove(node: Node) {
@@ -77,7 +95,7 @@ abstract class NodeActuator(var controller: VrController, var type: String) {
 
 
     fun updateObjectFromNode(obj: Object3D, node: Node) {
-        CLIENT!!.vrController!!.getNodePosition(node, obj.position)
+        CLIENT!!.vrController!!.getNodePositionToLocalCoordinates(node, obj.position)
         obj.quaternion.x = node.orientation.x
         obj.quaternion.y = node.orientation.y
         obj.quaternion.z = node.orientation.z

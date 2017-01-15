@@ -65,7 +65,17 @@ abstract class InputDevice(index: Int, type: String) {
         var material = MeshBasicMaterial( object {var map = displayTexture} )
         material.transparent = true
 
-        val rightController = index % 2 == 1
+        val travelTool = TravelTool(this)
+
+        tools.add(travelTool)
+        tools.add(BuildTool(this))
+        tools.add(MoveTool(this))
+        tools.add(AddTool(this))
+        tools.add(RemoveTool(this))
+
+        val activeToolIndex = (index + 1) % 2
+
+        val rightController = tools[activeToolIndex] != travelTool
 
         val planeGeometry = PlaneGeometry(0.3, 0.3)
         display = Mesh(planeGeometry, material)
@@ -85,12 +95,8 @@ abstract class InputDevice(index: Int, type: String) {
 
         entity.add(display)
 
-        tools.add(MoveTool(this))
-        tools.add(TravelTool(this))
-        tools.add(AddTool(this))
-        tools.add(RemoveTool(this))
+        activateTool(tools[activeToolIndex])
 
-        activateTool(tools[(index + 1) % 2])
     }
 
     fun activateTool(tool: Tool) {

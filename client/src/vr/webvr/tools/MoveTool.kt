@@ -103,6 +103,9 @@ class MoveTool(inputDevice: InputDevice) : Tool("Move", inputDevice) {
     }
 
     private fun moveNodeTo(sendNodeUpdate: Boolean) {
+        if (inputDevice.selectedNodeUrls == null || inputDevice.selectedNodeUrls.size == 0) {
+            return
+        }
         val nodeUrl = inputDevice.selectedNodeUrls[0]
 
         val inputDeviceCurrentOrientation = Quaternion(0.0, 0.0, 0.0, 1.0)
@@ -127,7 +130,7 @@ class MoveTool(inputDevice: InputDevice) : Tool("Move", inputDevice) {
         val node = CLIENT!!.vrController.nodes[nodeUrl] ?: return
         val nodeType = CLIENT!!.vrController.nodeTypes[nodeUrl] ?: return
 
-        CLIENT!!.vrController.setNodePosition(node, updatedObjectPosition)
+        CLIENT!!.vrController.setNodePositionFromWorldCoordinates(node, updatedObjectPosition)
 
         node.orientation.x = updatedObjectOrientation.x
         node.orientation.y = updatedObjectOrientation.y
