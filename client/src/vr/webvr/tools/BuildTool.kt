@@ -86,6 +86,12 @@ class BuildTool(inputDevice: InputDevice) : Tool("Build", inputDevice) {
             val node = CLIENT!!.vrController.nodes[nodeUrl] ?: return
             val nodeType = CLIENT!!.vrController.nodeTypes[nodeUrl] ?: return
 
+            var obj = CLIENT!!.vrController.scene.getObjectByName(node.url) ?: return
+
+            val objectOrientation = Quaternion(0.0, 0.0, 0.0, 1.0)
+            obj.getWorldQuaternion(objectOrientation)
+            translation.applyQuaternion(objectOrientation)
+
             val x = node.position.x
             val y = node.position.y
             val z = node.position.z
