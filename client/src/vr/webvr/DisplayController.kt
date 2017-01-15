@@ -7,6 +7,7 @@ import vr.webvr.model.FovPort
 import vr.webvr.model.NDCScaleOffset
 import vr.webvr.model.Rectangle
 import lib.webvrapi.VRFieldOfView
+import vr.CLIENT
 import vr.client.VrClient
 import vr.util.floatsToDoubles
 import kotlin.browser.document
@@ -15,6 +16,10 @@ import kotlin.dom.addClass
 import kotlin.dom.onClick
 
 class DisplayController(val vrClient: VrClient) {
+
+    var displayDeviceStartPositionInitialed = false
+    val displayDeviceStartPosition = Vector3()
+    val displayDeviceCurrentPosition = Vector3()
 
     var eyeTranslationL = Vector3()
     var eyeTranslationR = Vector3()
@@ -125,6 +130,13 @@ class DisplayController(val vrClient: VrClient) {
 
     }
 
+    fun toggleVr() {
+        if (inVr) {
+            exitVr()
+        } else {
+            enterVr()
+        }
+    }
 
     fun enterVr() {
         return this.setPresentMode(true)
@@ -139,6 +151,25 @@ class DisplayController(val vrClient: VrClient) {
         var pose = vrClient.display.getPose()
 
         if (pose.position !== null) {
+
+            // Detect whether display has moved enough to go into VR mode
+            if (!displayDeviceStartPositionInitialed) {
+                displayDeviceStartPositionInitialed = true
+                displayDeviceStartPosition.fromArray(floatsToDoubles(pose.position).toTypedArray())
+            } else {
+                displayDeviceCurrentPosition.fromArray(floatsToDoubles(pose.position).toTypedArray())
+                val displayDeviceMoveDistance = displayDeviceCurrentPosition.distanceTo(displayDeviceStartPosition)
+                if (displayDeviceMoveDistance > 0.3) {
+                    if (!inVr) {
+                        enterVr()
+                    }
+                } else {
+                    if (inVr) {
+                        exitVr()
+                    }
+                }
+            }
+
             this.camera.position.fromArray(floatsToDoubles(pose.position).toTypedArray())
             this.camera.position.multiplyScalar(this.scale)
             this.camera.quaternion.fromArray(floatsToDoubles(pose.orientation).toTypedArray())

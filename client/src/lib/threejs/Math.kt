@@ -190,7 +190,7 @@ class Vector3(
   fun projectOnPlane(): Unit = noImpl
   fun reflect(): Unit = noImpl
   fun angleTo(v: Vector3): Unit = noImpl
-  fun distanceTo(v: Vector3): Unit = noImpl
+  fun distanceTo(v: Vector3): Double = noImpl
   fun distanceToSquared(v: Vector3): Unit = noImpl
   fun setFromSpherical(s: dynamic): Unit = noImpl
   fun setFromMatrixPosition(m: Matrix4): Unit = noImpl

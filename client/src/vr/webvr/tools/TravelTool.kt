@@ -79,11 +79,7 @@ class TravelTool(inputDevice: InputDevice) : Tool("Travel", inputDevice) {
             return
         }
         if (button == InputButton.GRIP) {
-            if (CLIENT!!.displayController.inVr) {
-                CLIENT!!.displayController.exitVr()
-            } else {
-                CLIENT!!.displayController.enterVr()
-            }
+            CLIENT!!.displayController.toggleVr()
         }
     }
 
