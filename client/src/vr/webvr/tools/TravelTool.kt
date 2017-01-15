@@ -68,18 +68,24 @@ class TravelTool(inputDevice: InputDevice) : Tool("Travel", inputDevice) {
     }
 
     override fun onReleased(button: InputButton) {
-        CLIENT!!.vrController.scene.remove(pointerObject)
-        var position = Vector3()
-        pointerObject.getWorldPosition(position!!)
+        if (button == InputButton.TRIGGER) {
+            CLIENT!!.vrController.scene.remove(pointerObject)
+            var position = Vector3()
+            pointerObject.getWorldPosition(position!!)
 
-        /*val roomPosition = virtualRealityController!!.roomGroup.position
-        position.x += roomPosition.x
-        position.y += roomPosition.y
-        position.z += roomPosition.z*/
+            CLIENT!!.vrController.roomGroup.position.x -= position.x
+            CLIENT!!.vrController.roomGroup.position.y -= position.y
+            CLIENT!!.vrController.roomGroup.position.z -= position.z
 
-        CLIENT!!.vrController.roomGroup.position.x -= position.x
-        CLIENT!!.vrController.roomGroup.position.y -= position.y
-        CLIENT!!.vrController.roomGroup.position.z -= position.z
+            return
+        }
+        if (button == InputButton.GRIP) {
+            if (CLIENT!!.displayController.inVr) {
+                CLIENT!!.displayController.exitVr()
+            } else {
+                CLIENT!!.displayController.enterVr()
+            }
+        }
     }
 
     override fun onPadTouched(x: Double, y: Double) {

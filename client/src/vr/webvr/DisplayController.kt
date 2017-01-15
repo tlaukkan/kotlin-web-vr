@@ -22,7 +22,7 @@ class DisplayController(val vrClient: VrClient) {
     var renderRectR = Rectangle()
     var eyeFOVL: VRFieldOfView? = null
     var eyeFOVR: VRFieldOfView? = null
-    var isPresenting = false
+    var inVr = false
     var scale = 1.0
     var rendererWidth: Double
     var rendererHeight: Double
@@ -64,7 +64,7 @@ class DisplayController(val vrClient: VrClient) {
     fun setSize(width: Double, height: Double) {
         rendererWidth = width
         rendererHeight = height
-        if (this.isPresenting) {
+        if (this.inVr) {
             var eyeParamsL = vrClient.display.getEyeParameters("left")
             this.renderer.setPixelRatio(1)
             this.renderer.setSize(eyeParamsL.renderWidth.toDouble() * 2, eyeParamsL.renderHeight.toDouble())
@@ -74,15 +74,15 @@ class DisplayController(val vrClient: VrClient) {
         }
     }
 
-    fun setPresent(present: Boolean) {
-        if (isPresenting === present) {
+    fun setPresentMode(inVrMode: Boolean) {
+        if (inVr === inVrMode) {
             return
         }
-        if (present) {
+        if (inVrMode) {
             val vrLayer = object {
                 var source = canvas
             }
-            println("Starting to present VR...")
+            println("Starting to inVrMode VR...")
             vrClient.display.requestPresent(arrayOf(vrLayer)).catch { error ->
                 println("Failed to start presenting VR: $error")
             }.then {
@@ -99,13 +99,13 @@ class DisplayController(val vrClient: VrClient) {
 
     fun onVrDisplayPresentChange() {
 
-        if (isPresenting == vrClient.display.isPresenting) {
+        if (inVr == vrClient.display.isPresenting) {
             return
         }
 
-        isPresenting = vrClient.display.isPresenting
+        inVr = vrClient.display.isPresenting
 
-        if (isPresenting) {
+        if (inVr) {
             rendererPixelRatio = renderer.getPixelRatio().toDouble()
 
             var eyeParamsL = vrClient.display.getEyeParameters("left")
@@ -126,12 +126,12 @@ class DisplayController(val vrClient: VrClient) {
     }
 
 
-    fun requestPresent() {
-        return this.setPresent(true)
+    fun enterVr() {
+        return this.setPresentMode(true)
     }
 
-    fun exitPresent() {
-        return this.setPresent(false)
+    fun exitVr() {
+        return this.setPresentMode(false)
     }
 
     fun render(scene: Scene, camera: PerspectiveCamera) {
@@ -159,7 +159,7 @@ class DisplayController(val vrClient: VrClient) {
             this.camera.position.multiplyScalar(this.scale)
         }
 
-        if (!isPresenting) {
+        if (!inVr) {
             // Regular render mode if not HMD
             this.renderer.render(scene, camera)
         } else {
@@ -322,12 +322,12 @@ class DisplayController(val vrClient: VrClient) {
         button.textContent = "ENTER VR"
         button.onClick {
 
-            if (isPresenting) {
-                exitPresent()
+            if (inVr) {
+                exitVr()
             } else {
-                requestPresent()
+                enterVr()
             }
-            // effect.isPresenting ? effect.exitPresent() : effect.requestPresent();
+            // effect.isPresenting ? effect.exitVr() : effect.enterVr();
         }
 
         window.addEventListener("vrdisplaypresentchange", {
