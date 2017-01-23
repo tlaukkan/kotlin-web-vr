@@ -1,0 +1,25 @@
+{
+  "url" : "http://127.0.0.1:8080/api/cells/a/7f7e60df-baf3-4909-a33b-6357258bc0fa",
+  "parentUrl" : null,
+  "removed" : false,
+  "position" : {
+    "x" : 0.6494808793067932,
+    "y" : 0.9891484237975305,
+    "z" : 0.08732195198535919
+  },
+  "orientation" : {
+    "x" : 0.006333595937689552,
+    "y" : -0.8610607992836763,
+    "z" : -0.015522603906519512,
+    "w" : 0.5082255517583837
+  },
+  "scale" : {
+    "x" : 0.125,
+    "y" : 0.125,
+    "z" : 0.125
+  },
+  "volatile" : false,
+  "opacity" : 1.0,
+  "shape" : "sphere",
+  "texture" : "textures/gold.jpg"
+}

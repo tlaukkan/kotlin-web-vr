@@ -1,0 +1,25 @@
+{
+  "url" : "http://127.0.0.1:8080/api/cells/a/788c53ac-34f6-4dc5-83ef-ac9eb88c53a5",
+  "parentUrl" : null,
+  "removed" : false,
+  "position" : {
+    "x" : 1.791117848828435,
+    "y" : 0.7110062519083609,
+    "z" : -0.013967512990348041
+  },
+  "orientation" : {
+    "x" : 0.0,
+    "y" : 0.0,
+    "z" : 0.0,
+    "w" : 1.0
+  },
+  "scale" : {
+    "x" : 0.5,
+    "y" : 0.5,
+    "z" : 0.5
+  },
+  "volatile" : false,
+  "opacity" : 1.0,
+  "shape" : "box",
+  "texture" : "textures/wood.jpg"
+}
