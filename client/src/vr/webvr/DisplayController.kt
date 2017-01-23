@@ -7,6 +7,7 @@ import vr.webvr.model.FovPort
 import vr.webvr.model.NDCScaleOffset
 import vr.webvr.model.Rectangle
 import lib.webvrapi.VRFieldOfView
+import lib.webvrapi.VRFrameData
 import vr.CLIENT
 import vr.client.VrClient
 import vr.util.floatsToDoubles
@@ -21,6 +22,7 @@ class DisplayController(val vrClient: VrClient) {
     val displayDeviceStartPosition = Vector3()
     val displayDeviceCurrentPosition = Vector3()
 
+    var frameData = VRFrameData()
     var eyeTranslationL = Vector3()
     var eyeTranslationR = Vector3()
     var renderRectL = Rectangle()
@@ -159,7 +161,7 @@ class DisplayController(val vrClient: VrClient) {
             } else {
                 displayDeviceCurrentPosition.fromArray(floatsToDoubles(pose.position).toTypedArray())
                 val displayDeviceMoveDistance = displayDeviceCurrentPosition.distanceTo(displayDeviceStartPosition)
-                if (displayDeviceMoveDistance > 0.3) {
+                /*if (displayDeviceMoveDistance > 0.3) {
                     if (!inVr) {
                         enterVr()
                     }
@@ -167,7 +169,7 @@ class DisplayController(val vrClient: VrClient) {
                     if (inVr) {
                         exitVr()
                     }
-                }
+                }*/
             }
 
             this.camera.position.fromArray(floatsToDoubles(pose.position).toTypedArray())
@@ -203,6 +205,8 @@ class DisplayController(val vrClient: VrClient) {
 
             }
 
+            //vrClient.display.getFrameData(frameData)
+            //println(floatsToDoubles(frameData.leftViewMatrix!!).size)
 
             var eyeParamsL = vrClient.display.getEyeParameters("left")
             var eyeParamsR = vrClient.display.getEyeParameters("right")

@@ -28,7 +28,7 @@ class RendererController(val vrClient: VrClient) {
         renderer.gammaInput = true
         renderer.gammaOutput = true
 
-        renderer.shadowMapEnabled = true
+        //renderer.shadowMapEnabled = true
         //renderer.shadowMap.Enabled = true
         renderer.shadowMap.type = PCFSoftShadowMap
 

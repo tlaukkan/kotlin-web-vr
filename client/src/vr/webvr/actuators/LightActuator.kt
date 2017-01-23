@@ -31,10 +31,9 @@ class LightActuator(controller: VrController) : NodeActuator(controller, "LightN
         obj.receiveShadow = false
 
         val light = PointLight(typedNode.color, typedNode.intensity, typedNode.distance, typedNode.decay)
-        light.castShadow = true
-
-        light.shadowMapWidth = 1024
-        light.shadowMapHeight = 1024
+        //light.castShadow = true
+        //light.shadowMapWidth = 4096
+        //light.shadowMapHeight = 4096
 
         light.shadow.camera.near = 0.1
         light.shadow.camera.far = typedNode.distance / 2

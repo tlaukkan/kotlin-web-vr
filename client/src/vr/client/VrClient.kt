@@ -8,6 +8,7 @@ import lib.webvrapi.VRDisplay
 import vr.network.RestClient
 import vr.network.model.LinkRequest
 import vr.webvr.*
+import vr.webvr.actuators.MaterialFactory
 import kotlin.browser.window
 
 class VrClient(val display: VRDisplay) {
@@ -21,6 +22,7 @@ class VrClient(val display: VRDisplay) {
     val inputController: InputController
     val mediaController: MediaController
     val restClient: RestClient
+    val materialFactory = MaterialFactory()
 
     init {
         CLIENT = this
@@ -86,8 +88,10 @@ class VrClient(val display: VRDisplay) {
         inputController.render()
         vrController.render()
         rendererController.render()
-        displayController.render(rendererController.scene, rendererController.camera)
 
         display.requestAnimationFrame({ time -> render() })
+        displayController.render(rendererController.scene, rendererController.camera)
+
+
     }
 }

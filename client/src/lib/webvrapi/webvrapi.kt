@@ -26,6 +26,7 @@ open class VRDisplay : EventTarget() {
     open fun exitPresent(): Promise<Unit> = noImpl
     open fun getLayers(): Array<VRLayer> = noImpl
     open fun submitFrame(pose: VRPose? = null): Unit = noImpl
+    open fun getFrameData(frameData: VRFrameData): Boolean = noImpl
 }
 
 @native
@@ -72,6 +73,19 @@ interface VRStageParameters {
     var sizeX: Number
     var sizeZ: Number
 }
+
+class VRFrameData {
+    var timestamp: Number? = null
+
+    var leftProjectionMatrix: Float32Array? = null
+    var leftViewMatrix: Float32Array? = null
+
+    var rightProjectionMatrix: Float32Array? = null
+    var rightViewMatrix: Float32Array? = null
+
+    var pose: VRPose? = null
+}
+
 @native
 fun Navigator.getVRDisplays(): Promise<Array<VRDisplay>> = noImpl
 @native
