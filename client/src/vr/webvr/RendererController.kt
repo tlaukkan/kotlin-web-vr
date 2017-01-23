@@ -18,11 +18,11 @@ class RendererController(val vrClient: VrClient) {
     init {
         scene = Scene()
         camera = PerspectiveCamera(75.0, window.innerWidth as Double / window.innerHeight, 0.1, 512.0)
-        renderer = WebGLRenderer( object {var antialias = true})
+        renderer = WebGLRenderer( object {var antialias = true; var alpha = false})
         renderer.setSize(window.innerWidth as Double, window.innerHeight as Double)
         renderer.setPixelRatio(window.devicePixelRatio)
         renderer.sortObjects = false
-        renderer.setClearColor(0x000000)
+        renderer.setClearColor(0x574C3C)
 
         renderer.physicallyCorrectLights = true
         renderer.gammaInput = true
@@ -33,7 +33,7 @@ class RendererController(val vrClient: VrClient) {
         renderer.shadowMap.type = PCFSoftShadowMap
 
         document.body!!.appendChild(renderer.domElement)
-        scene.fog = FogExp2(Color(0x000000), 0.05)
+        //scene.fog = FogExp2(Color(0x000000), 0.05)
     }
 
     fun render() {
