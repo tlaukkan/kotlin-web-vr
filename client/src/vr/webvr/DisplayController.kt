@@ -205,9 +205,6 @@ class DisplayController(val vrClient: VrClient) {
 
             }
 
-            //vrClient.display.getFrameData(frameData)
-            //println(floatsToDoubles(frameData.leftViewMatrix!!).size)
-
             var eyeParamsL = vrClient.display.getEyeParameters("left")
             var eyeParamsR = vrClient.display.getEyeParameters("right")
 

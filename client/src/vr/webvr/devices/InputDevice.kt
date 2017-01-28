@@ -2,10 +2,12 @@ package vr.webvr.devices
 
 import vr.CLIENT
 import lib.threejs.*
+import lib.threejs.Extra.SphereGeometry
 import vr.util.floatsToDoubles
 import lib.webvrapi.Gamepad
 import lib.webvrapi.getGamepads
 import lib.webvrapi.navigator
+import vr.client.VrClient
 import vr.webvr.tools.*
 import kotlin.browser.document
 
@@ -164,15 +166,22 @@ abstract class InputDevice(index: Int, type: String) {
 
     fun unselectNodes() {
         for (selectedNodeUrl in selectedNodeUrls) {
-            val obj = CLIENT!!.vrController.scene.getObjectByName(selectedNodeUrl)
-            val node = CLIENT!!.vrController.nodes[selectedNodeUrl]
-            if (obj != null) {
+            val selectedObject = CLIENT!!.vrController.scene.getObjectByName(selectedNodeUrl)
+            if (selectedObject != null) {
+                val selectorObject = CLIENT!!.vrController.scene.getObjectByName(selectedObject.name + "-selector")
+                if (selectorObject != null) {
+                    selectedObject.remove(selectorObject)
+                }
+            }
+
+            //val node = CLIENT!!.vrController.nodes[selectedNodeUrl]
+            /*if (obj != null) {
                 val material = obj.material
                 material.transparent = false
                 if (node != null) {
                     material.opacity = node.opacity
                 }
-            }
+            }*/
         }
         selectedNodeUrls.clear()
     }
@@ -231,9 +240,27 @@ abstract class InputDevice(index: Int, type: String) {
     private fun select(selectedNodeUrl: String) {
         val selectedNode = CLIENT!!.vrController.nodes[selectedNodeUrl] ?: return
         val selectedObject = CLIENT!!.vrController.scene.getObjectByName(selectedNode.url) ?: return
-        val material = selectedObject.material
+        /*val material = selectedObject.material
         material.transparent = true
-        material.opacity = 0.5
+        material.opacity = 0.5*/
+
+        var geometry = SphereGeometry(Math.sqrt(3.0) * Math.max(selectedNode.scale.x, selectedNode.scale.y, selectedNode.scale.z) / 2, 50, 50, 0.0, Math.PI * 2, 0.0, Math.PI * 2)
+
+        val material = MeshBasicMaterial()
+        material.transparent = true
+        material.color = Color(0x00ffff)
+        material.opacity = 0.1
+
+        var selectorObject = Mesh(geometry, material)
+        selectorObject.castShadow = false
+        selectorObject.receiveShadow = false
+        selectorObject.name = selectedObject.name + "-selector"
+        selectorObject.scale.x = 1 / selectedObject.scale.x
+        selectorObject.scale.y = 1 / selectedObject.scale.y
+        selectorObject.scale.z = 1 / selectedObject.scale.z
+
+        selectedObject.add(selectorObject)
+
         selectedNodeUrls.add(selectedObject.name)
         println("Selected object: ${selectedObject.uuid} ${selectedObject.name} ${selectedObject.parent}")
     }
