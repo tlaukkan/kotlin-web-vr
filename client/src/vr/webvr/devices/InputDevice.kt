@@ -2,6 +2,7 @@ package vr.webvr.devices
 
 import vr.CLIENT
 import lib.threejs.*
+import lib.threejs.Extra.BoxGeometry
 import lib.threejs.Extra.SphereGeometry
 import vr.util.floatsToDoubles
 import lib.webvrapi.Gamepad
@@ -244,12 +245,13 @@ abstract class InputDevice(index: Int, type: String) {
         material.transparent = true
         material.opacity = 0.5*/
 
-        var geometry = SphereGeometry(Math.sqrt(3.0) * Math.max(selectedNode.scale.x, selectedNode.scale.y, selectedNode.scale.z) / 2, 50, 50, 0.0, Math.PI * 2, 0.0, Math.PI * 2)
+        var geometry = BoxGeometry(1.1 * selectedNode.scale.x, 1.1 * selectedNode.scale.y, 1.1 * selectedNode.scale.z)
 
         val material = MeshBasicMaterial()
         material.transparent = true
         material.color = Color(0x00ffff)
         material.opacity = 0.1
+        material.wireframe = true
 
         var selectorObject = Mesh(geometry, material)
         selectorObject.castShadow = false

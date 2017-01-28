@@ -3,9 +3,9 @@ package lib.threejs.Extra
 import lib.threejs.Geometry
 
 @native("THREE.BoxGeometry") class BoxGeometry(
-  x: Int,
-  y: Int,
-  z: Int
+  x: Double,
+  y: Double,
+  z: Double
 ) : Geometry()
 
 @native("THREE.SphereGeometry") class SphereGeometry(
